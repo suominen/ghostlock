@@ -106,11 +106,20 @@ thing you may leave behind is the edited tracker (and its commit).
           curl -fsS 'https://api.ftp-master.debian.org/madison?package=linux&s=sid,forky,trixie,bookworm,bullseye&text=on'
       - Proxmox: the pve-no-subscription Packages.gz (needs zcat).
       - NixOS: the channel kernel pin from the local nixpkgs clone.
-      - Rocky / Amazon: RPM repodata (needs zcat) or the advisory feed.
-        These are backport-versioned (base version doesn't map to an
-        upstream point release), so the signal is an RLSA/RHSA/ALAS erratum
-        referencing CVE-2026-43499, not the number. AlmaLinux is the leading
-        indicator for the EL rows.
+      - Rocky / RHEL: these are backport-versioned (base version doesn't map
+        to an upstream point release), so the signal is an erratum, not the
+        number. The AUTHORITATIVE LEADING signal is the Red Hat security data
+        API (RHEL is upstream of Rocky/Alma) — WebFetch
+        https://access.redhat.com/security/cve/CVE-2026-43499 or curl
+        https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2026-43499.json
+        and read the kernel `fix_state` + `affected_release`. While fix_state
+        is "Affected" with no affected_release/RHSA, EL is unfixed (Rocky
+        rows :x:). When an RHSA + fixed kernel NVR appears, Rocky rebuilds it
+        as an RLSA; confirm via Rocky BaseOS repodata (zcat) reaching that
+        NVR, and cross-check AlmaLinux via OSV
+        https://api.osv.dev/v1/vulns/CVE-2026-43499.
+      - Amazon: ALAS (https://alas.aws.amazon.com); base version doesn't map
+        to upstream, so the signal is an ALAS erratum referencing the CVE.
    Exact recipes are in CLAUDE.md. A row flips to :white_check_mark: when
    its kernel carries the backport (reaches a fixed series release, or a
    distro advisory ships the cherry-pick). On a flip, record the adopted

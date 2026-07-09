@@ -444,16 +444,33 @@ leading indicator and enterprise receives the same kernels later.
 *Seeding-and-adoption method — see "Routine run scope" above.  These
 indexes are gzipped; `zcat` is in the headless allowlist.*
 
-Both ship `kernel` as an RPM; pull versions straight from repodata
-(`repomd.xml` → the `*-primary.xml.gz` index).  The EL `os/` repos
-accumulate every point release's kernel, so pick the numerically-highest
-`rel` (`sort -V`).
+**For the EL rows, the Red Hat security data API is the authoritative
+leading signal** — RHEL is upstream of Rocky and AlmaLinux, so neither can
+be fixed before RHEL is.  Read the per-CVE record's `package_state`
+(per-product `fix_state`: Affected / Not affected / Will not fix / Out of
+support scope) and `affected_release` (populated with the RHSA advisory ID
+and the fixed kernel NVR once a fix ships):
+
+```
+curl -fsSL 'https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2026-43499.json'
+```
+
+(or WebFetch `https://access.redhat.com/security/cve/CVE-2026-43499` for the
+human-readable page.)  While `fix_state` is **Affected** and
+`affected_release` is empty, no EL fix has shipped → the Rocky rows stay
+`:x:`.  When `affected_release` gains a RHEL `kernel` entry, that NVR is the
+target; Rocky rebuilds it as an RLSA, with AlmaLinux the fastest rebuild —
+cross-check OSV (`https://api.osv.dev/v1/vulns/CVE-2026-43499` gains an
+`AlmaLinux` ecosystem entry when an ALSA ships).
+
+The RPM repodata then confirms the Rocky ship and gives the current NVR
+(gzipped; `zcat` is in the allowlist).  Pick the numerically-highest `rel`
+(`sort -V`):
 
 - **Rocky** BaseOS: `https://dl.rockylinux.org/pub/rocky/<8|9|10>/BaseOS/x86_64/os`.
   **All** of Rocky 8 (4.18), 9 (5.14), and 10 (6.12) are in-window for
-  GhostLock (the bug predates them all).  AlmaLinux is the leading
-  indicator for the EL fixed kernel version (blog + `dl.almalinux.org`
-  repodata).
+  GhostLock (the bug predates them all).  A row flips only when the BaseOS
+  kernel NVR reaches the RHEL fixed build from the Red Hat record above.
 - **Amazon Linux** core: AL2023 default `kernel` (6.1 stream) and AL2
   `kernel` (4.14) are both in-window.  Resolve
   `…/al2023/core/mirrors/latest/x86_64/mirror.list` (AL2023) or

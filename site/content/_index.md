@@ -25,7 +25,7 @@ cover:
 | Discoverer | Nebula Security — found by their [VEGA][vega] tool |
 | Public disclosure | 2026-07-07 |
 | Public PoC | [NebuSec/CyberMeowfia][poc] (drives the three-futex requeue-PI deadlock unprivileged) |
-| KEV / EPSS / CVSS | Not yet scored (no NVD / `vulns.git` record at seed); Google kernelCTF awarded the submission $92,337 |
+| KEV / EPSS / CVSS | Not yet scored (no NVD / `vulns.git` record at seed); Red Hat rates it **Important**; Google kernelCTF awarded the submission $92,337 |
 | Related | Part **II** of Nebula Security's *IonStack* series |
 
 ## How the exploitation chain works
@@ -137,9 +137,9 @@ where relevant.
 | Proxmox VE | 8 | 6.8.12-pve | — | :x: Vulnerable — 6.8.y EOL, no backport |
 | NixOS | Unstable | 6.18.36 | 2026-06-28 | :white_check_mark: Fixed — default moved to `linux_6_18` (≥ 6.18.36) |
 | NixOS | 26.05 | 6.18.36 | 2026-07-03 | :white_check_mark: Fixed — default moved to `linux_6_18` (≥ 6.18.36) |
-| Rocky Linux | 10 | 6.12.0-*.el10 | — | :x: Vulnerable — no EL10 errata for this CVE yet |
-| Rocky Linux | 9 | 5.14.0-*.el9 | — | :x: Vulnerable — el9 5.14 carries the bug, no errata yet |
-| Rocky Linux | 8 | 4.18.0-553.el8_10 | — | :x: Vulnerable — el8 4.18 carries the bug, no errata yet |
+| Rocky Linux | 10 | 6.12.0-211.28.1.el10_2 | — | :x: Vulnerable — RHEL 10 kernel "Affected", no RHSA/RLSA yet |
+| Rocky Linux | 9 | 5.14.0-687.17.1.el9_8 | — | :x: Vulnerable — RHEL 9 kernel "Affected", no RHSA/RLSA yet |
+| Rocky Linux | 8 | 4.18.0-553.el8_10 | — | :x: Vulnerable — RHEL 8 kernel "Affected", no RHSA/RLSA yet |
 | Amazon Linux | 2023 | 6.12.x (amzn2023) | — | :x: Vulnerable — ALAS has no advisory / kernel fix for this CVE yet |
 | Amazon Linux | 2 | 5.10.x (amzn2) | — | :x: Vulnerable — ALAS has no advisory / kernel fix for this CVE yet |
 {.distros}
@@ -174,14 +174,18 @@ fix into that series; watch the `pve-kernel` changelog.
 
 ### Rocky Linux / RHEL family
 
-Rocky 10 (6.12 el10), Rocky 9 (5.14 el9), and Rocky 8 (4.18 el8) are all
-inside the window (the bug predates every EL kernel). RHEL-family kernels
-carry security backports without moving their upstream base version, so the
-version string alone cannot confirm a fix; the signal is an erratum. As of
-seed **no** EL erratum (AlmaLinux, Rocky, or RHEL) references
-CVE-2026-43499, so all three remain vulnerable. AlmaLinux is the leading
-indicator for the EL fixed kernel; RHEL, Oracle Linux, and CloudLinux OS
-are expected to be in the same state until an advisory lands.
+Rocky 10 (`6.12.0-211.28.1.el10_2`), Rocky 9 (`5.14.0-687.17.1.el9_8`), and
+Rocky 8 (`4.18.0-553.el8_10`) are all inside the window (the bug predates
+every EL kernel). RHEL-family kernels carry security backports without
+moving their upstream base version, so the version string alone cannot
+confirm a fix — the signal is an erratum. Red Hat's security data lists the
+RHEL 8/9/10 `kernel` as **Affected** (severity Important) with **no** RHSA
+issued, and neither AlmaLinux nor Rocky has an erratum referencing
+CVE-2026-43499, so all three remain vulnerable. Because Red Hat's state is
+"Affected" (not "Will not fix"), a fix is expected: Red Hat's advisory is
+the leading indicator, AlmaLinux the fastest rebuild, and Rocky follows.
+RHEL, Oracle Linux, and CloudLinux OS are in the same state until an
+advisory lands.
 
 ### Amazon Linux
 
@@ -298,10 +302,15 @@ workloads until the host kernel is patched.
   default was 7.0.12 (vulnerable) and Proxmox shipped no 7.0.13 build. The
   PVE 8 default `6.8.12` is on the EOL 6.8 line without a backport →
   vulnerable; the 6.14/6.17 opt-in series are non-LTS and unbackported.
-- **Rocky / RHEL family**: no AlmaLinux/Rocky/RHEL erratum references
-  CVE-2026-43499 at seed. Rocky 10 (6.12 el10), Rocky 9 (5.14 el9), and
-  Rocky 8 (4.18 el8) all carry the bug → vulnerable; EL kernels are
-  backport-versioned, so confirm via RLSA/RHSA once issued.
+- **Rocky / RHEL family** (via the Red Hat security data API, OSV, and
+  Rocky BaseOS repodata): Red Hat lists RHEL 6/7/8/9/10 `kernel` as
+  **Affected** with an empty `affected_release` (no RHSA), severity
+  Important; OSV carries only the upstream kernel record (no AlmaLinux or
+  Rocky advisory); and Rocky BaseOS ships `kernel-4.18.0-553.el8_10` (el8),
+  `kernel-5.14.0-687.17.1.el9_8` (el9), and `kernel-6.12.0-211.28.1.el10_2`
+  (el10), none carrying a fix → all vulnerable. The leading signal is the
+  Red Hat CVE record gaining an `affected_release` (RHSA + fixed kernel
+  NVR); Rocky then rebuilds it as an RLSA.
 - **Amazon Linux**: no ALAS advisory references CVE-2026-43499 at seed.
   AL2023 (6.12 / 6.1 streams) and AL2 (5.10 / 4.14) are all in-window →
   vulnerable.
