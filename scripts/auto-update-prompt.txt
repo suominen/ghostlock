@@ -118,8 +118,14 @@ thing you may leave behind is the edited tracker (and its commit).
         as an RLSA; confirm via Rocky BaseOS repodata (zcat) reaching that
         NVR, and cross-check AlmaLinux via OSV
         https://api.osv.dev/v1/vulns/CVE-2026-43499.
-      - Amazon: ALAS (https://alas.aws.amazon.com); base version doesn't map
-        to upstream, so the signal is an ALAS erratum referencing the CVE.
+      - Amazon: the ALAS signal is the repodata updateinfo.xml.gz (maps
+        CVE -> ALAS -> fixed kernel NVR), NOT the per-CVE ALAS HTML page
+        (JS-rendered, returns nothing headlessly -> false "no advisory").
+        Resolve the mirror.list, fetch <base>repodata/updateinfo.xml.gz
+        (zcat) and grep the CVE; check all kernel streams (AL2023: kernel
+        6.1, opt-in kernel6.12, kernel6.18 — a narrow-window bug may leave
+        the default not-affected but an opt-in stream affected/fixed). Read
+        current versions from primary.xml.gz.
    Exact recipes are in CLAUDE.md. A row flips to :white_check_mark: when
    its kernel carries the backport (reaches a fixed series release, or a
    distro advisory ships the cherry-pick). On a flip, record the adopted

@@ -140,8 +140,8 @@ where relevant.
 | Rocky Linux | 10 | 6.12.0-211.28.1.el10_2 | — | :x: Vulnerable — RHEL 10 kernel "Affected", no RHSA/RLSA yet |
 | Rocky Linux | 9 | 5.14.0-687.17.1.el9_8 | — | :x: Vulnerable — RHEL 9 kernel "Affected", no RHSA/RLSA yet |
 | Rocky Linux | 8 | 4.18.0-553.el8_10 | — | :x: Vulnerable — RHEL 8 kernel "Affected", no RHSA/RLSA yet |
-| Amazon Linux | 2023 | 6.12.x (amzn2023) | — | :x: Vulnerable — ALAS has no advisory / kernel fix for this CVE yet |
-| Amazon Linux | 2 | 5.10.x (amzn2) | — | :x: Vulnerable — ALAS has no advisory / kernel fix for this CVE yet |
+| Amazon Linux | 2023 | 6.1.176-220.360 (amzn2023) | 2026-06-22 | :white_check_mark: Fixed — ALAS2023-2026-1882 (kernel ≥ 6.1.175-219.357); 6.12/6.18 streams fixed 2026-05-25 |
+| Amazon Linux | 2 | 5.10.x (amzn2) | — | :x: Vulnerable — in-window, no ALAS for amzn2 |
 {.distros}
 
 ### Debian
@@ -189,10 +189,15 @@ advisory lands.
 
 ### Amazon Linux
 
-AL2023 (6.12 and 6.1 streams) and AL2 (5.10 / 4.14) all carry the bug.
-Amazon backports selectively without always moving the base version, but as
-of seed no ALAS advisory references CVE-2026-43499, so all streams are
-treated as vulnerable until Amazon ships a patched kernel or advisory.
+**AL2023 is fixed.** Amazon shipped the fix across all its kernel streams —
+the default `kernel` (6.1) in `6.1.175-219.357` (ALAS2023-2026-1882,
+2026-06-22), and the opt-in `kernel6.12` / `kernel6.18` streams on
+2026-05-25 (ALAS2023-2026-1753 / -1754); the current default is
+`6.1.176-220.360`. **AL2** (amzn2) has no ALAS for this CVE — its 4.14
+default and 5.10 (via `amazon-linux-extras`) kernels are in-window and carry
+the bug, so AL2 stays vulnerable until a `kernel` update ships. (Verified
+from the repodata `updateinfo.xml`, since the per-CVE ALAS pages are
+JS-rendered and don't fetch headlessly.)
 
 ## Detection
 
@@ -311,9 +316,13 @@ workloads until the host kernel is patched.
   (el10), none carrying a fix → all vulnerable. The leading signal is the
   Red Hat CVE record gaining an `affected_release` (RHSA + fixed kernel
   NVR); Rocky then rebuilds it as an RLSA.
-- **Amazon Linux**: no ALAS advisory references CVE-2026-43499 at seed.
-  AL2023 (6.12 / 6.1 streams) and AL2 (5.10 / 4.14) are all in-window →
-  vulnerable.
+- **Amazon Linux** (via the repodata `updateinfo.xml`, the machine-readable
+  ALAS feed — the per-CVE ALAS HTML pages are JS-rendered and unusable
+  headlessly): **AL2023 fixed** — ALAS2023-2026-1882 ships the default
+  `kernel` at `6.1.175-219.357` (2026-06-22), and ALAS2023-2026-1753 / -1754
+  the `kernel6.12` / `kernel6.18` streams (2026-05-25); current default
+  `6.1.176-220.360`. **AL2** has no ALAS for CVE-2026-43499 and its 4.14 /
+  5.10 kernels are in-window → vulnerable.
 
 ## References
 

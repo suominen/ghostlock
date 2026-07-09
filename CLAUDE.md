@@ -471,11 +471,20 @@ The RPM repodata then confirms the Rocky ship and gives the current NVR
   **All** of Rocky 8 (4.18), 9 (5.14), and 10 (6.12) are in-window for
   GhostLock (the bug predates them all).  A row flips only when the BaseOS
   kernel NVR reaches the RHEL fixed build from the Red Hat record above.
-- **Amazon Linux** core: AL2023 default `kernel` (6.1 stream) and AL2
-  `kernel` (4.14) are both in-window.  Resolve
+- **Amazon Linux**: the machine-readable ALAS signal is the repodata
+  **`updateinfo.xml.gz`** (maps CVE → ALAS → fixed kernel NVR) — the per-CVE
+  ALAS HTML pages (`alas.aws.amazon.com/cve/html/…`) are JS-rendered and
+  return no data headlessly, so a "cross-check ALAS" that reads them will
+  falsely see "no advisory" (this is exactly how the AL2023 row was seeded
+  wrong).  Resolve the mirror, then fetch `<base>repodata/updateinfo.xml.gz`
+  (plain filename, not hashed) and grep for the CVE; the `<update>` block
+  names the ALAS id, date, and fixed `kernel*` package version.  Check
+  **all** kernel streams, not just the default: AL2023 ships `kernel` (6.1),
+  opt-in `kernel6.12`, and `kernel6.18` — a narrow-window bug can leave the
+  default not-affected while an opt-in stream is affected (and separately
+  fixed).  Read current versions from `primary.xml.gz`.  Mirror:
   `…/al2023/core/mirrors/latest/x86_64/mirror.list` (AL2023) or
-  `…/2/core/latest/x86_64/mirror.list` (AL2), then read repodata from the
-  returned base URL; cross-check `alas.aws.amazon.com`.
+  `…/2/core/latest/x86_64/mirror.list` (AL2).
 
 ## Debian kernel version source
 
