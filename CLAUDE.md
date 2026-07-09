@@ -124,7 +124,11 @@ verdict.  Label NixOS channels in the **Release** column in friendly form
 Amazon rows are **one per kernel stream** — name the stream in the
 **Release** column (`2023 (kernel6.12)`, `2 (kernel-5.10)`); keep every
 stream (default + opt-in) as its own row, and add a row when Amazon ships a
-new stream.
+new stream.  **AL2 reached end of support on 2026-06-30** with no ALAS for
+this CVE — AWS ships no further security updates for AL2 core packages, so
+the three AL2 rows are terminal `:x:` ("no fix expected"); don't poll AL2
+repodata expecting a verdict change.  AL2023 remains supported and is
+polled as usual.
 
 Debian rows track the **default** `linux` kernel of the suite.  An opt-in
 alternative kernel package (e.g. bullseye's `linux-6.1`, the bookworm 6.1

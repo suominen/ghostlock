@@ -143,9 +143,9 @@ where relevant.
 | Amazon Linux | 2023 (kernel 6.1) | 6.1.176-220.360 | 2026-06-22 | :white_check_mark: Fixed — ALAS2023-2026-1882 (≥ 6.1.175-219.357) |
 | Amazon Linux | 2023 (kernel6.12) | 6.12.94-123.176 | 2026-05-25 | :white_check_mark: Fixed — ALAS2023-2026-1753 (≥ 6.12.88-119.157) |
 | Amazon Linux | 2023 (kernel6.18) | 6.18.36-69.136 | 2026-05-25 | :white_check_mark: Fixed — ALAS2023-2026-1754 (≥ 6.18.30-61.116) |
-| Amazon Linux | 2 (kernel 4.14) | 4.14.355-284.737 | — | :x: Vulnerable — in-window, no ALAS |
-| Amazon Linux | 2 (kernel-5.10) | 5.10.259-258.1043 | — | :x: Vulnerable — in-window, no ALAS |
-| Amazon Linux | 2 (kernel-5.15) | 5.15.210-148.245 | — | :x: Vulnerable — in-window, no ALAS |
+| Amazon Linux | 2 (kernel 4.14) | 4.14.355-284.737 | — | :x: Vulnerable — no fix expected (AL2 EOL 2026-06-30) |
+| Amazon Linux | 2 (kernel-5.10) | 5.10.259-258.1043 | — | :x: Vulnerable — no fix expected (AL2 EOL 2026-06-30) |
+| Amazon Linux | 2 (kernel-5.15) | 5.15.210-148.245 | — | :x: Vulnerable — no fix expected (AL2 EOL 2026-06-30) |
 {.distros}
 
 ### Debian
@@ -198,11 +198,14 @@ advisory lands.
 
 Each Amazon kernel stream is tracked as its own row above. **AL2023** is
 fixed on all three streams (default `kernel` 6.1, opt-in `kernel6.12` /
-`kernel6.18`). **AL2** (amzn2) has no ALAS for this CVE and all three of its
-streams — 4.14, plus 5.10 / 5.15 via `amazon-linux-extras` — are in-window,
-so they stay vulnerable until a `kernel` update ships. Status is verified
-from the repodata `updateinfo.xml` (the per-CVE ALAS pages are JS-rendered
-and don't fetch headlessly).
+`kernel6.18`). **AL2** (amzn2) reached end of support on **2026-06-30**
+with no ALAS ever issued for this CVE: all three of its streams — 4.14,
+plus 5.10 / 5.15 via `amazon-linux-extras` — are in-window, and AWS no
+longer provides security updates or bug fixes for AL2 core packages, so
+no fix is expected. An AL2 host stays permanently exploitable; the exit
+is migrating to AL2023 (or another patched distribution). Status is
+verified from the repodata `updateinfo.xml` (the per-CVE ALAS pages are
+JS-rendered and don't fetch headlessly).
 
 ## Detection
 
@@ -321,8 +324,11 @@ workloads until the host kernel is patched.
 - **Amazon Linux** (via the repodata `updateinfo.xml`): **AL2023 fixed** on
   all three streams — ALAS2023-2026-1882 (default `kernel` 6.1, current
   `6.1.176-220.360`), ALAS2023-2026-1753 (`kernel6.12`), ALAS2023-2026-1754
-  (`kernel6.18`). **AL2** still has no ALAS for CVE-2026-43499; 4.14 / 5.10
-  streams remain vulnerable.
+  (`kernel6.18`). **AL2** never received an ALAS for CVE-2026-43499 and
+  reached end of support on 2026-06-30 (per the AWS AL2 FAQ; confirmed
+  against endoflife.date) — AWS no longer ships security updates for AL2
+  core packages, so the 4.14 / 5.10 / 5.15 streams remain vulnerable with
+  no fix expected.
 
 ## References
 
