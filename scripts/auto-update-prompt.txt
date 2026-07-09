@@ -1,0 +1,143 @@
+You are running headless from cron to refresh the GhostLock patch
+tracker. The wrapper has already fetched origin and checked out the
+auto-update branch with origin/main merged forward, and has also refreshed
+the local kernel clones under ~/src/linux/{stable,vulns} and the nixpkgs
+clone at ~/src/nixos/nixpkgs — inspect them via the `origin/...`
+remote-tracking refs without re-fetching.
+
+GhostLock (CVE-2026-43499) is a stack use-after-free in the Linux kernel's
+real-time mutex (rtmutex) priority-inheritance code, reached through the
+futex requeue-PI path. remove_waiter() in kernel/locking/rtmutex.c clears
+pi_blocked_on on `current` instead of on the waiter's own task; when the
+requeue-PI rollback runs it on behalf of a DIFFERENT task (a PI deadlock
+cycle across three futexes returns -EDEADLK and takes the buggy rollback
+path), it leaves a dangling pointer into freed kernel-stack memory — a
+use-after-free the PoC turns into a near-arbitrary write, local root, and
+container escape. The trigger is ordinary futex(2), so any unprivileged
+local task (including one inside an unprivileged container) can reach it;
+there is no privilege, device, capability, or user-namespace gate, and it
+is architecture-independent. The canonical fix is 3bfdc63936dd (rtmutex:
+Use waiter::task instead of current in remove_waiter()), first released in
+v7.1. The bug was introduced by 8161239a8bcc in v2.6.39 (2011), so
+essentially every kernel from 2.6.39 through 7.0 is in-window.
+
+References:
+- Disclosure (Nebula Security, IonStack part II): https://nebusec.ai/research/ionstack-part-2/
+- Public PoC (NebuSec/CyberMeowfia): https://github.com/NebuSec/CyberMeowfia
+- Kernel fix: https://github.com/torvalds/linux/commit/3bfdc63936dd4773109b7b8c280c0f3b5ae7d349
+
+Per-branch fixed versions and per-distro status all live in
+site/content/_index.md (the canonical tracker). Read it first rather than
+relying on anything cached here.
+
+Working-tree hygiene: the wrapper refuses to run on a dirty tree
+(`git status --porcelain`, which counts untracked files too), so a stray
+file left in the worktree blocks every subsequent scheduled run. Stream any
+fetch through a pipe — `curl -fsSL <url> | grep …` — and never save a
+download into the worktree. If you genuinely need a scratch file, create it
+under a `mktemp -d` directory and delete it before you finish; the only
+thing you may leave behind is the edited tracker (and its commit).
+
+1. Read CLAUDE.md to learn the project conventions (especially the
+   single-axis kernel verdict — there is NO reachability or exposure
+   discriminator to record — the status-emoji meanings, the "Fixed since"
+   rule, and the date handling), then read site/content/_index.md.
+
+2. Re-verify each entry currently marked vulnerable (:x:), staged
+   (:warning:), or unverified (:grey_question:).
+
+   Note on git.kernel.org: cgit HTML pages (any URL ending in /log/,
+   /tree/, /commit/, etc.) are Anubis-gated and WebFetch hits the no-JS
+   challenge. Use the persistent local kernel clones — already refreshed by
+   the wrapper, inspect via the `origin/...` remote-tracking refs:
+
+     ~/src/linux/stable   — stable/linux.git
+     ~/src/linux/vulns    — CNA CVE database (watch for CVE-2026-43499)
+
+   GhostLock is a generic locking fix that lands directly in the stable
+   tree, so there is NO dedicated subsystem clone — stable + vulns suffice.
+   (Setup is documented in CLAUDE.md; if a clone is missing, fail loudly
+   rather than guessing.) Plain-text kernel.org endpoints
+   (e.g. /finger_banner) are still WebFetch-able.
+
+   a. Upstream stable kernels: GET https://www.kernel.org/finger_banner
+      for the current point release per stable tree. The maintained
+      in-window branches (6.1.y, 6.6.y, 6.12.y, 6.18.y, 7.0.y, 7.1.y)
+      already carry the backport (first fixed at 6.1.177 / 6.6.144 /
+      6.12.95 / 6.18.36 / 7.0.13 / v7.1). Check whether 5.15.y or 5.10.y
+      ever pick it up (still unpatched at seed). The backport is a
+      cherry-pick with a NEW sha that cites the upstream commit, so search
+      by upstream reference/subject, not `git tag --contains`:
+        git -C ~/src/linux/stable log v<series>..origin/linux-<series>.y \
+          --grep=3bfdc63936dd --grep='waiter::task' --format='%h %s'
+      Empty output means the series is still unpatched. Keep the range
+      bounded to v<series>.. so an ancient unrelated commit can't read as a
+      false "fixed".
+
+   b. CVE record — CVE-2026-43499 is assigned but had NO vulns.git record
+      at seed (2026-07-09). Check whether it has appeared (inspect via
+      origin/master; the wrapper only fetches, so HEAD is stale):
+        git -C ~/src/linux/vulns show \
+          origin/master:cve/published/2026/CVE-2026-43499.dyad
+      Once it exists, reconcile the *Upstream fixed versions* table against
+      the authoritative per-branch introduced:fixed pairs in the .dyad, and
+      watch NVD / the disclosure for a KEV/EPSS/CVSS score to add to the
+      Summary if one appears.
+
+3. Distro rows — check adoption, not cosmetic versions. The per-distro
+   kernel versions in the table are frozen seed snapshots: update a row's
+   recorded version only when its verdict actually changes.
+
+   A row can only become fixed once the fix is available to adopt — its
+   kernel series carries :white_check_mark: in the *Upstream fixed versions*
+   table, OR the distro cherry-picks 3bfdc63936dd independently. Because the
+   bug dates to v2.6.39, EVERY tracked kernel is in-window — there are no
+   "not affected" rows. For each row, re-pull just the distro's KERNEL
+   version and check for the backport:
+      - Debian: the madison API (plain curl) —
+          curl -fsS 'https://api.ftp-master.debian.org/madison?package=linux&s=sid,forky,trixie,bookworm,bullseye&text=on'
+      - Proxmox: the pve-no-subscription Packages.gz (needs zcat).
+      - NixOS: the channel kernel pin from the local nixpkgs clone.
+      - Rocky / Amazon: RPM repodata (needs zcat) or the advisory feed.
+        These are backport-versioned (base version doesn't map to an
+        upstream point release), so the signal is an RLSA/RHSA/ALAS erratum
+        referencing CVE-2026-43499, not the number. AlmaLinux is the leading
+        indicator for the EL rows.
+   Exact recipes are in CLAUDE.md. A row flips to :white_check_mark: when
+   its kernel carries the backport (reaches a fixed series release, or a
+   distro advisory ships the cherry-pick). On a flip, record the adopted
+   kernel version and set "Fixed since" per the CLAUDE.md rule. A kernel
+   bump that stays IN-WINDOW WITHOUT the backport is NOT adoption — leave
+   the row and its recorded version untouched.
+
+   zcat / gunzip ARE available to the headless run — use them for the
+   Packages.gz / repodata pulls. But pull only the KERNEL version, and only
+   when a verdict could change.
+
+   GhostLock has NO reachability or exposure discriminator: the trigger is
+   plain futex(2), reachable by any unprivileged local task, so an affected
+   unpatched row is :x:, never a mitigated :warning:. A :warning: is only
+   for a staged-but-unreleased fix. There is no mitigation that reduces
+   exposure short of the kernel patch — do not record sysctl/module knobs as
+   mitigations.
+
+   Do NOT record NixOS channel git-revisions (the
+   channels.nixos.org/<channel>/git-revision pins) anywhere in the tracker.
+   They advance on nearly every run; recording them manufactures a diff on
+   an otherwise no-op run.
+
+4. Edit site/content/_index.md to reflect any changes per the conventions
+   in CLAUDE.md (status badges, kernel versions, the "Fixed since" sticky
+   date, and the `## Verification log` update rules). If you make content
+   changes, bump the `lastmod` date in the front-matter. If nothing
+   changed, leave the file alone — don't bump `lastmod` on a no-op run.
+
+5. If you made changes, commit them on the current branch (which is
+   `auto-update` — the wrapper has already switched to it and merged
+   origin/main forward). Do NOT create a new branch, do NOT switch
+   branches, do NOT push, and do NOT open a PR. The user merges auto-update
+   into main manually. If nothing changed, exit without committing.
+
+If you hit unexpected errors or substantive changes you can't confidently
+encode, commit your best attempt and note open questions in the commit
+message.

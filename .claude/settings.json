@@ -1,0 +1,43 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git -C ~/src/auto-update/ghostlock describe *)",
+      "Bash(git -C ~/src/auto-update/ghostlock diff *)",
+      "Bash(git -C ~/src/auto-update/ghostlock diff)",
+      "Bash(git -C ~/src/auto-update/ghostlock log *)",
+      "Bash(git -C ~/src/auto-update/ghostlock show *)",
+      "Bash(git -C ~/src/auto-update/ghostlock status *)",
+      "Bash(git -C ~/src/auto-update/ghostlock status)",
+      "Bash(git -C ~/src/ghostlock describe *)",
+      "Bash(git -C ~/src/ghostlock diff *)",
+      "Bash(git -C ~/src/ghostlock diff)",
+      "Bash(git -C ~/src/ghostlock log *)",
+      "Bash(git -C ~/src/ghostlock show *)",
+      "Bash(git -C ~/src/ghostlock status *)",
+      "Bash(git -C ~/src/ghostlock status)",
+      "Bash(git -C ~/src/linux/stable describe *)",
+      "Bash(git -C ~/src/linux/stable diff *)",
+      "Bash(git -C ~/src/linux/stable diff)",
+      "Bash(git -C ~/src/linux/stable grep *)",
+      "Bash(git -C ~/src/linux/stable log *)",
+      "Bash(git -C ~/src/linux/stable show *)",
+      "Bash(git -C ~/src/linux/stable status *)",
+      "Bash(git -C ~/src/linux/stable status)",
+      "Bash(git -C ~/src/linux/vulns describe *)",
+      "Bash(git -C ~/src/linux/vulns diff *)",
+      "Bash(git -C ~/src/linux/vulns diff)",
+      "Bash(git -C ~/src/linux/vulns grep *)",
+      "Bash(git -C ~/src/linux/vulns log *)",
+      "Bash(git -C ~/src/linux/vulns show *)",
+      "Bash(git -C ~/src/linux/vulns status *)",
+      "Bash(git -C ~/src/linux/vulns status)",
+      "Bash(git -C ~/src/nixos/nixpkgs describe *)",
+      "Bash(git -C ~/src/nixos/nixpkgs diff *)",
+      "Bash(git -C ~/src/nixos/nixpkgs diff)",
+      "Bash(git -C ~/src/nixos/nixpkgs log *)",
+      "Bash(git -C ~/src/nixos/nixpkgs show *)",
+      "Bash(git -C ~/src/nixos/nixpkgs status *)",
+      "Bash(git -C ~/src/nixos/nixpkgs status)"
+    ]
+  }
+}

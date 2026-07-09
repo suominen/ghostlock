@@ -1,0 +1,84 @@
+#!/bin/sh
+# Local cron-driven GhostLock tracker auto-update.
+# Triggered by ~/.config/systemd/user/ghostlock-tracker-update.timer.
+# Logs land in the user journal:
+#   journalctl --user -u ghostlock-tracker-update
+#
+# Runs in the dedicated worktree at ~/src/auto-update/ghostlock,
+# checked out on branch `auto-update`. Each run merges origin/main
+# forward into auto-update and lets headless Claude commit any updates
+# back onto auto-update only. Merges of auto-update -> main are manual.
+
+set -eu
+
+REPO="$(realpath "$(dirname "${0}")/..")"
+cd "${REPO}"
+
+# Identify this tracker on the first line of every run, so syslog
+# summaries that aggregate several trackers' output (all logged under
+# the generic `auto-update` process name) can be told apart.
+echo "GhostLock tracker auto-update starting ($(date -u +%FT%TZ))"
+
+# Refresh the local clones the agent reads via origin/... refs.
+# Doing this here, rather than in the prompt, makes the refresh
+# deterministic — a headless agent occasionally skips these and
+# then reports findings against stale remote-tracking refs.
+#
+# The tracker jobs run minutes apart and share these clones, so
+# skip a clone any of them refreshed within the last 2 hours. git
+# touches .git/FETCH_HEAD on every fetch, even a no-op one, so its
+# mtime is "when we last checked"; a clone never fetched has no
+# FETCH_HEAD and counts as stale, and a failed fetch leaves it
+# untouched, so the next job retries instead of skipping.
+fetch_if_stale()
+{
+  local repo label
+  repo="${1}"
+  label="${2}"
+  shift 2
+
+  if [ -n "$(find "${repo}/.git/FETCH_HEAD" -mmin -120 2>/dev/null)" ]
+  then
+    echo "Skipping ${label} fetch (refreshed within 2 hours)"
+    return 0
+  fi
+  git -C "${repo}" fetch --quiet "${@}" ||
+    echo "${0##*/}: warn: ${label} fetch failed" 1>&2
+}
+
+fetch_if_stale "${HOME}/src/linux/stable" linux-stable --all --tags
+# vulns: the kernel CVE -> fix-commit / fixed-version database. GhostLock
+# is a locking/rtmutex fix that lands directly in the stable tree, so
+# there is no dedicated subsystem clone here; stable + vulns suffice.
+# Keeps the per-branch dyad lookup for CVE-2026-43499 fresh (the record
+# is not published yet — watch for cve/published/2026/CVE-2026-43499.* to
+# appear, then seed the Upstream fixed versions table from its .dyad).
+fetch_if_stale "${HOME}/src/linux/vulns" linux-vulns origin
+fetch_if_stale "${HOME}/src/nixos/nixpkgs" nixpkgs origin
+
+git fetch --quiet origin
+
+if [ -n "$(git status --porcelain)" ]
+then
+  echo 'Working tree dirty; refusing to run. Clean it up and retry.' 1>&2
+  exit 1
+fi
+
+git switch --quiet auto-update
+git merge --quiet --no-edit origin/main
+
+# Headless run. Permission scope (Read/Edit the tracker, WebFetch and
+# curl the sources, zcat/gunzip for the gzipped package indexes, git +
+# date for the commit step) goes in --settings JSON because
+# --allowed-tools on the CLI silently ignores Bash patterns.
+# `default` mode under -p with no TTY refuses anything outside the
+# allowlist without prompting. The prompt forbids push and PR creation,
+# and `gh` is not in the tool list anyway.
+exec claude -p \
+  --model claude-sonnet-4-6 \
+  --permission-mode default \
+  --settings '{"permissions":{"allow":["Read","Edit","WebFetch","Bash(git:*)","Bash(date:*)","Bash(curl:*)","Bash(zcat:*)","Bash(gunzip:*)"]}}' \
+  --output-format text \
+  --no-session-persistence \
+  --max-budget-usd 3 \
+  < scripts/auto-update-prompt.txt

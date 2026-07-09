@@ -1,0 +1,78 @@
+:root {
+  --main-width: 1200px;
+  --nav-width: var(--main-width);
+}
+
+.post-content h2 {
+  border-top: 3px solid var(--primary);
+  margin-top: 2rem;
+  padding-top: 0.6rem;
+}
+
+.post-content h3 {
+  border-top: 1px solid var(--border);
+  margin-top: 1.5rem;
+  padding-top: 0.4rem;
+}
+
+.post-content table.references {
+  font-size: 0.85em;
+}
+
+/* References table column behaviour:
+   - Source (col 1) gets a fixed 33% share so it stays a comfortable
+     width; it wraps at spaces but not mid-word.
+   - URL (col 2) takes the rest; overflow-wrap: anywhere lets its long
+     unbroken URLs (the Salsa patch link especially) break inside the
+     cell rather than forcing the column wide. */
+.post-content table.references th:first-child,
+.post-content table.references td:first-child {
+  width: 33%;
+}
+.post-content table.references td:nth-child(2) {
+  overflow-wrap: anywhere;
+}
+
+/* Distribution-status table — keep the Release column on a single line
+   so labels like "Debian 11 (bullseye, LTS)" or "Unstable (small)" don't
+   wrap at the comma/space. The Release cells are tagged `.nowrap` by
+   extend_footer.html (a positional nth-child rule can't be used: the
+   first-column rowspan collapse removes cells and shifts the indices).
+   Trade-off: the table can widen past the content column on very narrow
+   viewports; the page scrolls horizontally rather than the column
+   reflowing — acceptable for an information-dense reference. */
+.post-content table.distros td.nowrap {
+  white-space: nowrap;
+}
+
+.post-content td {
+  vertical-align: top;
+  text-align: left;
+}
+
+/* Status cells (tagged by extend_footer.html — those starting with a
+   status emoji) get a hanging indent: the emoji sits in a fixed left
+   gutter and wrapped text indents past it, so the emoji column stays
+   visually scannable. The 13px matches PaperMod's table-cell padding,
+   keeping the emoji aligned with the column header. !important beats
+   PaperMod's higher-specificity cell-padding rule. */
+.post-content td.status {
+  padding-left: calc(13px + 1.6em) !important;
+  text-indent: -1.6em;
+}
+
+.post-content th {
+  vertical-align: bottom;
+  text-align: left;
+}
+
+.copy-code {
+  padding: 4px;
+  align-items: center;
+  line-height: 1;
+}
+
+div.highlight:hover .copy-code,
+pre:hover .copy-code {
+  display: flex;
+}
