@@ -25,7 +25,7 @@ cover:
 | Discoverer | Nebula Security — found by their [VEGA][vega] tool |
 | Public disclosure | 2026-07-07 |
 | Public PoC | [NebuSec/CyberMeowfia][poc] (drives the three-futex requeue-PI deadlock unprivileged) |
-| KEV / EPSS / CVSS | Not yet scored (no NVD / `vulns.git` record at seed); Red Hat rates it **Important**; Google kernelCTF awarded the submission $92,337 |
+| KEV / EPSS / CVSS | Not yet assigned NVD/CVSS score; kernel CNA `vulns.git` record now published; Red Hat rates it **Important**; Google kernelCTF awarded the submission $92,337 |
 | Related | Part **II** of Nebula Security's *IonStack* series |
 
 ## How the exploitation chain works
@@ -90,8 +90,8 @@ architecture is affected** — there is no architecture exemption.
 ## Upstream fixed versions
 
 The fix reached Linus as **v7.1** and the stable maintainers backported it
-across the maintained lines: **6.1.177**, **6.6.144**, **6.12.95**,
-**6.18.36**, and **7.0.13**. 7.0.y took the backport in 7.0.13, just before
+across the maintained lines: **6.1.175**, **6.6.140**, **6.12.86**,
+**6.18.27**, and **7.0.4**. 7.0.y took the backport in 7.0.4, well before
 that line reached end of life at 7.0.14. The pre-6.1 longterm lines
 (5.15.y, 5.10.y) carry the bug — but have **not** received a backport as of
 this writing.
@@ -100,11 +100,11 @@ this writing.
 |---|---|---|---|
 | Linus mainline | :white_check_mark: Carries `3bfdc63936dd` | v7.2-rc2 | first fixed release v7.1 |
 | 7.1.x | :white_check_mark: Carries the fix | 7.1.3 | fixed as of the v7.1 release |
-| 7.0.x | :white_check_mark: Carries the backport | 7.0.14 (EOL) | backported in 7.0.13 before end of life |
-| 6.18.x | :white_check_mark: Carries the backport | 6.18.38 | LTS; first fixed point release 6.18.36 |
-| 6.12.x | :white_check_mark: Carries the backport | 6.12.95 | LTS; first fixed point release 6.12.95 |
-| 6.6.x | :white_check_mark: Carries the backport | 6.6.144 | LTS; first fixed point release 6.6.144 |
-| 6.1.x | :white_check_mark: Carries the backport | 6.1.177 | LTS; first fixed point release 6.1.177 |
+| 7.0.x | :white_check_mark: Carries the backport | 7.0.14 (EOL) | backported in 7.0.4 before end of life |
+| 6.18.x | :white_check_mark: Carries the backport | 6.18.38 | LTS; first fixed point release 6.18.27 |
+| 6.12.x | :white_check_mark: Carries the backport | 6.12.95 | LTS; first fixed point release 6.12.86 |
+| 6.6.x | :white_check_mark: Carries the backport | 6.6.144 | LTS; first fixed point release 6.6.140 |
+| 6.1.x | :white_check_mark: Carries the backport | 6.1.177 | LTS; first fixed point release 6.1.175 |
 | 5.15.x | :x: Not backported | 5.15.211 | in window; no backport yet |
 | 5.10.x | :x: Not backported | 5.10.260 | in window; no backport yet |
 
@@ -128,11 +128,11 @@ where relevant.
 
 | Distribution | Release | Kernel | Fixed since | Status |
 |---|---|---|---|---|
-| Debian | sid (unstable) | 7.0.13-1 | 2026-06-19 | :white_check_mark: Fixed — first fixed upload 7.0.13-1 (now ships 7.1.3-1) |
+| Debian | sid (unstable) | 7.0.4-1 | 2026-05-08 | :white_check_mark: Fixed — first fixed upload 7.0.4-1 (now ships 7.1.3-1) |
 | Debian | forky (testing) | 7.0.13-1 | 2026-06-28 | :white_check_mark: Fixed — 7.0.13-1 migrated to testing |
-| Debian | 13 (trixie) | 6.12.95-1 | 2026-07-05 | :white_check_mark: Fixed — via `trixie-security` (6.12.95-1) |
-| Debian | 12 (bookworm) | 6.1.176-1 | 2026-07-03 | :white_check_mark: Fixed — via `bookworm-security` (6.1.176-1, Debian backport) |
-| Debian | 11 (bullseye, LTS) | 5.10.223-1 | — | :x: Vulnerable — 5.10.y not backported (tracker: open) |
+| Debian | 13 (trixie) | 6.12.86-1 | 2026-05-08 | :white_check_mark: Fixed — trixie base (6.12.86-1) |
+| Debian | 12 (bookworm) | 6.1.176-1 | 2026-07-03 | :white_check_mark: Fixed — via `bookworm-security` (6.1.176-1, DLA-4665-1) |
+| Debian | 11 (bullseye, LTS) | 6.1.176-1~deb11u1 | 2026-07-04 | :white_check_mark: Fixed — linux-6.1 via DLA-4671-1 (6.1.176-1~deb11u1) |
 | Proxmox VE | 9 | 7.0.14-1-pve | 2026-07-01 | :white_check_mark: Fixed — proxmox-kernel-7.0.14 in pve-no-subscription |
 | Proxmox VE | 8 | 6.8.12-pve | — | :x: Vulnerable — 6.8.y EOL, no backport |
 | NixOS | Unstable | 6.18.36 | 2026-06-28 | :white_check_mark: Fixed — default moved to `linux_6_18` (≥ 6.18.36) |
@@ -151,18 +151,18 @@ where relevant.
 ### Debian
 
 Debian's `linux` is affected in every suite (the bug predates all of them),
-but the security team has now resolved it everywhere except bullseye.
-**sid** first shipped a fixed kernel with `linux 7.0.13-1` on 2026-06-19 and
-now rides 7.1.3-1; **forky** (testing) took the same 7.0.13-1 on 2026-06-28.
-The stable suites were fixed through the **security archive**: **trixie** via
-`trixie-security 6.12.95-1` (2026-07-05, matching the upstream 6.12.95
-backport) and **bookworm** via `bookworm-security 6.1.176-1` (2026-07-03) —
-a Debian **backport** of the fix, since upstream 6.1 did not carry it until
-6.1.177. Only **bullseye** remains open: its 5.10.y kernel has no upstream
-backport and Debian-LTS had not shipped one at the time of writing. Debian's
-security tracker now carries CVE-2026-43499 and drove these assessments;
-note that the base-suite `madison` version (e.g. trixie's 6.12.86-1) lags
-the `-security` upload that actually ships the fix.
+and all currently supported suites now carry a fix. **sid** first shipped a
+fixed kernel with `linux 7.0.4-1` on 2026-05-08 and now rides 7.1.3-1;
+**forky** (testing) received the fix when `7.0.13-1` migrated on 2026-06-28.
+**trixie** (stable) was fixed at `linux 6.12.86-1` in the base suite on
+2026-05-08; `trixie-security` also carries it at 6.12.95-1. **bookworm**
+(oldstable) was fixed via `bookworm-security 6.1.176-1` (DLA-4665-1,
+2026-07-03); `6.1.176` is above the upstream first-fixed `6.1.175`, so this
+is not a backport below upstream. **bullseye** (LTS) is now fixed via the
+`linux-6.1` source package: `6.1.176-1~deb11u1` (DLA-4671-1, 2026-07-04) —
+the default `linux` 5.10.y package on bullseye has no upstream backport, but
+users can install `linux-6.1` from `bullseye-security` to get a fixed kernel.
+Debian's security tracker carries CVE-2026-43499 and drove these assessments.
 
 ### Proxmox VE
 
@@ -212,8 +212,8 @@ fixed versions* table and your distro row above:
 uname -r
 ```
 
-A kernel at or above its branch's first-fixed release (6.1.177 / 6.6.144 /
-6.12.95 / 6.18.36 / 7.0.13), or any mainline **≥ 7.1**, carries the fix;
+A kernel at or above its branch's first-fixed release (6.1.175 / 6.6.140 /
+6.12.86 / 6.18.27 / 7.0.4), or any mainline **≥ 7.1**, carries the fix;
 anything else in the 2.6.39–7.0 window without a distro backport is
 vulnerable. On RHEL-family and Amazon kernels the base version does not map
 to an upstream point release — rely on the distribution's advisory state
@@ -236,8 +236,8 @@ process; it cannot be disabled, and the bug needs neither elevated privilege
 nor unprivileged user namespaces — so namespace-hardening knobs such as
 `kernel.unprivileged_userns_clone=0` do **not** block it.
 
-Install a kernel that carries the [`3bfdc63936dd`][fix] backport: **6.1.177**,
-**6.6.144**, **6.12.95**, **6.18.36**, **7.0.13**, or mainline **≥ 7.1**.
+Install a kernel that carries the [`3bfdc63936dd`][fix] backport: **6.1.175**,
+**6.6.140**, **6.12.86**, **6.18.27**, **7.0.4**, or mainline **≥ 7.1**.
 Until you can reboot into a fixed kernel, the only risk reduction on
 multi-tenant and container hosts is ordinary defence-in-depth that does not
 touch the hole itself — limit untrusted local logins and untrusted container
@@ -258,7 +258,7 @@ workloads until the host kernel is patched.
   removes the hole.
 - **Long exposure window:** the flaw dates to v2.6.39 (2011), so essentially
   every unpatched production kernel is affected. Backports exist for
-  6.1.177, 6.6.144, 6.12.95, 6.18.36, 7.0.13, and mainline 7.1 — check your
+  6.1.175, 6.6.140, 6.12.86, 6.18.27, 7.0.4, and mainline 7.1 — check your
   distribution row.
 
 ## Verification log
@@ -272,59 +272,53 @@ workloads until the host kernel is patched.
   `git describe --contains` against `~/src/linux/stable`). It makes
   `remove_waiter()` operate on `waiter->task` rather than `current`.
 - The bug was introduced by `8161239a8bcc` in **v2.6.39**.
-- **Stable backports landed** (confirmed by upstream-reference / subject
-  grep against `~/src/linux/stable`): 6.1.177 (`4afda3a1da02`), 6.6.144
-  (`6707d7e0b717`), 6.12.95 (`5799f9bd7fee`), 6.18.36 (`a388e3dfaf95`), and
-  7.0.13 (`55363fa0a045`). Mainline carries it since v7.1. 5.15.y and 5.10.y
-  are in-window and not yet backported.
-- **CVE-2026-43499** is assigned but had **no** `vulns.git` record at seed
-  (2026-07-09); the *Upstream fixed versions* table is seeded from the
-  stable tree and the disclosure, to be reconciled against the `.dyad` once
-  the CNA publishes it.
+- **`vulns.git` record now published** (appeared after seed; inspected via
+  `origin/master`). The `.dyad` gives authoritative per-branch first-fixed
+  commits, which are earlier than the seed had recorded — the seed grep
+  (`--grep=3bfdc63936dd --grep='waiter::task'`) matched a follow-up fix
+  (`4afda3a1da02` et al., upstream `40a25d59e85b`) that cites the original fix
+  in its commit body, not the backport of the original fix itself. Corrected
+  first-fixed commits (confirmed via `git describe --contains`): 6.1.175
+  (`d8cce4773c2b`), 6.6.140 (`8a1fc8d698ac`), 6.12.86 (`6d52dfcb2a5d`),
+  6.18.27 (`3fb7394a8377`), 7.0.4 (`88614876370a`). Mainline carries it since
+  v7.1. 5.15.y and 5.10.y are in-window and not yet backported (subject/ref
+  grep against `~/src/linux/stable` — empty output).
 - Current point releases (`https://www.kernel.org/finger_banner`): mainline
-  7.2-rc2; 7.1.3; 7.0.14 (EOL, fixed since 7.0.13); 6.18.38; 6.12.95;
+  7.2-rc2; 7.1.3; 7.0.14 (EOL, fixed since 7.0.4); 6.18.38; 6.12.95;
   6.6.144; 6.1.177; 5.15.211; 5.10.260.
 
 ### Distributions
 
-- **Debian** (via the security-tracker JSON and snapshot.debian.org
-  `first_seen`): the security tracker now lists CVE-2026-43499 and resolves
-  it in every suite but bullseye. sid — first fixed upload `7.0.13-1` on
-  2026-06-19 (now 7.1.3-1); testing/forky — `7.0.13-1` migrated 2026-06-28;
-  stable/trixie — `trixie-security 6.12.95-1` on 2026-07-05; oldstable/
-  bookworm — `bookworm-security 6.1.176-1` on 2026-07-03, a backport since
-  6.1.176 < upstream 6.1.177; oldoldstable/bullseye — open (5.10.y
-  unbackported). The base-suite `madison` versions lag the `-security`
-  uploads that ship the fix.
-- **NixOS** (via the local nixpkgs clone git history): the default
-  `linuxPackages` became fixed when `packageAliases.linux_default` moved to
-  `linux_6_18` — 2026-06-28 on nixos-unstable, 2026-07-03 on nixos-26.05 —
-  with the 6.18 series already ≥ 6.18.36 (first-fixed) from 2026-06-27. The
-  prior `linux_6_12` default never reached 6.12.95 before the switch
-  (6.12.95 landed 2026-07-05). Now ships 6.18.38; `linuxPackages_latest`
-  (`linux_7_1`) is 7.1.3.
-- **Proxmox VE** (via the `pve-kernel` `debian/changelog` and the
-  `pve-no-subscription` `Packages` index): PVE 9's default kernel became
-  fixed with `proxmox-kernel-7.0.14-1` (changelog 2026-07-01); the prior
-  default was 7.0.12 (vulnerable) and Proxmox shipped no 7.0.13 build. The
-  PVE 8 default `6.8.12` is on the EOL 6.8 line without a backport →
-  vulnerable; the 6.14/6.17 opt-in series are non-LTS and unbackported.
-- **Rocky / RHEL family** (via the Red Hat security data API, OSV, and
-  Rocky BaseOS repodata): Red Hat lists RHEL 6/7/8/9/10 `kernel` as
-  **Affected** with an empty `affected_release` (no RHSA), severity
-  Important; OSV carries only the upstream kernel record (no AlmaLinux or
-  Rocky advisory); and Rocky BaseOS ships `kernel-4.18.0-553.el8_10` (el8),
-  `kernel-5.14.0-687.17.1.el9_8` (el9), and `kernel-6.12.0-211.28.1.el10_2`
-  (el10), none carrying a fix → all vulnerable. The leading signal is the
-  Red Hat CVE record gaining an `affected_release` (RHSA + fixed kernel
-  NVR); Rocky then rebuilds it as an RLSA.
-- **Amazon Linux** (via the repodata `updateinfo.xml`, the machine-readable
-  ALAS feed — the per-CVE ALAS HTML pages are JS-rendered and unusable
-  headlessly): **AL2023 fixed** — ALAS2023-2026-1882 ships the default
-  `kernel` at `6.1.175-219.357` (2026-06-22), and ALAS2023-2026-1753 / -1754
-  the `kernel6.12` / `kernel6.18` streams (2026-05-25); current default
-  `6.1.176-220.360`. **AL2** has no ALAS for CVE-2026-43499 and its 4.14 /
-  5.10 kernels are in-window → vulnerable.
+- **Debian** (via security-tracker HTML and snapshot.debian.org
+  `first_seen`): the tracker carries CVE-2026-43499 and resolves it in all
+  currently supported suites. sid — first fixed upload `7.0.4-1` on
+  2026-05-08 (now 7.1.3-1); testing/forky — `7.0.13-1` migrated 2026-06-28;
+  stable/trixie — base suite `6.12.86-1` on 2026-05-08 (trixie-security also
+  carries 6.12.95-1); oldstable/bookworm — `bookworm-security 6.1.176-1`
+  (DLA-4665-1) on 2026-07-03, with 6.1.176 above upstream first-fixed 6.1.175;
+  LTS/bullseye — `linux-6.1 6.1.176-1~deb11u1` (DLA-4671-1) on 2026-07-04,
+  via the LTS backport package (the default `linux` 5.10.y remains unpatched
+  upstream). The seed had trixie's first-fixed wrong (recorded 6.12.95-1 /
+  2026-07-05; actual 6.12.86-1 / 2026-05-08) because the upstream first-fixed
+  series was also wrong at seed.
+- **NixOS** (via the local nixpkgs clone): `packageAliases.linux_default` is
+  `linux_6_18` on both nixos-unstable and nixos-26.05; now ships 6.18.38
+  (up from 6.18.36 at seed). `linuxPackages_latest` (`linux_7_1`) is 7.1.3.
+  Both channels fixed; no verdict change.
+- **Proxmox VE** (via pve-no-subscription `Packages` index): PVE 9 default
+  (`proxmox-default-kernel 2.1.0`) depends on `proxmox-kernel-7.0`; highest
+  available is `7.0.14-4-pve` (was 7.0.14-1-pve at seed) — still fixed. PVE
+  8 default is still `proxmox-default-kernel 1.1.0` → `proxmox-kernel-6.8`;
+  no newer series added — still vulnerable.
+- **Rocky / RHEL family** (via the Red Hat security data API and OSV): RHEL
+  8/9/10 `kernel` still **Affected** with empty `affected_release` (no RHSA),
+  severity Important; OSV carries only the upstream Linux ecosystem entry
+  (no AlmaLinux or Rocky advisory). Rocky rows unchanged.
+- **Amazon Linux** (via the repodata `updateinfo.xml`): **AL2023 fixed** on
+  all three streams — ALAS2023-2026-1882 (default `kernel` 6.1, current
+  `6.1.176-220.360`), ALAS2023-2026-1753 (`kernel6.12`), ALAS2023-2026-1754
+  (`kernel6.18`). **AL2** still has no ALAS for CVE-2026-43499; 4.14 / 5.10
+  streams remain vulnerable.
 
 ## References
 
