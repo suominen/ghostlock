@@ -126,6 +126,12 @@ Amazon rows are **one per kernel stream** — name the stream in the
 stream (default + opt-in) as its own row, and add a row when Amazon ships a
 new stream.
 
+Debian rows track the **default** `linux` kernel of the suite.  An opt-in
+alternative kernel package (e.g. bullseye's `linux-6.1`, the bookworm 6.1
+kernel rebuilt for bullseye) does **not** flip a row's verdict: while
+`src:linux` is open in the security tracker the row stays `:x:`, with the
+opt-in fixed kernel noted in the *Status* cell and `### Debian` prose.
+
 A per-distro `###` section is for **reader-facing** caveats that don't fit
 the table (EL-family scope, a distro's own advisory state).  Keep tracking
 methodology out of it — that is agent guidance and belongs in this file.
@@ -143,9 +149,9 @@ Each run:
 
 - Re-check the *Upstream fixed versions* table: has any in-window branch
   advanced?  The maintained lines 6.1.y / 6.6.y / 6.12.y / 6.18.y / 7.0.y /
-  7.1.y already carry the fix (6.1.177 / 6.6.144 / 6.12.95 / 6.18.36 /
-  7.0.13 / 7.1); watch whether 5.15.y or 5.10.y ever pick it up.  Verify via
-  `~/src/linux/stable` (recipe below).
+  7.1.y already carry the fix (6.1.175 / 6.6.140 / 6.12.86 / 6.18.27 /
+  7.0.4 / 7.1, per the `vulns.git` `.dyad`); watch whether 5.15.y or 5.10.y
+  ever pick it up.  Verify via `~/src/linux/stable` (recipe below).
 - For a distro row, re-pull the distro's **kernel** version and compare:
   the kernel reaches its branch's first-fixed release **or** a distro
   advisory ships the `3bfdc63936dd` backport ⇒ flip to :white_check_mark:,
@@ -350,8 +356,16 @@ git -C ~/src/linux/stable log v<series>..origin/linux-<series>.y --grep=3bfdc639
 
 Empty output ⇒ the series is still unpatched.  Keep the range bounded to
 `v<series>..` — an unbounded subject grep over the whole branch history can
-match an ancient unrelated commit and read as a false "fixed".  Confirm the
-fix landed mainline in v7.1 with:
+match an ancient unrelated commit and read as a false "fixed".  **Check the
+subject of every hit**: the grep also matches backports of the *follow-up*
+hardening commit `40a25d59e85b` (*locking/rtmutex: Skip remove_waiter()
+when waiter is not enqueued*, v7.1-rc7), which cites `3bfdc63936dd` in its
+body.  Only a hit with the original subject (*rtmutex: Use waiter::task
+instead of current in remove_waiter()*) is the CVE fix — reading the
+follow-up as the fix is exactly how the seed recorded first-fixed versions
+one-or-more point releases too late (6.1.177 instead of 6.1.175, etc.).
+Prefer the `.dyad` (below) when it covers the branch.  Confirm the fix
+landed mainline in v7.1 with:
 
 ```
 git -C ~/src/linux/stable describe --contains 3bfdc63936dd
@@ -362,12 +376,13 @@ The git smart-HTTP protocol is not Anubis-gated, so `git fetch` /
 
 ## The CVE record (`vulns.git`)
 
-**CVE-2026-43499** is assigned, but the kernel CNA's `vulns.git` had **no
-published record** for it at seed (2026-07-09).  The *Upstream fixed
-versions* table was therefore seeded from the stable tree and the
-disclosure, **not** from a `.dyad`.  Each run, check whether the record has
-appeared — `vulns.git` keys each record on the *fixing commit SHA* and is
-inspected via `origin/master`, not `HEAD` (the wrapper only `git fetch`es):
+**CVE-2026-43499** is assigned.  The kernel CNA's `vulns.git` record was
+published shortly after seed (2026-07-09) and is the **authoritative**
+source for per-branch first-fixed versions: 6.1.175 / 6.6.140 / 6.12.86 /
+6.18.27 / 7.0.4 / 7.1.  Re-read it each run in case the CNA revises it
+(e.g. a 5.15.y/5.10.y backport appearing) — `vulns.git` keys each record on
+the *fixing commit SHA* and is inspected via `origin/master`, not `HEAD`
+(the wrapper only `git fetch`es):
 
 ```
 git -C ~/src/linux/vulns show origin/master:cve/published/2026/CVE-2026-43499.dyad
@@ -554,7 +569,7 @@ several distro sites are JS-rendered SPAs that don't render via WebFetch.
 - **Container hosts.**  The bug is reachable from inside an unprivileged
   container, so the container-escape vector puts any multi-tenant container
   host in scope until its host kernel is patched.
-- **7.0.y got the fix before EOL.**  Unlike some backports, `7.0.13` carries
+- **7.0.y got the fix before EOL.**  Unlike some backports, `7.0.4` carries
   it; `7.0.14` is EOL but still fixed.  5.15.y and 5.10.y are in-window and
   had **no** backport at seed — watch them.
 
