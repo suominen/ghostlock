@@ -128,15 +128,15 @@ where relevant.
 
 | Distribution | Release | Kernel | Fixed since | Status |
 |---|---|---|---|---|
-| Debian | sid (unstable) | 7.1.3-1 | 2026-07-09 | :white_check_mark: Fixed — ships 7.1.3 (fixed at v7.1) |
-| Debian | forky (testing) | 7.0.13-1 | 2026-07-09 | :white_check_mark: Fixed — ships 7.0.13 (7.0 branch first-fixed) |
-| Debian | 13 (trixie) | 6.12.86-1 | — | :x: Vulnerable — below 6.12.95 |
-| Debian | 12 (bookworm) | 6.1.170-3 | — | :x: Vulnerable — below 6.1.177 |
-| Debian | 11 (bullseye, LTS) | 5.10.223-1 | — | :x: Vulnerable — 5.10.y not backported upstream |
-| Proxmox VE | 9 | 7.0.14-pve | 2026-07-09 | :white_check_mark: Fixed — default kernel base 7.0.14 (carries the backport) |
+| Debian | sid (unstable) | 7.0.13-1 | 2026-06-19 | :white_check_mark: Fixed — first fixed upload 7.0.13-1 (now ships 7.1.3-1) |
+| Debian | forky (testing) | 7.0.13-1 | 2026-06-28 | :white_check_mark: Fixed — 7.0.13-1 migrated to testing |
+| Debian | 13 (trixie) | 6.12.95-1 | 2026-07-05 | :white_check_mark: Fixed — via `trixie-security` (6.12.95-1) |
+| Debian | 12 (bookworm) | 6.1.176-1 | 2026-07-03 | :white_check_mark: Fixed — via `bookworm-security` (6.1.176-1, Debian backport) |
+| Debian | 11 (bullseye, LTS) | 5.10.223-1 | — | :x: Vulnerable — 5.10.y not backported (tracker: open) |
+| Proxmox VE | 9 | 7.0.14-1-pve | 2026-07-01 | :white_check_mark: Fixed — proxmox-kernel-7.0.14 in pve-no-subscription |
 | Proxmox VE | 8 | 6.8.12-pve | — | :x: Vulnerable — 6.8.y EOL, no backport |
-| NixOS | Unstable | 6.18.38 | 2026-07-09 | :white_check_mark: Fixed — default `linuxPackages` ships 6.18.38 |
-| NixOS | 26.05 | 6.18.38 | 2026-07-09 | :white_check_mark: Fixed — default `linuxPackages` ships 6.18.38 |
+| NixOS | Unstable | 6.18.36 | 2026-06-28 | :white_check_mark: Fixed — default moved to `linux_6_18` (≥ 6.18.36) |
+| NixOS | 26.05 | 6.18.36 | 2026-07-03 | :white_check_mark: Fixed — default moved to `linux_6_18` (≥ 6.18.36) |
 | Rocky Linux | 10 | 6.12.0-*.el10 | — | :x: Vulnerable — no EL10 errata for this CVE yet |
 | Rocky Linux | 9 | 5.14.0-*.el9 | — | :x: Vulnerable — el9 5.14 carries the bug, no errata yet |
 | Rocky Linux | 8 | 4.18.0-553.el8_10 | — | :x: Vulnerable — el8 4.18 carries the bug, no errata yet |
@@ -146,14 +146,19 @@ where relevant.
 
 ### Debian
 
-Debian's `linux` is affected in every suite (the bug predates all of them).
-**sid** shipped `linux 7.1.3-1`, which tracks upstream 7.1.3 and carries
-the fix, and **forky** (testing, 7.0.13-1) rides 7.0.13 — the exact point
-release where the 7.0 line took the backport — so both are fixed.
-**trixie** (6.12.86-1), **bookworm** (6.1.170-3), and **bullseye**
-(5.10.223-1) are all below their branch's first-fixed release (6.12.95 /
-6.1.177 / — ), so they remain vulnerable until Debian ships the fix. The
-Debian security tracker had no CVE-2026-43499 entry yet at seed.
+Debian's `linux` is affected in every suite (the bug predates all of them),
+but the security team has now resolved it everywhere except bullseye.
+**sid** first shipped a fixed kernel with `linux 7.0.13-1` on 2026-06-19 and
+now rides 7.1.3-1; **forky** (testing) took the same 7.0.13-1 on 2026-06-28.
+The stable suites were fixed through the **security archive**: **trixie** via
+`trixie-security 6.12.95-1` (2026-07-05, matching the upstream 6.12.95
+backport) and **bookworm** via `bookworm-security 6.1.176-1` (2026-07-03) —
+a Debian **backport** of the fix, since upstream 6.1 did not carry it until
+6.1.177. Only **bullseye** remains open: its 5.10.y kernel has no upstream
+backport and Debian-LTS had not shipped one at the time of writing. Debian's
+security tracker now carries CVE-2026-43499 and drove these assessments;
+note that the base-suite `madison` version (e.g. trixie's 6.12.86-1) lags
+the `-security` upload that actually ships the fix.
 
 ### Proxmox VE
 
@@ -271,20 +276,28 @@ workloads until the host kernel is patched.
 
 ### Distributions
 
-- **Debian** (via the dak `madison` API): unstable `7.1.3-1` and testing
-  `7.0.13-1` carry the fix → fixed; stable `6.12.86-1` (< 6.12.95),
-  oldstable `6.1.170-3` (< 6.1.177), and oldoldstable `5.10.223-1` (5.10.y
-  unpatched) remain vulnerable. No CVE-2026-43499 entry in the Debian
-  security tracker at seed.
-- **NixOS** (via the local nixpkgs clone): the default `linuxPackages`
-  (`linux_6_18`) is `6.18.38` on both nixos-unstable and nixos-26.05, and
-  `linuxPackages_latest` (`linux_7_1`) is `7.1.3` — all carry the fix →
-  fixed.
-- **Proxmox VE** (via the `pve-no-subscription` `Packages` index): the PVE 9
-  default kernel (`proxmox-default-kernel` 2.1.0) is base `7.0.14`
-  (≥ 7.0.13) → fixed; the PVE 8 default `6.8.12` is on the EOL 6.8 line
-  without a backport → vulnerable. PVE 9 hosts still on the 6.17 opt-in
-  kernel remain vulnerable pending a Proxmox cherry-pick.
+- **Debian** (via the security-tracker JSON and snapshot.debian.org
+  `first_seen`): the security tracker now lists CVE-2026-43499 and resolves
+  it in every suite but bullseye. sid — first fixed upload `7.0.13-1` on
+  2026-06-19 (now 7.1.3-1); testing/forky — `7.0.13-1` migrated 2026-06-28;
+  stable/trixie — `trixie-security 6.12.95-1` on 2026-07-05; oldstable/
+  bookworm — `bookworm-security 6.1.176-1` on 2026-07-03, a backport since
+  6.1.176 < upstream 6.1.177; oldoldstable/bullseye — open (5.10.y
+  unbackported). The base-suite `madison` versions lag the `-security`
+  uploads that ship the fix.
+- **NixOS** (via the local nixpkgs clone git history): the default
+  `linuxPackages` became fixed when `packageAliases.linux_default` moved to
+  `linux_6_18` — 2026-06-28 on nixos-unstable, 2026-07-03 on nixos-26.05 —
+  with the 6.18 series already ≥ 6.18.36 (first-fixed) from 2026-06-27. The
+  prior `linux_6_12` default never reached 6.12.95 before the switch
+  (6.12.95 landed 2026-07-05). Now ships 6.18.38; `linuxPackages_latest`
+  (`linux_7_1`) is 7.1.3.
+- **Proxmox VE** (via the `pve-kernel` `debian/changelog` and the
+  `pve-no-subscription` `Packages` index): PVE 9's default kernel became
+  fixed with `proxmox-kernel-7.0.14-1` (changelog 2026-07-01); the prior
+  default was 7.0.12 (vulnerable) and Proxmox shipped no 7.0.13 build. The
+  PVE 8 default `6.8.12` is on the EOL 6.8 line without a backport →
+  vulnerable; the 6.14/6.17 opt-in series are non-LTS and unbackported.
 - **Rocky / RHEL family**: no AlmaLinux/Rocky/RHEL erratum references
   CVE-2026-43499 at seed. Rocky 10 (6.12 el10), Rocky 9 (5.14 el9), and
   Rocky 8 (4.18 el8) all carry the bug → vulnerable; EL kernels are

@@ -94,7 +94,15 @@ thing you may leave behind is the edited tracker (and its commit).
    bug dates to v2.6.39, EVERY tracked kernel is in-window — there are no
    "not affected" rows. For each row, re-pull just the distro's KERNEL
    version and check for the backport:
-      - Debian: the madison API (plain curl) —
+      - Debian: the SECURITY TRACKER is authoritative for status, not a
+        madison version compare — the base suite lags the -security upload,
+        and Debian backports below the upstream first-fixed release
+        (e.g. bookworm-security 6.1.176-1 is fixed though upstream 6.1 was
+        not fixed until 6.1.177). WebFetch the per-CVE page or curl the JSON:
+          curl -fsS 'https://security-tracker.debian.org/tracker/data/json'
+        read each release's status + the version under `repositories`
+        (a <suite>-security entry = shipped as a security update). Use
+        madison only for the base-suite version and the sid/testing lineage:
           curl -fsS 'https://api.ftp-master.debian.org/madison?package=linux&s=sid,forky,trixie,bookworm,bullseye&text=on'
       - Proxmox: the pve-no-subscription Packages.gz (needs zcat).
       - NixOS: the channel kernel pin from the local nixpkgs clone.
