@@ -140,8 +140,12 @@ where relevant.
 | Rocky Linux | 10 | 6.12.0-211.28.1.el10_2 | — | :x: Vulnerable — RHEL 10 kernel "Affected", no RHSA/RLSA yet |
 | Rocky Linux | 9 | 5.14.0-687.17.1.el9_8 | — | :x: Vulnerable — RHEL 9 kernel "Affected", no RHSA/RLSA yet |
 | Rocky Linux | 8 | 4.18.0-553.el8_10 | — | :x: Vulnerable — RHEL 8 kernel "Affected", no RHSA/RLSA yet |
-| Amazon Linux | 2023 | 6.1.176-220.360 (amzn2023) | 2026-06-22 | :white_check_mark: Fixed — ALAS2023-2026-1882 (kernel ≥ 6.1.175-219.357); 6.12/6.18 streams fixed 2026-05-25 |
-| Amazon Linux | 2 | 5.10.x (amzn2) | — | :x: Vulnerable — in-window, no ALAS for amzn2 |
+| Amazon Linux | 2023 (kernel 6.1) | 6.1.176-220.360 | 2026-06-22 | :white_check_mark: Fixed — ALAS2023-2026-1882 (≥ 6.1.175-219.357) |
+| Amazon Linux | 2023 (kernel6.12) | 6.12.94-123.176 | 2026-05-25 | :white_check_mark: Fixed — ALAS2023-2026-1753 (≥ 6.12.88-119.157) |
+| Amazon Linux | 2023 (kernel6.18) | 6.18.36-69.136 | 2026-05-25 | :white_check_mark: Fixed — ALAS2023-2026-1754 (≥ 6.18.30-61.116) |
+| Amazon Linux | 2 (kernel 4.14) | 4.14.355-284.737 | — | :x: Vulnerable — in-window, no ALAS |
+| Amazon Linux | 2 (kernel-5.10) | 5.10.259-258.1043 | — | :x: Vulnerable — in-window, no ALAS |
+| Amazon Linux | 2 (kernel-5.15) | 5.15.210-148.245 | — | :x: Vulnerable — in-window, no ALAS |
 {.distros}
 
 ### Debian
@@ -189,15 +193,13 @@ advisory lands.
 
 ### Amazon Linux
 
-**AL2023 is fixed.** Amazon shipped the fix across all its kernel streams —
-the default `kernel` (6.1) in `6.1.175-219.357` (ALAS2023-2026-1882,
-2026-06-22), and the opt-in `kernel6.12` / `kernel6.18` streams on
-2026-05-25 (ALAS2023-2026-1753 / -1754); the current default is
-`6.1.176-220.360`. **AL2** (amzn2) has no ALAS for this CVE — its 4.14
-default and 5.10 (via `amazon-linux-extras`) kernels are in-window and carry
-the bug, so AL2 stays vulnerable until a `kernel` update ships. (Verified
-from the repodata `updateinfo.xml`, since the per-CVE ALAS pages are
-JS-rendered and don't fetch headlessly.)
+Each Amazon kernel stream is tracked as its own row above. **AL2023** is
+fixed on all three streams (default `kernel` 6.1, opt-in `kernel6.12` /
+`kernel6.18`). **AL2** (amzn2) has no ALAS for this CVE and all three of its
+streams — 4.14, plus 5.10 / 5.15 via `amazon-linux-extras` — are in-window,
+so they stay vulnerable until a `kernel` update ships. Status is verified
+from the repodata `updateinfo.xml` (the per-CVE ALAS pages are JS-rendered
+and don't fetch headlessly).
 
 ## Detection
 
