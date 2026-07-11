@@ -3,7 +3,7 @@ title: "GhostLock — rtmutex/futex stack use-after-free tracking"
 description: "Linux kernel rtmutex/futex requeue-PI stack use-after-free (CVE-2026-43499, GhostLock) — local privilege escalation & container escape — distro patch status tracker"
 layout: "single"
 date: 2026-07-09
-lastmod: 2026-07-09
+lastmod: 2026-07-11
 cover:
   image: "ghostlock-tracker.png"
   alt: "GhostLock — Linux kernel rtmutex/futex stack use-after-free tracker"
@@ -25,7 +25,7 @@ cover:
 | Discoverer | Nebula Security — found by their [VEGA][vega] tool |
 | Public disclosure | 2026-07-07 |
 | Public PoC | [NebuSec/CyberMeowfia][poc] (drives the three-futex requeue-PI deadlock unprivileged) |
-| KEV / EPSS / CVSS | Not yet assigned NVD/CVSS score; kernel CNA `vulns.git` record now published; Red Hat rates it **Important**; Google kernelCTF awarded the submission $92,337 |
+| KEV / EPSS / CVSS | NVD **CVSS 7.8 HIGH** (`CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H`); Red Hat rates it **Important**; Google kernelCTF awarded the submission $92,337 |
 | Related | Part **II** of Nebula Security's *IonStack* series |
 
 ## How the exploitation chain works
@@ -269,7 +269,7 @@ workloads until the host kernel is patched.
 
 ## Verification log
 
-*Last verified 2026-07-09.*
+*Last verified 2026-07-11.*
 
 ### Upstream
 
@@ -289,9 +289,12 @@ workloads until the host kernel is patched.
   6.18.27 (`3fb7394a8377`), 7.0.4 (`88614876370a`). Mainline carries it since
   v7.1. 5.15.y and 5.10.y are in-window and not yet backported (subject/ref
   grep against `~/src/linux/stable` — empty output).
+- **NVD CVSS score published**: CVSS 7.8 HIGH
+  (`CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H`), confirming Red Hat's
+  Important severity rating (via NVD REST API).
 - Current point releases (`https://www.kernel.org/finger_banner`): mainline
   7.2-rc2; 7.1.3; 7.0.14 (EOL, fixed since 7.0.4); 6.18.38; 6.12.95;
-  6.6.144; 6.1.177; 5.15.211; 5.10.260.
+  6.6.144; 6.1.177; 5.15.211; 5.10.260. Unchanged from prior run.
 
 ### Distributions
 
@@ -328,7 +331,7 @@ workloads until the host kernel is patched.
   reached end of support on 2026-06-30 (per the AWS AL2 FAQ; confirmed
   against endoflife.date) — AWS no longer ships security updates for AL2
   core packages, so the 4.14 / 5.10 / 5.15 streams remain vulnerable with
-  no fix expected.
+  no fix expected. No verdict changes this run.
 
 ## References
 
