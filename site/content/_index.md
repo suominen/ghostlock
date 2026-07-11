@@ -294,7 +294,7 @@ workloads until the host kernel is patched.
   Important severity rating (via NVD REST API).
 - Current point releases (`https://www.kernel.org/finger_banner`): mainline
   7.2-rc2; 7.1.3; 7.0.14 (EOL, fixed since 7.0.4); 6.18.38; 6.12.95;
-  6.6.144; 6.1.177; 5.15.211; 5.10.260. Unchanged from prior run.
+  6.6.144; 6.1.177; 5.15.211; 5.10.260.
 
 ### Distributions
 
@@ -331,7 +331,7 @@ workloads until the host kernel is patched.
   reached end of support on 2026-06-30 (per the AWS AL2 FAQ; confirmed
   against endoflife.date) — AWS no longer ships security updates for AL2
   core packages, so the 4.14 / 5.10 / 5.15 streams remain vulnerable with
-  no fix expected. No verdict changes this run.
+  no fix expected.
 
 ## References
 
