@@ -154,6 +154,10 @@ thing you may leave behind is the edited tracker (and its commit).
    date, and the `## Verification log` update rules). If you make content
    changes, bump the `lastmod` date in the front-matter. If nothing
    changed, leave the file alone — don't bump `lastmod` on a no-op run.
+   Never write "no change" / "unchanged from prior run" / "no verdict
+   changes this run" prose into the tracker — silence is how the tracker
+   says "unchanged". Even on a run that does change something real, touch
+   only the lines whose facts changed.
 
 5. If you made changes, commit them on the current branch (which is
    `auto-update` — the wrapper has already switched to it and merged

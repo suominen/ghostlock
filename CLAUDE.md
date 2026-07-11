@@ -215,6 +215,13 @@ when a genuinely new topic appears.  The verified-date lives **only** in the
 attribution *without* a date is fine (e.g. `(via …/madison)`,
 `(checked against ~/src/linux/stable)`).
 
+The log records **facts**, not run outcomes.  Never write "no change",
+"unchanged from prior run", "no verdict changes this run", or similar
+prose anywhere in the tracker — an entry that is still accurate reports
+that by staying untouched.  This applies just as much on a run that
+*does* change something real: update only the lines whose facts changed
+and leave every other line exactly as it was.
+
 ### Date handling — first-seen / last-changed, not "today"
 
 Dates in the prose (`lastmod`, the verification-log header, every "as of
