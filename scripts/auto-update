@@ -80,5 +80,5 @@ exec claude -p \
   --settings '{"permissions":{"allow":["Read","Edit","WebFetch","Bash(git:*)","Bash(date:*)","Bash(curl:*)","Bash(zcat:*)","Bash(gunzip:*)"]}}' \
   --output-format text \
   --no-session-persistence \
-  --max-budget-usd 3 \
+  --max-budget-usd 5 \
   < scripts/auto-update-prompt.txt
