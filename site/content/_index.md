@@ -3,7 +3,7 @@ title: "GhostLock — rtmutex/futex stack use-after-free tracking"
 description: "Linux kernel rtmutex/futex requeue-PI stack use-after-free (CVE-2026-43499, GhostLock) — local privilege escalation & container escape — distro patch status tracker"
 layout: "single"
 date: 2026-07-09
-lastmod: 2026-07-12
+lastmod: 2026-07-14
 cover:
   image: "ghostlock-tracker.png"
   alt: "GhostLock — Linux kernel rtmutex/futex stack use-after-free tracker"
@@ -137,8 +137,8 @@ where relevant.
 | Proxmox VE | 8 | 6.8.12-pve | — | :x: Vulnerable — 6.8.y EOL, no backport |
 | NixOS | Unstable | 6.18.36 | 2026-06-28 | :white_check_mark: Fixed — default moved to `linux_6_18` (≥ 6.18.36) |
 | NixOS | 26.05 | 6.18.36 | 2026-07-03 | :white_check_mark: Fixed — default moved to `linux_6_18` (≥ 6.18.36) |
-| Rocky Linux | 10 | 6.12.0-211.28.1.el10_2 | — | :x: Vulnerable — RHEL 10 kernel "Affected", no RHSA/RLSA yet |
-| Rocky Linux | 9 | 5.14.0-687.17.1.el9_8 | — | :x: Vulnerable — RHEL 9 kernel "Affected", no RHSA/RLSA yet |
+| Rocky Linux | 10 | 6.12.0-211.28.1.el10_2 | — | :warning: Fix staged — RHSA-2026:38492 + ALSA-2026:38492 shipped; awaiting RLSA |
+| Rocky Linux | 9 | 5.14.0-687.17.1.el9_8 | — | :warning: Fix staged — RHSA-2026:38491 + ALSA-2026:38491 shipped; awaiting RLSA |
 | Rocky Linux | 8 | 4.18.0-553.el8_10 | — | :x: Vulnerable — RHEL 8 kernel "Affected", no RHSA/RLSA yet |
 | Amazon Linux | 2023 (kernel 6.1) | 6.1.176-220.360 | 2026-06-22 | :white_check_mark: Fixed — ALAS2023-2026-1882 (≥ 6.1.175-219.357) |
 | Amazon Linux | 2023 (kernel6.12) | 6.12.94-123.176 | 2026-05-25 | :white_check_mark: Fixed — ALAS2023-2026-1753 (≥ 6.12.88-119.157) |
@@ -185,14 +185,16 @@ Rocky 10 (`6.12.0-211.28.1.el10_2`), Rocky 9 (`5.14.0-687.17.1.el9_8`), and
 Rocky 8 (`4.18.0-553.el8_10`) are all inside the window (the bug predates
 every EL kernel). RHEL-family kernels carry security backports without
 moving their upstream base version, so the version string alone cannot
-confirm a fix — the signal is an erratum. Red Hat's security data lists the
-RHEL 8/9/10 `kernel` as **Affected** (severity Important) with **no** RHSA
-issued, and neither AlmaLinux nor Rocky has an erratum referencing
-CVE-2026-43499, so all three remain vulnerable. Because Red Hat's state is
-"Affected" (not "Will not fix"), a fix is expected: Red Hat's advisory is
-the leading indicator, AlmaLinux the fastest rebuild, and Rocky follows.
-RHEL, Oracle Linux, and CloudLinux OS are in the same state until an
-advisory lands.
+confirm a fix — the signal is an erratum. Red Hat shipped
+**RHSA-2026:38491** (RHEL 9, kernel `5.14.0-687.25.1.el9_8`) and
+**RHSA-2026:38492** (RHEL 10.2, kernel `6.12.0-211.33.1.el10_2`) on
+2026-07-13; AlmaLinux rebuilt both as **ALSA-2026:38491** and
+**ALSA-2026:38492**. Rocky 9 and Rocky 10 do not yet have an RLSA, and
+their BaseOS repos do not yet carry the fixed kernel NVR — those rows are
+staged pending the Rocky rebuild. RHEL 8 `kernel` remains **Affected** with
+no advisory issued, so Rocky 8 stays vulnerable. RHEL 9 and RHEL 10 are
+fixed, as are Oracle Linux and CloudLinux OS for those majors; EL8 remains
+the open item across the family.
 
 ### Amazon Linux
 
@@ -269,7 +271,7 @@ workloads until the host kernel is patched.
 
 ## Verification log
 
-*Last verified 2026-07-12.*
+*Last verified 2026-07-14.*
 
 ### Upstream
 
@@ -320,10 +322,14 @@ workloads until the host kernel is patched.
   available is `7.0.14-4-pve` (was 7.0.14-1-pve at seed) — still fixed. PVE
   8 default is still `proxmox-default-kernel 1.1.0` → `proxmox-kernel-6.8`;
   no newer series added — still vulnerable.
-- **Rocky / RHEL family** (via the Red Hat security data API and OSV): RHEL
-  8/9/10 `kernel` still **Affected** with empty `affected_release` (no RHSA),
-  severity Important; OSV carries only the upstream Linux ecosystem entry
-  (no AlmaLinux or Rocky advisory). Rocky rows unchanged.
+- **Rocky / RHEL family** (via the Red Hat security data API, AlmaLinux
+  errata, and Rocky BaseOS repodata): **RHSA-2026:38491** (RHEL 9,
+  `5.14.0-687.25.1.el9_8`) and **RHSA-2026:38492** (RHEL 10.2,
+  `6.12.0-211.33.1.el10_2`) shipped 2026-07-13. AlmaLinux rebuilt both
+  (ALSA-2026:38491 / ALSA-2026:38492). Rocky 9 and Rocky 10 BaseOS
+  updateinfo carries no RLSA for CVE-2026-43499 — fixed NVR not yet in
+  Rocky repos; rows advanced to staged. RHEL 8 `kernel` remains
+  **Affected** with no advisory; Rocky 8 unchanged.
 - **Amazon Linux** (via the repodata `updateinfo.xml`): **AL2023 fixed** on
   all three streams — ALAS2023-2026-1882 (default `kernel` 6.1, current
   `6.1.176-220.360`), ALAS2023-2026-1753 (`kernel6.12`), ALAS2023-2026-1754
