@@ -175,9 +175,10 @@ the container-escape vector makes it worth tracking. PVE 9's default kernel
 (pinned by `proxmox-default-kernel` 2.1.0) is base **7.0.14**, at or above
 the 7.0.4 backport, so a default PVE 9 host is fixed. PVE 8's default
 remains on the end-of-life **6.8** line (`6.8.12-pve`), which has no
-backport, so it stays vulnerable. PVE 9 hosts still running the opt-in
-**6.17** kernel series are also vulnerable unless Proxmox cherry-picks the
-fix into that series; watch the `pve-kernel` changelog.
+backport, so it stays vulnerable. PVE 9 hosts running the opt-in
+**6.17** kernel series are fixed as of `proxmox-kernel-6.17.13-16-pve`:
+Proxmox cherry-picked the three patches from `linux-6.18.y` on 2026-07-09.
+The opt-in **6.14** series has no cherry-pick yet and remains vulnerable.
 
 ### Rocky Linux / RHEL family
 
@@ -324,7 +325,9 @@ workloads until the host kernel is patched.
   (`proxmox-default-kernel 2.1.0`) depends on `proxmox-kernel-7.0`; highest
   available is `7.0.14-4-pve` (was 7.0.14-1-pve at seed) — still fixed. PVE
   8 default is still `proxmox-default-kernel 1.1.0` → `proxmox-kernel-6.8`;
-  no newer series added — still vulnerable.
+  no newer series added — still vulnerable. Opt-in 6.17 series
+  (`proxmox-kernel-6.17.13-16-pve`): Proxmox cherry-picked the fix on
+  2026-07-09 — fixed. Opt-in 6.14 series: no cherry-pick, still vulnerable.
 - **Rocky / RHEL family** (via the Red Hat security data API, AlmaLinux
   errata, and Rocky BaseOS repodata): **RHSA-2026:38491** (RHEL 9,
   `5.14.0-687.25.1.el9_8`) and **RHSA-2026:38492** (RHEL 10.2,
@@ -335,7 +338,7 @@ workloads until the host kernel is patched.
   primary.xml; no RLSA yet in updateinfo). **RHSA-2026:39083** (RHEL 8,
   `4.18.0-553.143.1.el8_10`) shipped; AlmaLinux rebuilt it as
   **ALSA-2026:39083**. Rocky 8's BaseOS latest is
-  `4.18.0-553.97.1.el8_10` — fixed NVR not yet in Rocky 8's repo.
+  `4.18.0-553.141.1.el8_10` — fixed NVR not yet in Rocky 8's repo.
 - **Amazon Linux** (via the repodata `updateinfo.xml`): **AL2023 fixed** on
   all three streams — ALAS2023-2026-1882 (default `kernel` 6.1, current
   `6.1.176-220.360`), ALAS2023-2026-1753 (`kernel6.12`), ALAS2023-2026-1754
