@@ -1,6 +1,6 @@
 baseURL = "https://kimmo.cloud/ghostlock/"
 locale = "en-US"
-title = "GhostLock (CVE-2026-43499) — rtmutex/futex stack use-after-free → local privilege escalation & container escape"
+title = "CVE-2026-43499 — GhostLock"
 copyright = "Copyright © 2026 [Kimmo Suominen](https://kimmo.suominen.com/) · [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)"
 
 enableEmoji = true
