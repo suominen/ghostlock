@@ -137,9 +137,9 @@ where relevant.
 | Proxmox VE | 8 | 6.8.12-pve | — | :x: Vulnerable — 6.8.y EOL, no backport |
 | NixOS | Unstable | 6.18.36 | 2026-06-28 | :white_check_mark: Fixed — default moved to `linux_6_18` (≥ 6.18.36) |
 | NixOS | 26.05 | 6.18.36 | 2026-07-03 | :white_check_mark: Fixed — default moved to `linux_6_18` (≥ 6.18.36) |
-| Rocky Linux | 10 | 6.12.0-211.33.1.el10_2 | 2026-07-15 | :white_check_mark: Fixed — kernel 6.12.0-211.33.1.el10_2 in BaseOS (RHSA-2026:38492) |
-| Rocky Linux | 9 | 5.14.0-687.25.1.el9_8 | 2026-07-15 | :white_check_mark: Fixed — kernel 5.14.0-687.25.1.el9_8 in BaseOS (RHSA-2026:38491) |
-| Rocky Linux | 8 | 4.18.0-553.144.1.el8_10 | 2026-07-15 | :white_check_mark: Fixed — kernel 4.18.0-553.144.1.el8_10 in BaseOS (RLSA-2026:39179) |
+| Rocky Linux | 10 | 6.12.0-211.33.1.el10_2 | 2026-07-15 | :white_check_mark: Fixed (RHSA-2026:38492) |
+| Rocky Linux | 9 | 5.14.0-687.25.1.el9_8 | 2026-07-15 | :white_check_mark: Fixed (RHSA-2026:38491) |
+| Rocky Linux | 8 | 4.18.0-553.144.1.el8_10 | 2026-07-15 | :white_check_mark: Fixed (RLSA-2026:39179) |
 | Amazon Linux | 2023 (kernel 6.1) | 6.1.176-220.360 | 2026-06-22 | :white_check_mark: Fixed — ALAS2023-2026-1882 (≥ 6.1.175-219.357) |
 | Amazon Linux | 2023 (kernel6.12) | 6.12.94-123.176 | 2026-05-25 | :white_check_mark: Fixed — ALAS2023-2026-1753 (≥ 6.12.88-119.157) |
 | Amazon Linux | 2023 (kernel6.18) | 6.18.36-69.136 | 2026-05-25 | :white_check_mark: Fixed — ALAS2023-2026-1754 (≥ 6.18.30-61.116) |
