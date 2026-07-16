@@ -137,8 +137,8 @@ where relevant.
 | Proxmox VE | 8 | 6.8.12-pve | — | :x: Vulnerable — 6.8.y EOL, no backport |
 | NixOS | Unstable | 6.18.36 | 2026-06-28 | :white_check_mark: Fixed — default moved to `linux_6_18` (≥ 6.18.36) |
 | NixOS | 26.05 | 6.18.36 | 2026-07-03 | :white_check_mark: Fixed — default moved to `linux_6_18` (≥ 6.18.36) |
-| Rocky Linux | 10 | 6.12.0-211.33.1.el10_2 | 2026-07-15 | :white_check_mark: Fixed (RHSA-2026:38492) |
-| Rocky Linux | 9 | 5.14.0-687.25.1.el9_8 | 2026-07-15 | :white_check_mark: Fixed (RHSA-2026:38491) |
+| Rocky Linux | 10 | 6.12.0-211.33.1.el10_2 | 2026-07-15 | :white_check_mark: Fixed (RLSA-2026:38492) |
+| Rocky Linux | 9 | 5.14.0-687.25.1.el9_8 | 2026-07-15 | :white_check_mark: Fixed (RLSA-2026:38491) |
 | Rocky Linux | 8 | 4.18.0-553.144.1.el8_10 | 2026-07-15 | :white_check_mark: Fixed (RLSA-2026:39179) |
 | Amazon Linux | 2023 (kernel 6.1) | 6.1.176-220.360 | 2026-06-22 | :white_check_mark: Fixed — ALAS2023-2026-1882 (≥ 6.1.175-219.357) |
 | Amazon Linux | 2023 (kernel6.12) | 6.12.94-123.176 | 2026-05-25 | :white_check_mark: Fixed — ALAS2023-2026-1753 (≥ 6.12.88-119.157) |
@@ -191,9 +191,10 @@ cannot confirm a fix — the signal is an erratum. Red Hat shipped
 **RHSA-2026:38492** (RHEL 10.2, kernel `6.12.0-211.33.1.el10_2`) on
 2026-07-13; AlmaLinux rebuilt both as **ALSA-2026:38491** and
 **ALSA-2026:38492**. Rocky 9 (`5.14.0-687.25.1.el9_8`) and Rocky 10
-(`6.12.0-211.33.1.el10_2`) now carry the fixed kernel NVR in their BaseOS
-repos (confirmed via primary.xml; no RLSA in updateinfo yet). Red Hat
-also shipped **RHSA-2026:39083** (RHEL 8, kernel
+(`6.12.0-211.33.1.el10_2`) carry the fixed kernel NVR in their BaseOS
+repos; Rocky shipped **RLSA-2026:38491** (Rocky 9) and
+**RLSA-2026:38492** (Rocky 10) in their respective updateinfo feeds. Red
+Hat also shipped **RHSA-2026:39083** (RHEL 8, kernel
 `4.18.0-553.143.1.el8_10`); AlmaLinux rebuilt it as **ALSA-2026:39083**.
 Rocky 8 skipped that NVR — rather than publishing a standalone rebuild
 of `553.143.1`, it shipped `4.18.0-553.144.1.el8_10` as
@@ -335,8 +336,9 @@ workloads until the host kernel is patched.
   `6.12.0-211.33.1.el10_2`) shipped 2026-07-13; AlmaLinux rebuilt both
   (ALSA-2026:38491 / ALSA-2026:38492). Rocky 9
   (`5.14.0-687.25.1.el9_8`) and Rocky 10 (`6.12.0-211.33.1.el10_2`)
-  now carry the fixed kernel NVR in their BaseOS repos (confirmed via
-  primary.xml; no RLSA yet in updateinfo). **RHSA-2026:39083** (RHEL 8,
+  carry the fixed kernel NVR in their BaseOS repos; RLSA-2026:38491
+  (Rocky 9) and RLSA-2026:38492 (Rocky 10) now confirmed in updateinfo.
+  **RHSA-2026:39083** (RHEL 8,
   `4.18.0-553.143.1.el8_10`) shipped; AlmaLinux rebuilt it as
   **ALSA-2026:39083**. Rocky 8 skipped `.143.1` and shipped
   `4.18.0-553.144.1.el8_10` as RLSA-2026:39179 (2026-07-15) — above the
