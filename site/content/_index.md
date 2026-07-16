@@ -130,8 +130,8 @@ where relevant.
 |---|---|---|---|---|
 | Debian | sid (unstable) | 7.0.4-1 | 2026-05-08 | :white_check_mark: Fixed — first fixed upload 7.0.4-1 (now ships 7.1.3-1) |
 | Debian | forky (testing) | 7.0.4-1 | 2026-05-10 | :white_check_mark: Fixed — 7.0.4-1 migrated to testing (now ships 7.1.3-1) |
-| Debian | 13 (trixie) | 6.12.86-1 | 2026-05-08 | :white_check_mark: Fixed — trixie base (6.12.86-1) |
-| Debian | 12 (bookworm) | 6.1.176-1 | 2026-07-03 | :white_check_mark: Fixed — via `bookworm-security` (6.1.176-1, DLA-4665-1) |
+| Debian | 13 (trixie) | 6.12.86-1 | 2026-05-08 | :white_check_mark: Fixed — trixie base |
+| Debian | 12 (bookworm) | 6.1.176-1 | 2026-07-03 | :white_check_mark: Fixed — via `bookworm-security` (DLA-4665-1) |
 | Debian | 11 (bullseye, LTS) | 5.10.259-1 | — | :x: Vulnerable — default 5.10.y kernel has no fix; opt-in `linux-6.1` is fixed (DLA-4671-1) |
 | Proxmox VE | 9 | 7.0.14-1-pve | 2026-07-01 | :white_check_mark: Fixed — proxmox-kernel-7.0.14 in pve-no-subscription |
 | Proxmox VE | 8 | 6.8.12-pve | — | :x: Vulnerable — 6.8.y EOL, no backport |
