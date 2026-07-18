@@ -3,7 +3,7 @@ title: "GhostLock — rtmutex/futex stack use-after-free tracking"
 description: "Linux kernel rtmutex/futex requeue-PI stack use-after-free (CVE-2026-43499, GhostLock) — local privilege escalation & container escape — distro patch status tracker"
 layout: "single"
 date: 2026-07-09
-lastmod: 2026-07-17
+lastmod: 2026-07-18
 cover:
   image: "ghostlock-tracker.png"
   alt: "GhostLock — Linux kernel rtmutex/futex stack use-after-free tracker"
@@ -200,7 +200,11 @@ Rocky 8 skipped that NVR — rather than publishing a standalone rebuild
 of `553.143.1`, it shipped `4.18.0-553.144.1.el8_10` as
 **RLSA-2026:39179** (2026-07-15), which supersedes the RHEL fixed NVR
 and carries the fix cumulatively. The standard `kernel` for RHEL 9,
-RHEL 10, Oracle Linux, CloudLinux OS, and Rocky 8 is fixed. The
+RHEL 10, Oracle Linux, CloudLinux OS, and Rocky 8 is fixed. Red Hat
+also shipped **RHSA-2026:39082** (RHEL 8,
+`kernel-rt 4.18.0-553.143.1.rt7.484.el8_10`) on 2026-07-14; Rocky 8's
+RT repo carries `4.18.0-553.144.1.rt7.485.el8_10`, which supersedes the
+RHEL fixed NVR and carries the `kernel-rt` fix cumulatively. The
 real-time kernel (`kernel-rt`) for RHEL 9 has no advisory yet — Red
 Hat's `kernel-rt` package state remains **Affected** — so RHEL 9 and
 Rocky 9 hosts running the RT kernel remain vulnerable.
@@ -280,7 +284,7 @@ workloads until the host kernel is patched.
 
 ## Verification log
 
-*Last verified 2026-07-17.*
+*Last verified 2026-07-18.*
 
 ### Upstream
 
@@ -347,10 +351,14 @@ workloads until the host kernel is patched.
   `4.18.0-553.144.1.el8_10` as RLSA-2026:39179 (2026-07-15) — above the
   RHEL fixed NVR, carrying the fix cumulatively (confirmed via primary.xml
   and updateinfo; CVE-2026-43499 not listed in the RLSA but the build
-  supersedes the fixed NVR). RHEL 9 `kernel-rt` still shows
-  `fix_state: Affected` with no advisory (via Red Hat security data API);
-  the fix covers the standard `kernel` only — `kernel-rt` on RHEL 9 /
-  Rocky 9 remains vulnerable.
+  supersedes the fixed NVR). **RHSA-2026:39082** (RHEL 8,
+  `kernel-rt 4.18.0-553.143.1.rt7.484.el8_10`) shipped 2026-07-14;
+  Rocky 8's RT repo carries `4.18.0-553.144.1.rt7.485.el8_10`, which
+  supersedes the fixed NVR and carries the fix cumulatively (no RLSA
+  listing the CVE — same pattern as the standard kernel). RHEL 9
+  `kernel-rt` still shows `fix_state: Affected` with no advisory (via Red
+  Hat security data API); `kernel-rt` on RHEL 9 / Rocky 9 remains
+  vulnerable.
 - **Amazon Linux** (via the repodata `updateinfo.xml`): **AL2023 fixed** on
   all three streams — ALAS2023-2026-1882 (default `kernel` 6.1, current
   `6.1.176-220.360`), ALAS2023-2026-1753 (`kernel6.12`), ALAS2023-2026-1754
