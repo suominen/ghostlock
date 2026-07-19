@@ -3,7 +3,7 @@ title: "GhostLock — rtmutex/futex stack use-after-free tracking"
 description: "Linux kernel rtmutex/futex requeue-PI stack use-after-free (CVE-2026-43499, GhostLock) — local privilege escalation & container escape — distro patch status tracker"
 layout: "single"
 date: 2026-07-09
-lastmod: 2026-07-18
+lastmod: 2026-07-19
 cover:
   image: "ghostlock-tracker.png"
   alt: "GhostLock — Linux kernel rtmutex/futex stack use-after-free tracker"
@@ -99,10 +99,10 @@ this writing.
 | Branch | Status | Current | Notes |
 |---|---|---|---|
 | Linus mainline | :white_check_mark: Carries `3bfdc63936dd` | v7.2-rc3 | first fixed release v7.1 |
-| 7.1.x | :white_check_mark: Carries the fix | 7.1.3 | fixed as of the v7.1 release |
+| 7.1.x | :white_check_mark: Carries the fix | 7.1.4 | fixed as of the v7.1 release |
 | 7.0.x | :white_check_mark: Carries the backport | 7.0.14 (EOL) | backported in 7.0.4 before end of life |
-| 6.18.x | :white_check_mark: Carries the backport | 6.18.38 | LTS; first fixed point release 6.18.27 |
-| 6.12.x | :white_check_mark: Carries the backport | 6.12.95 | LTS; first fixed point release 6.12.86 |
+| 6.18.x | :white_check_mark: Carries the backport | 6.18.39 | LTS; first fixed point release 6.18.27 |
+| 6.12.x | :white_check_mark: Carries the backport | 6.12.96 | LTS; first fixed point release 6.12.86 |
 | 6.6.x | :white_check_mark: Carries the backport | 6.6.144 | LTS; first fixed point release 6.6.140 |
 | 6.1.x | :white_check_mark: Carries the backport | 6.1.177 | LTS; first fixed point release 6.1.175 |
 | 5.15.x | :x: Not backported | 5.15.211 | in window; no backport yet |
@@ -205,9 +205,13 @@ also shipped **RHSA-2026:39082** (RHEL 8,
 `kernel-rt 4.18.0-553.143.1.rt7.484.el8_10`) on 2026-07-14; Rocky 8's
 RT repo carries `4.18.0-553.144.1.rt7.485.el8_10`, which supersedes the
 RHEL fixed NVR and carries the `kernel-rt` fix cumulatively. The
-real-time kernel (`kernel-rt`) for RHEL 9 has no advisory yet — Red
-Hat's `kernel-rt` package state remains **Affected** — so RHEL 9 and
-Rocky 9 hosts running the RT kernel remain vulnerable.
+real-time kernel (`kernel-rt`) for RHEL 9 GA has no advisory in the main
+stream — Red Hat shipped **RHSA-2026:39983** (`kernel-rt
+5.14.0-284.181.1.rt14.466.el9_2`) for the RHEL 9.2 E4S path only; there
+is no RLSA rebuild for that advisory in Rocky's NFV repo. Red Hat's
+`kernel-rt` package state remains **Affected** for RHEL 9 GA, so RHEL 9
+and Rocky 9 hosts running the RT kernel on the current GA release remain
+vulnerable.
 
 ### Amazon Linux
 
@@ -284,7 +288,7 @@ workloads until the host kernel is patched.
 
 ## Verification log
 
-*Last verified 2026-07-18.*
+*Last verified 2026-07-19.*
 
 ### Upstream
 
@@ -308,7 +312,7 @@ workloads until the host kernel is patched.
   (`CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H`), confirming Red Hat's
   Important severity rating (via NVD REST API).
 - Current point releases (`https://www.kernel.org/finger_banner`): mainline
-  7.2-rc3; 7.1.3; 7.0.14 (EOL, fixed since 7.0.4); 6.18.38; 6.12.95;
+  7.2-rc3; 7.1.4; 7.0.14 (EOL, fixed since 7.0.4); 6.18.39; 6.12.96;
   6.6.144; 6.1.177; 5.15.211; 5.10.260.
 
 ### Distributions
@@ -355,10 +359,12 @@ workloads until the host kernel is patched.
   `kernel-rt 4.18.0-553.143.1.rt7.484.el8_10`) shipped 2026-07-14;
   Rocky 8's RT repo carries `4.18.0-553.144.1.rt7.485.el8_10`, which
   supersedes the fixed NVR and carries the fix cumulatively (no RLSA
-  listing the CVE — same pattern as the standard kernel). RHEL 9
-  `kernel-rt` still shows `fix_state: Affected` with no advisory (via Red
-  Hat security data API); `kernel-rt` on RHEL 9 / Rocky 9 remains
-  vulnerable.
+  listing the CVE — same pattern as the standard kernel).
+  **RHSA-2026:39983** (`kernel-rt 5.14.0-284.181.1.rt14.466.el9_2`) shipped
+  for RHEL 9.2 E4S; Rocky's NFV repo carries `5.14.0-687.12.1.el9_8` for
+  the GA stream with no RLSA for this advisory. RHEL 9 GA `kernel-rt` still
+  shows `fix_state: Affected` (via Red Hat security data API); `kernel-rt`
+  on RHEL 9 / Rocky 9 GA remains vulnerable.
 - **Amazon Linux** (via the repodata `updateinfo.xml`): **AL2023 fixed** on
   all three streams — ALAS2023-2026-1882 (default `kernel` 6.1, current
   `6.1.176-220.360`), ALAS2023-2026-1753 (`kernel6.12`), ALAS2023-2026-1754
