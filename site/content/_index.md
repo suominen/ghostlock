@@ -3,7 +3,7 @@ title: "GhostLock — rtmutex/futex stack use-after-free tracking"
 description: "Linux kernel rtmutex/futex requeue-PI stack use-after-free (CVE-2026-43499, GhostLock) — local privilege escalation & container escape — distro patch status tracker"
 layout: "single"
 date: 2026-07-09
-lastmod: 2026-07-19
+lastmod: 2026-07-20
 cover:
   image: "ghostlock-tracker.png"
   alt: "GhostLock — Linux kernel rtmutex/futex stack use-after-free tracker"
@@ -288,7 +288,7 @@ workloads until the host kernel is patched.
 
 ## Verification log
 
-*Last verified 2026-07-19.*
+*Last verified 2026-07-20.*
 
 ### Upstream
 
@@ -319,11 +319,12 @@ workloads until the host kernel is patched.
 
 - **Debian** (via the security-tracker JSON, tracker.debian.org migration
   news, and snapshot.debian.org `first_seen`): sid — first fixed upload
-  `7.0.4-1` on 2026-05-08 (now 7.1.3-1); testing/forky — `7.0.4-1` migrated
+  `7.0.4-1` on 2026-05-08 (now 7.1.4-1); testing/forky — `7.0.4-1` migrated
   2026-05-10 (now 7.1.3-1); stable/trixie — base suite `6.12.86-1` on
-  2026-05-08 (trixie-security also carries 6.12.95-1); oldstable/bookworm —
-  `bookworm-security 6.1.176-1` (DLA-4665-1) on 2026-07-03, with 6.1.176
-  above upstream first-fixed 6.1.175. LTS/bullseye stays `:x:`: the tracker
+  2026-05-08, now 6.12.94-1 in trixie (trixie-security carries 6.12.95-1);
+  oldstable/bookworm — `bookworm-security 6.1.176-1` (DLA-4665-1) on
+  2026-07-03 (now 6.1.177-1 in bookworm-security), with 6.1.176 above
+  upstream first-fixed 6.1.175. LTS/bullseye stays `:x:`: the tracker
   keeps `src:linux` (5.10.y) **open** — only the opt-in `linux-6.1` package
   (bookworm's 6.1 kernel rebuilt for bullseye) is resolved, at
   `6.1.176-1~deb11u1` (DLA-4671-1, 2026-07-04); the row tracks the default
@@ -331,12 +332,12 @@ workloads until the host kernel is patched.
   2026-07-05; actual 6.12.86-1 / 2026-05-08) because the upstream first-fixed
   series was also wrong at seed.
 - **NixOS** (via the local nixpkgs clone): `packageAliases.linux_default` is
-  `linux_6_18` on both nixos-unstable and nixos-26.05; now ships 6.18.38
-  (up from 6.18.36 at seed). `linuxPackages_latest` (`linux_7_1`) is 7.1.3.
-  Both channels fixed; no verdict change.
+  `linux_6_18` on both nixos-unstable and nixos-26.05; nixos-unstable ships
+  6.18.38, nixos-26.05 ships 6.18.39. `linuxPackages_latest` (`linux_7_1`)
+  is 7.1.3. Both channels fixed; no verdict change.
 - **Proxmox VE** (via pve-no-subscription `Packages` index): PVE 9 default
   (`proxmox-default-kernel 2.1.0`) depends on `proxmox-kernel-7.0`; highest
-  available is `7.0.14-4-pve` (was 7.0.14-1-pve at seed) — still fixed. PVE
+  available is `7.0.14-5-pve` — still fixed. PVE
   8 default is still `proxmox-default-kernel 1.1.0` → `proxmox-kernel-6.8`;
   no newer series added — still vulnerable. Opt-in 6.17 series
   (`proxmox-kernel-6.17.13-16-pve`): Proxmox cherry-picked the fix on
@@ -364,7 +365,11 @@ workloads until the host kernel is patched.
   for RHEL 9.2 E4S; Rocky's NFV repo carries `5.14.0-687.12.1.el9_8` for
   the GA stream with no RLSA for this advisory. RHEL 9 GA `kernel-rt` still
   shows `fix_state: Affected` (via Red Hat security data API); `kernel-rt`
-  on RHEL 9 / Rocky 9 GA remains vulnerable.
+  on RHEL 9 / Rocky 9 GA remains vulnerable. Also shipped since last run:
+  **RHSA-2026:40425** (RHEL 9.6 EUS, `kernel 5.14.0-570.128.1.el9_6`),
+  **RHSA-2026:41063** (RHEL 9.4 E4S, `kernel 5.14.0-427.138.1.el9_4`), and
+  **RHSA-2026:41062** (RHEL 10.0 EUS, `kernel 6.12.0-55.89.1.el10_0`) —
+  EUS/E4S stream fixes not tracked in the table; Rocky has no EUS.
 - **Amazon Linux** (via the repodata `updateinfo.xml`): **AL2023 fixed** on
   all three streams — ALAS2023-2026-1882 (default `kernel` 6.1, current
   `6.1.176-220.360`), ALAS2023-2026-1753 (`kernel6.12`), ALAS2023-2026-1754
