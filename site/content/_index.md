@@ -98,7 +98,7 @@ this writing.
 
 | Branch | Status | Current | Notes |
 |---|---|---|---|
-| Linus mainline | :white_check_mark: Carries `3bfdc63936dd` | v7.2-rc3 | first fixed release v7.1 |
+| Linus mainline | :white_check_mark: Carries `3bfdc63936dd` | v7.2-rc4 | first fixed release v7.1 |
 | 7.1.x | :white_check_mark: Carries the fix | 7.1.4 | fixed as of the v7.1 release |
 | 7.0.x | :white_check_mark: Carries the backport | 7.0.14 (EOL) | backported in 7.0.4 before end of life |
 | 6.18.x | :white_check_mark: Carries the backport | 6.18.39 | LTS; first fixed point release 6.18.27 |
@@ -312,7 +312,7 @@ workloads until the host kernel is patched.
   (`CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H`), confirming Red Hat's
   Important severity rating (via NVD REST API).
 - Current point releases (`https://www.kernel.org/finger_banner`): mainline
-  7.2-rc3; 7.1.4; 7.0.14 (EOL, fixed since 7.0.4); 6.18.39; 6.12.96;
+  7.2-rc4; 7.1.4; 7.0.14 (EOL, fixed since 7.0.4); 6.18.39; 6.12.96;
   6.6.144; 6.1.177; 5.15.211; 5.10.260.
 
 ### Distributions
@@ -333,8 +333,8 @@ workloads until the host kernel is patched.
   series was also wrong at seed.
 - **NixOS** (via the local nixpkgs clone): `packageAliases.linux_default` is
   `linux_6_18` on both nixos-unstable and nixos-26.05; nixos-unstable ships
-  6.18.38, nixos-26.05 ships 6.18.39. `linuxPackages_latest` (`linux_7_1`)
-  is 7.1.3. Both channels fixed; no verdict change.
+  6.18.39, nixos-26.05 ships 6.18.39. `linuxPackages_latest` (`linux_7_1`)
+  is 7.1.4. Both channels fixed; no verdict change.
 - **Proxmox VE** (via pve-no-subscription `Packages` index): PVE 9 default
   (`proxmox-default-kernel 2.1.0`) depends on `proxmox-kernel-7.0`; highest
   available is `7.0.14-5-pve` — still fixed. PVE
@@ -365,11 +365,15 @@ workloads until the host kernel is patched.
   for RHEL 9.2 E4S; Rocky's NFV repo carries `5.14.0-687.12.1.el9_8` for
   the GA stream with no RLSA for this advisory. RHEL 9 GA `kernel-rt` still
   shows `fix_state: Affected` (via Red Hat security data API); `kernel-rt`
-  on RHEL 9 / Rocky 9 GA remains vulnerable. Also shipped since last run:
+  on RHEL 9 / Rocky 9 GA remains vulnerable. Additional EUS/E4S advisories
+  (not tracked in the table; Rocky has no EUS):
+  **RHSA-2026:39984** (RHEL 8.4 AUS/EUS, `kernel 4.18.0-305.198.1.el8_4`),
+  **RHSA-2026:40068** (RHEL 8.6 AUS/EUS, `kernel 4.18.0-372.201.1.el8_6`),
+  **RHSA-2026:40082** (RHEL 9.2 E4S, `kernel 5.14.0-284.181.1.el9_2`),
   **RHSA-2026:40425** (RHEL 9.6 EUS, `kernel 5.14.0-570.128.1.el9_6`),
-  **RHSA-2026:41063** (RHEL 9.4 E4S, `kernel 5.14.0-427.138.1.el9_4`), and
-  **RHSA-2026:41062** (RHEL 10.0 EUS, `kernel 6.12.0-55.89.1.el10_0`) —
-  EUS/E4S stream fixes not tracked in the table; Rocky has no EUS.
+  **RHSA-2026:40760** (RHEL 8.8 TUS/E4S, `kernel 4.18.0-477.152.1.el8_8`),
+  **RHSA-2026:41062** (RHEL 10.0 EUS, `kernel 6.12.0-55.89.1.el10_0`),
+  **RHSA-2026:41063** (RHEL 9.4 E4S, `kernel 5.14.0-427.138.1.el9_4`).
 - **Amazon Linux** (via the repodata `updateinfo.xml`): **AL2023 fixed** on
   all three streams — ALAS2023-2026-1882 (default `kernel` 6.1, current
   `6.1.176-220.360`), ALAS2023-2026-1753 (`kernel6.12`), ALAS2023-2026-1754
