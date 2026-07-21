@@ -149,6 +149,16 @@ available to adopt — its kernel series carries :white_check_mark: in the
 *Upstream fixed versions* table, **or** the distro cherry-picks
 `3bfdc63936dd` independently.
 
+**Exception — a default-kernel-series switch is always recordable.** PVE
+moves its default series during a release's lifetime (`proxmox-default-kernel`
+changing which `proxmox-kernel-*` it depends on), and a distro can add an
+opt-in series alongside it.  Record that even when the verdict does not
+change: the row's kernel, the prose, and the verification log **together**,
+since a log-only update leaves the tracker self-inconsistent.  A switch can
+also flip the verdict on its own — a newer series may already contain the
+fix, or a still-EOL one may not — so re-derive the verdict rather than
+carrying the old one across.
+
 Each run:
 
 - Re-check the *Upstream fixed versions* table: has any in-window branch
@@ -479,10 +489,26 @@ refreshes it each run, alongside the other reference clones:
 git -C ~/src/proxmox/pve-kernel show origin/master:debian/changelog
 ```
 
-Branch `master` is the current PVE 9 series, `bookworm-6.8` is PVE 8.  Do
-not clone it per run: it is a shared reference like `~/src/linux/stable`,
-and a clone made inside the worktree leaves untracked debris that stalls
-every later run.
+Branches are named `<debian-suite>-<series>` — `bookworm-6.8`,
+`trixie-6.17` — except the newest series on the current suite, which lives
+on `master`.  **Don't assume a mapping.** PVE switches its default kernel
+series during a release's lifetime and adds opt-in series alongside it, so
+resolve the series first (`proxmox-default-kernel` for the default, the
+`proxmox-kernel-*` metapackages for opt-in), then pick the branch that
+matches:
+
+```
+git -C ~/src/proxmox/pve-kernel branch -r
+```
+
+Confirm the branch is the one you meant by checking that its changelog head
+names that series, then read `debian/changelog` and `patches/` from it.  A
+series that PVE has moved off is still a live branch here, so reading a
+stale one reports "no cherry-pick" from a kernel nobody runs.
+
+Do not clone it per run: it is a shared reference like
+`~/src/linux/stable`, and a clone made inside the worktree leaves untracked
+debris that stalls every later run.
 
 The enterprise repository (`enterprise.proxmox.com`) is HTTP-auth-gated
 (401 without subscription credentials), so it cannot be polled headlessly.
