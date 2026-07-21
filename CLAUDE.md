@@ -264,6 +264,15 @@ scheduled run aborts before doing anything.  A freshly `git init`'d tracker
 must `git remote add origin https://github.com/suominen/ghostlock.git` and
 `git push -u origin main` before the timer is worth enabling.
 
+**A change to the wrapper itself takes effect one run later.** The wrapper
+merges `origin/main` into `auto-update` *while executing from that
+worktree*, so the merge rewrites `scripts/auto-update` underneath the
+running shell.  git replaces the file rather than editing it in place, so
+the run finishes on the version it started with — the fetch list, the
+allowlist and everything else — and the merged version governs the next
+run.  Nothing is corrupted, but don't read a first post-change run as
+evidence that the change works; check the run after it.
+
 To run a refresh immediately (same path the timer takes):
 
 ```
