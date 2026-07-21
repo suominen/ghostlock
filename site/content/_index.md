@@ -155,7 +155,7 @@ Debian's `linux` is affected in every suite (the bug predates all of them).
 now rides 7.1.3-1; **forky** (testing) received the fix when `7.0.4-1`
 migrated on 2026-05-10 and now ships 7.1.3-1. **trixie** (stable) was fixed
 at `linux 6.12.86-1` in the base suite on 2026-05-08; `trixie-security` also
-carries it at 6.12.95-1. **bookworm** (oldstable) was fixed via
+carries it at 6.12.96-1. **bookworm** (oldstable) was fixed via
 `bookworm-security 6.1.176-1` (DLA-4665-1, 2026-07-03); `6.1.176` is above
 the upstream first-fixed `6.1.175`, so this is not a backport below upstream.
 **bullseye** (LTS) remains vulnerable on its default kernel: the `linux`
@@ -321,7 +321,7 @@ workloads until the host kernel is patched.
   news, and snapshot.debian.org `first_seen`): sid — first fixed upload
   `7.0.4-1` on 2026-05-08 (now 7.1.4-1); testing/forky — `7.0.4-1` migrated
   2026-05-10 (now 7.1.3-1); stable/trixie — base suite `6.12.86-1` on
-  2026-05-08, now 6.12.94-1 in trixie (trixie-security carries 6.12.95-1);
+  2026-05-08, now 6.12.94-1 in trixie (trixie-security carries 6.12.96-1);
   oldstable/bookworm — `bookworm-security 6.1.176-1` (DLA-4665-1) on
   2026-07-03 (now 6.1.177-1 in bookworm-security), with 6.1.176 above
   upstream first-fixed 6.1.175. LTS/bullseye stays `:x:`: the tracker
