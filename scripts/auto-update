@@ -55,13 +55,19 @@ fetch_if_stale "${HOME}/src/linux/stable" linux-stable --all --tags
 # appear, then seed the Upstream fixed versions table from its .dyad).
 fetch_if_stale "${HOME}/src/linux/vulns" linux-vulns origin
 fetch_if_stale "${HOME}/src/nixos/nixpkgs" nixpkgs origin
+# pve-kernel: Proxmox's kernel packaging repo, where every security
+# cherry-pick is listed by name/CVE in debian/changelog. Shared like
+# the others, so the agent reads it via origin/... refs instead of
+# cloning it per run into the worktree.
+fetch_if_stale "${HOME}/src/proxmox/pve-kernel" pve-kernel origin
 
 git fetch --quiet origin
 
-# Clear scratch left by a previous run's agent -- the Proxmox check
-# shallow-clones pve-kernel.git, and a leftover clone is untracked, so
-# it trips the dirty-tree check below and every later run refuses to
-# start until someone removes it by hand.
+# Clear any scratch left by a previous run's agent. Untracked debris
+# trips the dirty-tree check below, and every later run then refuses
+# to start until someone removes it by hand -- a silent stall, so this
+# stays as a backstop even now that the Proxmox check reads a shared
+# clone instead of making its own.
 rm -rf .tmp-*
 
 if [ -n "$(git status --porcelain)" ]
@@ -89,7 +95,7 @@ git merge --quiet --no-edit origin/main
 exec claude -p \
   --model claude-sonnet-4-6 \
   --permission-mode default \
-  --settings '{"permissions":{"allow":["Read","Edit","WebFetch","Bash(date:*)","Bash(curl:*)","Bash(zcat:*)","Bash(gunzip:*)","Bash(git add:*)","Bash(git clone:*)","Bash(git commit:*)","Bash(git diff:*)","Bash(git log:*)","Bash(git show:*)","Bash(git status:*)","Bash(git describe:*)"]}}' \
+  --settings '{"permissions":{"allow":["Read","Edit","WebFetch","Bash(date:*)","Bash(curl:*)","Bash(zcat:*)","Bash(gunzip:*)","Bash(git add:*)","Bash(git commit:*)","Bash(git diff:*)","Bash(git log:*)","Bash(git show:*)","Bash(git status:*)","Bash(git describe:*)"]}}' \
   --output-format text \
   --no-session-persistence \
   --max-budget-usd 5 \

@@ -336,7 +336,7 @@ git worktree remove ~/src/auto-update/ghostlock
 git branch -d auto-update
 ```
 
-## Local kernel clones for git.kernel.org
+## Local reference clones
 
 git.kernel.org's cgit HTML pages (any URL ending in /log/, /tree/,
 /commit/, etc.) are Anubis-gated; WebFetch hits the no-JS challenge and the
@@ -347,6 +347,7 @@ long-living local clones under `~/src/linux/`:
 |----------------------|--------------------------------------------------------------------|
 | `~/src/linux/stable` | `https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git` |
 | `~/src/linux/vulns`  | `https://git.kernel.org/pub/scm/linux/security/vulns.git`          |
+| `~/src/proxmox/pve-kernel` | `https://git.proxmox.com/git/pve-kernel.git`                 |
 
 GhostLock is a locking/rtmutex fix that flows straight into the stable
 tree, so there is **no dedicated subsystem clone** here (unlike the KVM
@@ -460,9 +461,19 @@ The default kernel *series* is whatever the highest-versioned
 `proxmox-default-kernel` meta-package depends on — check it each time, it
 moves.  Whether a Proxmox kernel carries the fix tracks its Ubuntu series,
 not Debian's.  To confirm a cherry-pick, read the packaging changelog in
-Proxmox's kernel git — `https://git.proxmox.com/git/pve-kernel.git` — where
-Proxmox lists every security cherry-pick by name/CVE.  The cgit HTML may be
-gated, but git smart-HTTP works headless.
+Proxmox's kernel git, where Proxmox lists every security cherry-pick by
+name/CVE.  The cgit HTML may be gated, so read it from the shared local
+clone at `~/src/proxmox/pve-kernel` via its `origin/...` refs — the wrapper
+refreshes it each run, alongside the other reference clones:
+
+```
+git -C ~/src/proxmox/pve-kernel show origin/master:debian/changelog
+```
+
+Branch `master` is the current PVE 9 series, `bookworm-6.8` is PVE 8.  Do
+not clone it per run: it is a shared reference like `~/src/linux/stable`,
+and a clone made inside the worktree leaves untracked debris that stalls
+every later run.
 
 The enterprise repository (`enterprise.proxmox.com`) is HTTP-auth-gated
 (401 without subscription credentials), so it cannot be polled headlessly.

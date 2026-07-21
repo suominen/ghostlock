@@ -37,7 +37,16 @@
       "Bash(git -C ~/src/nixos/nixpkgs log *)",
       "Bash(git -C ~/src/nixos/nixpkgs show *)",
       "Bash(git -C ~/src/nixos/nixpkgs status *)",
-      "Bash(git -C ~/src/nixos/nixpkgs status)"
+      "Bash(git -C ~/src/nixos/nixpkgs status)",
+      "Bash(git -C ~/src/proxmox/pve-kernel describe *)",
+      "Bash(git -C ~/src/proxmox/pve-kernel diff *)",
+      "Bash(git -C ~/src/proxmox/pve-kernel diff)",
+      "Bash(git -C ~/src/proxmox/pve-kernel grep *)",
+      "Bash(git -C ~/src/proxmox/pve-kernel log *)",
+      "Bash(git -C ~/src/proxmox/pve-kernel ls-tree *)",
+      "Bash(git -C ~/src/proxmox/pve-kernel show *)",
+      "Bash(git -C ~/src/proxmox/pve-kernel status *)",
+      "Bash(git -C ~/src/proxmox/pve-kernel status)"
     ]
   }
 }
