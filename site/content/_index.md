@@ -3,7 +3,7 @@ title: "GhostLock — rtmutex/futex stack use-after-free tracking"
 description: "Linux kernel rtmutex/futex requeue-PI stack use-after-free (CVE-2026-43499, GhostLock) — local privilege escalation & container escape — distro patch status tracker"
 layout: "single"
 date: 2026-07-09
-lastmod: 2026-07-20
+lastmod: 2026-07-21
 cover:
   image: "ghostlock-tracker.png"
   alt: "GhostLock — Linux kernel rtmutex/futex stack use-after-free tracker"
@@ -288,7 +288,7 @@ workloads until the host kernel is patched.
 
 ## Verification log
 
-*Last verified 2026-07-20.*
+*Last verified 2026-07-21.*
 
 ### Upstream
 
@@ -365,15 +365,19 @@ workloads until the host kernel is patched.
   for RHEL 9.2 E4S; Rocky's NFV repo carries `5.14.0-687.12.1.el9_8` for
   the GA stream with no RLSA for this advisory. RHEL 9 GA `kernel-rt` still
   shows `fix_state: Affected` (via Red Hat security data API); `kernel-rt`
-  on RHEL 9 / Rocky 9 GA remains vulnerable. Additional EUS/E4S advisories
-  (not tracked in the table; Rocky has no EUS):
+  on RHEL 9 / Rocky 9 GA remains vulnerable. Additional RHEL advisories
+  not tracked in the table (Rocky has no EUS, ELS, or NV rows):
+  **RHSA-2026:37728** (RHEL 10 NV, `kernel 6.12.0-231.16.el10nv`),
   **RHSA-2026:39984** (RHEL 8.4 AUS/EUS, `kernel 4.18.0-305.198.1.el8_4`),
   **RHSA-2026:40068** (RHEL 8.6 AUS/EUS, `kernel 4.18.0-372.201.1.el8_6`),
   **RHSA-2026:40082** (RHEL 9.2 E4S, `kernel 5.14.0-284.181.1.el9_2`),
   **RHSA-2026:40425** (RHEL 9.6 EUS, `kernel 5.14.0-570.128.1.el9_6`),
   **RHSA-2026:40760** (RHEL 8.8 TUS/E4S, `kernel 4.18.0-477.152.1.el8_8`),
   **RHSA-2026:41062** (RHEL 10.0 EUS, `kernel 6.12.0-55.89.1.el10_0`),
-  **RHSA-2026:41063** (RHEL 9.4 E4S, `kernel 5.14.0-427.138.1.el9_4`).
+  **RHSA-2026:41063** (RHEL 9.4 E4S, `kernel 5.14.0-427.138.1.el9_4`),
+  **RHSA-2026:41234** (RHEL 7 ELS, `kernel-rt 3.10.0-1160.156.1.rt56.1308.el7`),
+  **RHSA-2026:41235** (RHEL 7 ELS, `kernel 3.10.0-1160.156.1.el7`),
+  **RHSA-2026:41920** (RHEL 6 ELS, `kernel 2.6.32-754.62.1.el6`).
 - **Amazon Linux** (via the repodata `updateinfo.xml`): **AL2023 fixed** on
   all three streams — ALAS2023-2026-1882 (default `kernel` 6.1, current
   `6.1.176-220.360`), ALAS2023-2026-1753 (`kernel6.12`), ALAS2023-2026-1754
