@@ -58,6 +58,12 @@ fetch_if_stale "${HOME}/src/nixos/nixpkgs" nixpkgs origin
 
 git fetch --quiet origin
 
+# Clear scratch left by a previous run's agent -- the Proxmox check
+# shallow-clones pve-kernel.git, and a leftover clone is untracked, so
+# it trips the dirty-tree check below and every later run refuses to
+# start until someone removes it by hand.
+rm -rf .tmp-*
+
 if [ -n "$(git status --porcelain)" ]
 then
   echo 'Working tree dirty; refusing to run. Clean it up and retry.' 1>&2
@@ -72,12 +78,18 @@ git merge --quiet --no-edit origin/main
 # date for the commit step) goes in --settings JSON because
 # --allowed-tools on the CLI silently ignores Bash patterns.
 # `default` mode under -p with no TTY refuses anything outside the
-# allowlist without prompting. The prompt forbids push and PR creation,
-# and `gh` is not in the tool list anyway.
+# allowlist without prompting.
+#
+# The git rules are enumerated per subcommand rather than `git:*` on
+# purpose. Read-only commands are auto-classified as safe and run
+# either way, but a mutating one needs a matching rule -- so with no
+# rule for it, publishing is refused by the permission system rather
+# than only by prose in the prompt. `gh` is absent for the same
+# reason, so no PR can be opened either.
 exec claude -p \
   --model claude-sonnet-4-6 \
   --permission-mode default \
-  --settings '{"permissions":{"allow":["Read","Edit","WebFetch","Bash(git:*)","Bash(date:*)","Bash(curl:*)","Bash(zcat:*)","Bash(gunzip:*)"]}}' \
+  --settings '{"permissions":{"allow":["Read","Edit","WebFetch","Bash(date:*)","Bash(curl:*)","Bash(zcat:*)","Bash(gunzip:*)","Bash(git add:*)","Bash(git clone:*)","Bash(git commit:*)","Bash(git diff:*)","Bash(git log:*)","Bash(git show:*)","Bash(git status:*)","Bash(git describe:*)"]}}' \
   --output-format text \
   --no-session-persistence \
   --max-budget-usd 5 \
