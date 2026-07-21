@@ -77,7 +77,26 @@ then
 fi
 
 git switch --quiet auto-update
+
+# Merging origin/main rewrites this very script whenever the wrapper
+# itself changed. git replaces the file rather than editing it in
+# place, so the running shell would carry on with the version it
+# started with and the change would not take effect until the next
+# run -- a transitional run that looks like the change did nothing.
+# Re-exec instead, so a run always uses the wrapper it just merged.
+# The guard bounds this to a single re-exec whatever happens.
+wrapper_before="$(git rev-parse HEAD:scripts/auto-update)"
 git merge --quiet --no-edit origin/main
+wrapper_after="$(git rev-parse HEAD:scripts/auto-update)"
+
+if [ "${wrapper_before}" != "${wrapper_after}" ] &&
+   [ "${AUTO_UPDATE_REEXECED:-}" != 1 ]
+then
+  echo 'Wrapper changed in the merge; restarting on the new version'
+  AUTO_UPDATE_REEXECED=1
+  export AUTO_UPDATE_REEXECED
+  exec "${REPO}/scripts/auto-update" "$@"
+fi
 
 # Headless run. Permission scope (Read/Edit the tracker, WebFetch and
 # curl the sources, zcat/gunzip for the gzipped package indexes, git +
