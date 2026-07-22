@@ -3,7 +3,7 @@ title: "GhostLock — rtmutex/futex stack use-after-free tracking"
 description: "Linux kernel rtmutex/futex requeue-PI stack use-after-free (CVE-2026-43499, GhostLock) — local privilege escalation & container escape — distro patch status tracker"
 layout: "single"
 date: 2026-07-09
-lastmod: 2026-07-21
+lastmod: 2026-07-22
 cover:
   image: "ghostlock-tracker.png"
   alt: "GhostLock — Linux kernel rtmutex/futex stack use-after-free tracker"
@@ -175,10 +175,13 @@ the container-escape vector makes it worth tracking. PVE 9's default kernel
 (pinned by `proxmox-default-kernel` 2.1.0) is base **7.0.14**, at or above
 the 7.0.4 backport, so a default PVE 9 host is fixed. PVE 8's default
 remains on the end-of-life **6.8** line (`6.8.12-pve`), which has no
-backport, so it stays vulnerable. PVE 9 hosts running the opt-in
-**6.17** kernel series are fixed as of `proxmox-kernel-6.17.13-16-pve`:
-Proxmox cherry-picked the three patches from `linux-6.18.y` on 2026-07-09.
-The opt-in **6.14** series has no cherry-pick yet and remains vulnerable.
+backport, so it stays vulnerable; PVE 8 now also offers opt-in **6.11**
+(`proxmox-kernel-6.11.11-2-pve`) and **6.14**
+(`proxmox-kernel-6.14.11-9-bpo12-pve`) series, neither of which has the
+cherry-pick. PVE 9 hosts running the opt-in **6.17** kernel series are
+fixed as of `proxmox-kernel-6.17.13-16-pve`: Proxmox cherry-picked the
+three patches from `linux-6.18.y` on 2026-07-09. The opt-in **6.14**
+series (on PVE 9 / trixie) has no cherry-pick yet and remains vulnerable.
 
 ### Rocky Linux / RHEL family
 
@@ -288,7 +291,7 @@ workloads until the host kernel is patched.
 
 ## Verification log
 
-*Last verified 2026-07-21.*
+*Last verified 2026-07-22.*
 
 ### Upstream
 
@@ -335,13 +338,15 @@ workloads until the host kernel is patched.
   `linux_6_18` on both nixos-unstable and nixos-26.05; nixos-unstable ships
   6.18.39, nixos-26.05 ships 6.18.39. `linuxPackages_latest` (`linux_7_1`)
   is 7.1.4. Both channels fixed; no verdict change.
-- **Proxmox VE** (via pve-no-subscription `Packages` index): PVE 9 default
-  (`proxmox-default-kernel 2.1.0`) depends on `proxmox-kernel-7.0`; highest
-  available is `7.0.14-5-pve` — still fixed. PVE
-  8 default is still `proxmox-default-kernel 1.1.0` → `proxmox-kernel-6.8`;
-  no newer series added — still vulnerable. Opt-in 6.17 series
-  (`proxmox-kernel-6.17.13-16-pve`): Proxmox cherry-picked the fix on
-  2026-07-09 — fixed. Opt-in 6.14 series: no cherry-pick, still vulnerable.
+- **Proxmox VE** (via pve-no-subscription `Packages` index and pve-kernel
+  `debian/changelog`): PVE 9 default (`proxmox-default-kernel 2.1.0`) depends
+  on `proxmox-kernel-7.0`; highest available is `7.0.14-6-pve` — still fixed.
+  PVE 8 default is still `proxmox-default-kernel 1.1.0` →
+  `proxmox-kernel-6.8`, still vulnerable; PVE 8 has added opt-in **6.11**
+  (highest `6.11.11-2-pve`) and opt-in **6.14** (highest
+  `6.14.11-9-bpo12-pve`) series — neither has the cherry-pick. PVE 9 opt-in
+  6.17 (highest `6.17.13-19-pve`): cherry-pick confirmed — fixed. PVE 9
+  opt-in 6.14 (highest `6.14.11-9-pve`): no cherry-pick, still vulnerable.
 - **Rocky / RHEL family** (via the Red Hat security data API, AlmaLinux
   errata, and Rocky BaseOS repodata): **RHSA-2026:38491** (RHEL 9,
   `5.14.0-687.25.1.el9_8`) and **RHSA-2026:38492** (RHEL 10.2,
