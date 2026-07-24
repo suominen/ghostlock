@@ -3,7 +3,7 @@ title: "GhostLock — rtmutex/futex stack use-after-free tracking"
 description: "Linux kernel rtmutex/futex requeue-PI stack use-after-free (CVE-2026-43499, GhostLock) — local privilege escalation & container escape — distro patch status tracker"
 layout: "single"
 date: 2026-07-09
-lastmod: 2026-07-22
+lastmod: 2026-07-24
 cover:
   image: "ghostlock-tracker.png"
   alt: "GhostLock — Linux kernel rtmutex/futex stack use-after-free tracker"
@@ -128,7 +128,7 @@ where relevant.
 
 | Distribution | Release | Kernel | Fixed since | Status |
 |---|---|---|---|---|
-| Debian | sid (unstable) | 7.0.4-1 | 2026-05-08 | :white_check_mark: Fixed — first fixed upload 7.0.4-1 (now ships 7.1.3-1) |
+| Debian | sid (unstable) | 7.0.4-1 | 2026-05-08 | :white_check_mark: Fixed — first fixed upload 7.0.4-1 (now ships 7.1.4-1) |
 | Debian | forky (testing) | 7.0.4-1 | 2026-05-10 | :white_check_mark: Fixed — 7.0.4-1 migrated to testing (now ships 7.1.3-1) |
 | Debian | 13 (trixie) | 6.12.86-1 | 2026-05-08 | :white_check_mark: Fixed — trixie base |
 | Debian | 12 (bookworm) | 6.1.176-1 | 2026-07-03 | :white_check_mark: Fixed — via `bookworm-security` (DLA-4665-1) |
@@ -152,7 +152,7 @@ where relevant.
 
 Debian's `linux` is affected in every suite (the bug predates all of them).
 **sid** first shipped a fixed kernel with `linux 7.0.4-1` on 2026-05-08 and
-now rides 7.1.3-1; **forky** (testing) received the fix when `7.0.4-1`
+now rides 7.1.4-1; **forky** (testing) received the fix when `7.0.4-1`
 migrated on 2026-05-10 and now ships 7.1.3-1. **trixie** (stable) was fixed
 at `linux 6.12.86-1` in the base suite on 2026-05-08; `trixie-security` also
 carries it at 6.12.96-1. **bookworm** (oldstable) was fixed via
@@ -291,7 +291,7 @@ workloads until the host kernel is patched.
 
 ## Verification log
 
-*Last verified 2026-07-22.*
+*Last verified 2026-07-24.*
 
 ### Upstream
 
