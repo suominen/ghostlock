@@ -90,11 +90,10 @@ architecture is affected** — there is no architecture exemption.
 ## Upstream fixed versions
 
 The fix reached Linus as **v7.1** and the stable maintainers backported it
-across the maintained lines: **6.1.175**, **6.6.140**, **6.12.86**,
+across all maintained lines: **6.1.175**, **6.6.140**, **6.12.86**,
 **6.18.27**, and **7.0.4**. 7.0.y took the backport in 7.0.4, well before
-that line reached end of life at 7.0.14. The pre-6.1 longterm lines
-(5.15.y, 5.10.y) carry the bug — but have **not** received a backport as of
-this writing.
+that line reached end of life at 7.0.14. The pre-6.1 longterm lines also
+received the backport on 2026-07-24: **5.15.212** and **5.10.261**.
 
 | Branch | Status | Current | Notes |
 |---|---|---|---|
@@ -103,10 +102,10 @@ this writing.
 | 7.0.x | :white_check_mark: Carries the backport | 7.0.14 (EOL) | backported in 7.0.4 before end of life |
 | 6.18.x | :white_check_mark: Carries the backport | 6.18.39 | LTS; first fixed point release 6.18.27 |
 | 6.12.x | :white_check_mark: Carries the backport | 6.12.96 | LTS; first fixed point release 6.12.86 |
-| 6.6.x | :white_check_mark: Carries the backport | 6.6.144 | LTS; first fixed point release 6.6.140 |
-| 6.1.x | :white_check_mark: Carries the backport | 6.1.177 | LTS; first fixed point release 6.1.175 |
-| 5.15.x | :x: Not backported | 5.15.211 | in window; no backport yet |
-| 5.10.x | :x: Not backported | 5.10.260 | in window; no backport yet |
+| 6.6.x | :white_check_mark: Carries the backport | 6.6.145 | LTS; first fixed point release 6.6.140 |
+| 6.1.x | :white_check_mark: Carries the backport | 6.1.178 | LTS; first fixed point release 6.1.175 |
+| 5.15.x | :white_check_mark: Carries the backport | 5.15.212 | LTS; first fixed point release 5.15.212 |
+| 5.10.x | :white_check_mark: Carries the backport | 5.10.261 | LTS; first fixed point release 5.10.261 |
 
 When verifying a tree directly, the fixed function is `remove_waiter()` in
 `kernel/locking/rtmutex.c`; the fix replaces the use of `current` /
@@ -240,10 +239,10 @@ fixed versions* table and your distro row above:
 uname -r
 ```
 
-A kernel at or above its branch's first-fixed release (6.1.175 / 6.6.140 /
-6.12.86 / 6.18.27 / 7.0.4), or any mainline **≥ 7.1**, carries the fix;
-anything else in the 2.6.39–7.0 window without a distro backport is
-vulnerable. On RHEL-family and Amazon kernels the base version does not map
+A kernel at or above its branch's first-fixed release (5.10.261 / 5.15.212 /
+6.1.175 / 6.6.140 / 6.12.86 / 6.18.27 / 7.0.4), or any mainline **≥ 7.1**,
+carries the fix; anything else in the 2.6.39–7.0 window without a distro
+backport is vulnerable. On RHEL-family and Amazon kernels the base version does not map
 to an upstream point release — rely on the distribution's advisory state
 (see the rows above) rather than the number alone.
 
@@ -264,8 +263,10 @@ process; it cannot be disabled, and the bug needs neither elevated privilege
 nor unprivileged user namespaces — so namespace-hardening knobs such as
 `kernel.unprivileged_userns_clone=0` do **not** block it.
 
-Install a kernel that carries the [`3bfdc63936dd`][fix] backport: **6.1.175**,
-**6.6.140**, **6.12.86**, **6.18.27**, **7.0.4**, or mainline **≥ 7.1**.
+Install a kernel that carries the [`3bfdc63936dd`][fix] backport: **5.10.261**,
+**5.15.212**, **6.1.175**, **6.6.140**, **6.12.86**, **6.18.27**, **7.0.4**, or
+mainline **≥ 7.1**.
+
 Until you can reboot into a fixed kernel, the only risk reduction on
 multi-tenant and container hosts is ordinary defence-in-depth that does not
 touch the hole itself — limit untrusted local logins and untrusted container
@@ -286,8 +287,8 @@ workloads until the host kernel is patched.
   removes the hole.
 - **Long exposure window:** the flaw dates to v2.6.39 (2011), so essentially
   every unpatched production kernel is affected. Backports exist for
-  6.1.175, 6.6.140, 6.12.86, 6.18.27, 7.0.4, and mainline 7.1 — check your
-  distribution row.
+  5.10.261, 5.15.212, 6.1.175, 6.6.140, 6.12.86, 6.18.27, 7.0.4, and
+  mainline 7.1 — check your distribution row.
 
 ## Verification log
 
@@ -309,14 +310,17 @@ workloads until the host kernel is patched.
   first-fixed commits (confirmed via `git describe --contains`): 6.1.175
   (`d8cce4773c2b`), 6.6.140 (`8a1fc8d698ac`), 6.12.86 (`6d52dfcb2a5d`),
   6.18.27 (`3fb7394a8377`), 7.0.4 (`88614876370a`). Mainline carries it since
-  v7.1. 5.15.y and 5.10.y are in-window and not yet backported (subject/ref
-  grep against `~/src/linux/stable` — empty output).
+  v7.1. **5.15.y first fixed in 5.15.212** (backport `838ce5cb5d93`, tagged
+  2026-07-24); **5.10.y first fixed in 5.10.261** (backport `f3fa3424bceb`,
+  tagged 2026-07-24). Confirmed via subject/ref grep and `git describe
+  --contains`. The `vulns.git` `.dyad` has not yet been updated to list
+  these branches — the CNA record still shows only 6.1–7.1 entries.
 - **NVD CVSS score published**: CVSS 7.8 HIGH
   (`CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H`), confirming Red Hat's
   Important severity rating (via NVD REST API).
 - Current point releases (`https://www.kernel.org/finger_banner`): mainline
   7.2-rc4; 7.1.4; 7.0.14 (EOL, fixed since 7.0.4); 6.18.39; 6.12.96;
-  6.6.144; 6.1.177; 5.15.211; 5.10.260.
+  6.6.145; 6.1.178; 5.15.212; 5.10.261.
 
 ### Distributions
 
