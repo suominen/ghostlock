@@ -48,11 +48,42 @@
 
 /* Group heading rows (inserted by extend_footer.html in place of the
    Distribution column): one full-width row per distribution,
-   left-aligned and set off from the preceding group. */
+   left-aligned and set off from the preceding group. With separate
+   borders (below) the 1px top border stacks on the 1px bottom border
+   of the row above, giving the same 2px divider as under collapsed
+   borders. */
 .post-content table.distros tr.distro-group th {
   text-align: left;
-  border-top: 2px solid var(--border);
+  border-top: 1px solid var(--border);
   background: var(--code-bg);
+}
+
+/* Sticky column headers: keep the header row visible while scrolling
+   the long table. Two prerequisites, both handled here:
+   - position: sticky must sit on the th cells, not on thead/tr;
+   - collapsed borders are painted by the row grid and would scroll
+     away from under the stuck cells, so this table switches to
+     separate borders (spacing 0) and rebuilds the theme's 1px grid
+     from per-cell right+bottom borders (plus left on the first column
+     and top on the header), which travel with their cells.
+   The opaque background hides the rows sliding underneath. */
+.post-content table.distros {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+.post-content table.distros th,
+.post-content table.distros td {
+  border-width: 0 1px 1px 0;
+}
+.post-content table.distros tr > :first-child {
+  border-left-width: 1px;
+}
+.post-content table.distros thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  border-top-width: 1px;
+  background: var(--theme);
 }
 
 .post-content td {
