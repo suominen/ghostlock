@@ -107,7 +107,7 @@ carrying the fix, and *Fixed since* the date it first held (both stay
 |---|---|---|---|---|---|
 | Linux kernel | mainline | 7.2-rc4 | 7.1 | 2026-06-14 | :white_check_mark: Fixed — carries `3bfdc63936dd` |
 | Linux kernel | 7.1.x | 7.1.5 | 7.1 | 2026-06-14 | :white_check_mark: Fixed — at the initial release |
-| Linux kernel | 7.0.x | 7.0.14 | 7.0.4 | 2026-05-07 | :white_check_mark: Fixed — backported before end of life (EOL at 7.0.14) |
+| Linux kernel | 7.0.x | 7.0.14 | 7.0.4 | 2026-05-07 | :white_check_mark: Fixed — EOL |
 | Linux kernel | 6.18.x | 6.18.40 | 6.18.27 | 2026-05-07 | :white_check_mark: Fixed — LTS |
 | Linux kernel | 6.12.x | 6.12.97 | 6.12.86 | 2026-05-07 | :white_check_mark: Fixed — LTS |
 | Linux kernel | 6.6.x | 6.6.145 | 6.6.140 | 2026-05-17 | :white_check_mark: Fixed — LTS |
