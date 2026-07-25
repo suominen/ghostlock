@@ -57,11 +57,15 @@ References but is not a separate tracker.
   plus a separate *Upstream fixed versions* table) uses a single
   **combined table** for upstream and distros (`Distribution | Release |
   Current kernel | First fixed | Fixed since | Status`): the upstream
-  kernel is the first `Linux kernel` group; opt-in / variant kernels
-  (bullseye `linux-6.1`, PVE opt-in series, EL `kernel-rt`) are their
-  own rows; per-distro `###` headings are retained only where there is
-  an audience-relevant note.  *Current kernel* is live, *First fixed* /
-  *Fixed since* are sticky.  GhostLock pilots this single-table layout —
+  kernel is the first `Linux kernel` group; opt-in kernels (bullseye
+  `linux-6.1`, PVE opt-in series) are their own rows, while the niche
+  EL `kernel-rt` variant stays prose-only (rows were tried 2026-07-25
+  and dropped — the long NVRs bloated the table); per-distro `###`
+  headings are retained only where there is an audience-relevant note.
+  *Current kernel* is live, *First fixed* / *Fixed since* are sticky.
+  In the browser the Distribution column renders as full-width group
+  heading rows (see "Client-side table tweaks" below).
+  GhostLock pilots this single-table layout —
   once settled it is to be folded into the tracker template and
   januscape (the other sibling trackers are archived and stay on the
   old layout).
@@ -136,10 +140,14 @@ locking fix that lands directly in `~/src/linux/stable`, so `stable` +
 - **rsync `--delete`** removes server-side files not present in the build
   output.  Don't store unrelated content under `htdocs/ghostlock/`.
 - **Client-side table tweaks.** `layouts/partials/extend_footer.html`
-  rewrites tables in the browser: it collapses consecutive duplicate
-  first-column cells via `rowSpan` and tags status-emoji cells so
-  `custom.css` can hang-indent them.  With JavaScript disabled both tweaks
-  are skipped — the table still renders correctly, just un-compacted.
+  rewrites tables in the browser: in the `.distros` table it replaces
+  the Distribution column with full-width group heading rows (one per
+  distribution; Markdown can't express colspan, so the source keeps a
+  plain column); other tables get consecutive duplicate first-column
+  cells collapsed via `rowSpan`; status-emoji cells are tagged so
+  `custom.css` can hang-indent them.  With JavaScript disabled the
+  tweaks are skipped — the table still renders correctly, with the
+  Distribution column visible and repeated.
 
 ## Social banner
 

@@ -130,9 +130,7 @@ carrying the fix, and *Fixed since* the date it first held (both stay
 | NixOS | 26.05 | 6.18.39 | 6.18.36 | 2026-07-03 | :white_check_mark: Fixed — default moved to `linux_6_18` |
 | Rocky Linux | 10 | 6.12.0-211.33.1.el10_2 | 6.12.0-211.33.1.el10_2 | 2026-07-15 | :white_check_mark: Fixed — RLSA-2026:38492 |
 | Rocky Linux | 9 | 5.14.0-687.25.1.el9_8 | 5.14.0-687.25.1.el9_8 | 2026-07-15 | :white_check_mark: Fixed — RLSA-2026:38491 |
-| Rocky Linux | 9 (kernel-rt) | 5.14.0-687.12.1.el9_8 | — | — | :x: Vulnerable — no advisory for the GA stream |
 | Rocky Linux | 8 | 4.18.0-553.144.1.el8_10 | 4.18.0-553.144.1.el8_10 | 2026-07-15 | :white_check_mark: Fixed — RLSA-2026:39179 |
-| Rocky Linux | 8 (kernel-rt) | 4.18.0-553.144.1.rt7.485.el8_10 | 4.18.0-553.144.1.rt7.485.el8_10 | 2026-07-18 | :white_check_mark: Fixed — supersedes the RHEL fixed NVR |
 | Amazon Linux | 2023 (kernel 6.1) | 6.1.176-220.360 | 6.1.175-219.357 | 2026-06-22 | :white_check_mark: Fixed — ALAS2023-2026-1882 |
 | Amazon Linux | 2023 (kernel6.12) | 6.12.94-123.176 | 6.12.88-119.157 | 2026-05-25 | :white_check_mark: Fixed — ALAS2023-2026-1753 |
 | Amazon Linux | 2023 (kernel6.18) | 6.18.36-69.136 | 6.18.30-61.116 | 2026-05-25 | :white_check_mark: Fixed — ALAS2023-2026-1754 |
@@ -178,8 +176,10 @@ carries the fix tracks Proxmox's kernel changelog, not Debian's: the
 
 RHEL-family kernels carry security backports without moving their
 upstream base version, so the version string alone cannot confirm a
-fix — the signal is an erratum. RHEL is upstream of the rebuilds, and
-the fix flowed RHEL → AlmaLinux → Rocky:
+fix — the signal is an erratum. The table rows track the standard
+`kernel`; the niche real-time `kernel-rt` variant is covered only
+here. RHEL is upstream of the rebuilds, and the fix flowed RHEL →
+AlmaLinux → Rocky:
 
 - **Standard `kernel`, EL10 / EL9** — Red Hat shipped
   **RHSA-2026:38492** (RHEL 10.2, kernel `6.12.0-211.33.1.el10_2`) and

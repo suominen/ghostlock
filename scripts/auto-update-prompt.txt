@@ -102,9 +102,10 @@ thing you may leave behind is the edited tracker (and its commit).
    "not affected" rows. Rows exist per kernel stream, not just per
    release: Debian suites' default kernel plus bullseye's opt-in
    linux-6.1; PVE default and opt-in proxmox-kernel series; Rocky's
-   standard kernel plus the kernel-rt rows (Rocky 8 RT repo / Rocky 9
-   NFV repo, with the RHEL kernel-rt fix_state as the leading signal);
-   every Amazon stream. For each row, re-pull the KERNEL version and
+   standard kernel; every Amazon stream. EL kernel-rt is NOT a row —
+   it is a prose-only caveat in the "### Rocky Linux / RHEL family"
+   section, keyed on the RHEL kernel-rt fix_state in the Red Hat
+   security data API. For each row, re-pull the KERNEL version and
    check for the backport:
       - Debian: the SECURITY TRACKER is authoritative for status, not a
         madison version compare — the base suite lags the -security upload,

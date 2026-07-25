@@ -1,16 +1,43 @@
 <script>
-    // Distribution-status tables: tag the Release column (2nd cell) with
-    // `nowrap` before the first-column rowspan collapse below removes
-    // cells. After a collapse the Release cell becomes cells[0] in the
-    // collapsed rows, so a positional nth-child(2) CSS rule would land on
-    // the wrong column; tagging by class survives the shift.
+    // Distribution-status tables: replace the Distribution column with
+    // full-width group heading rows, one per distribution. Markdown
+    // tables can't express colspan, so the source keeps a plain
+    // Distribution column and this transform runs in the browser; with
+    // JavaScript disabled the table renders as authored, with the
+    // Distribution column visible and repeated. The Release cells
+    // (leftmost after the transform) are tagged `nowrap` for
+    // custom.css — a positional CSS rule would hit the wrong column in
+    // the no-JS fallback.
     document.querySelectorAll('.post-content table.distros').forEach((table) => {
-        for (const row of table.tBodies[0]?.rows || []) {
-            if (row.cells[1]) row.cells[1].classList.add('nowrap');
+        const body = table.tBodies[0];
+        const headRow = table.tHead?.rows[0];
+        if (!body || !headRow || headRow.cells.length < 2) return;
+        const span = headRow.cells.length - 1;
+        headRow.cells[0].remove();
+        let group = null;
+        for (const row of Array.from(body.rows)) {
+            const cell = row.cells[0];
+            if (!cell) continue;
+            const name = cell.textContent.trim();
+            if (name !== group) {
+                group = name;
+                const th = document.createElement('th');
+                th.colSpan = span;
+                th.scope = 'colgroup';
+                th.textContent = name;
+                const tr = document.createElement('tr');
+                tr.classList.add('distro-group');
+                tr.appendChild(th);
+                body.insertBefore(tr, row);
+            }
+            cell.remove();
+            if (row.cells[0]) row.cells[0].classList.add('nowrap');
         }
     });
 
-    document.querySelectorAll('.post-content table').forEach((table) => {
+    // Other tables: collapse consecutive duplicate first-column cells
+    // into a rowSpan.
+    document.querySelectorAll('.post-content table:not(.distros)').forEach((table) => {
         const rows = table.tBodies[0]?.rows;
         if (!rows || rows.length < 2) return;
         let anchor = rows[0].cells[0];

@@ -34,15 +34,25 @@
 }
 
 /* Distribution-status table — keep the Release column on a single line
-   so labels like "Debian 11 (bullseye, LTS)" or "Unstable (small)" don't
-   wrap at the comma/space. The Release cells are tagged `.nowrap` by
+   so labels like "11 (bullseye, LTS)" or "9 (6.17 opt-in)" don't wrap
+   at the comma/space. The Release cells are tagged `.nowrap` by
    extend_footer.html (a positional nth-child rule can't be used: the
-   first-column rowspan collapse removes cells and shifts the indices).
-   Trade-off: the table can widen past the content column on very narrow
-   viewports; the page scrolls horizontally rather than the column
-   reflowing — acceptable for an information-dense reference. */
+   group-row transform removes the Distribution cells and shifts the
+   indices, and the no-JS fallback keeps them). Trade-off: the table can
+   widen past the content column on very narrow viewports; the page
+   scrolls horizontally rather than the column reflowing — acceptable
+   for an information-dense reference. */
 .post-content table.distros td.nowrap {
   white-space: nowrap;
+}
+
+/* Group heading rows (inserted by extend_footer.html in place of the
+   Distribution column): one full-width row per distribution,
+   left-aligned and set off from the preceding group. */
+.post-content table.distros tr.distro-group th {
+  text-align: left;
+  border-top: 2px solid var(--border);
+  background: var(--code-bg);
 }
 
 .post-content td {

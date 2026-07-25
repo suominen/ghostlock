@@ -147,8 +147,10 @@ bullseye's `linux-6.1`, the bookworm 6.1 kernel rebuilt for bullseye —
 row `11 (linux-6.1 opt-in)`).  A fixed opt-in row never flips the
 default row's verdict: while `src:linux` is open in the security tracker
 the default row stays `:x:`.  The same default-plus-variant row pattern
-applies to Proxmox (default and opt-in `proxmox-kernel-*` series) and to
-the EL `kernel-rt` rows.
+applies to Proxmox (default and opt-in `proxmox-kernel-*` series).  The
+EL `kernel-rt` variant is deliberately **not** a row — it is niche;
+track it as a reader-facing caveat in the `### Rocky Linux / RHEL
+family` prose only.
 
 A per-distro `###` section is for **reader-facing** caveats that don't fit
 the table (EL-family scope, a distro's own advisory state).  Keep tracking
@@ -192,10 +194,10 @@ Each run:
   release **or** a distro advisory ships the `3bfdc63936dd` backport ⇒
   flip *Status* to `:white_check_mark: Fixed`, set *First fixed* to the
   first fixed package build, and set *Fixed since*.
-- Watch AlmaLinux (leading indicator) and Rocky/RHEL for the EL rows —
-  including the `kernel-rt` rows (RHEL `kernel-rt` `fix_state` in the
-  Red Hat security data API; Rocky 8's RT repo, Rocky 9's NFV repo) —
-  and the vendor kernel changelog for the Proxmox rows.
+- Watch AlmaLinux (leading indicator) and Rocky/RHEL for the EL rows,
+  and the vendor kernel changelog for the Proxmox rows.  For the
+  prose-only `kernel-rt` caveat, the RHEL `kernel-rt` `fix_state` in
+  the Red Hat security data API is the only signal to check.
 
 `zcat` / `gunzip` **are** in the headless allowlist — use them for the
 `Packages.gz` / repodata pulls.  Pull only kernel versions and advisory
@@ -583,12 +585,11 @@ The RPM repodata then confirms the Rocky ship and gives the current NVR
   **All** of Rocky 8 (4.18), 9 (5.14), and 10 (6.12) are in-window for
   GhostLock (the bug predates them all).  A row flips only when the BaseOS
   kernel NVR reaches the RHEL fixed build from the Red Hat record above.
-- **Rocky `kernel-rt` rows**: the RT kernel ships from the **RT** repo
-  on Rocky 8 (`…/rocky/8/RT/x86_64/os`) and the **NFV** repo on Rocky 9
-  (`…/rocky/9/NFV/x86_64/os`).  RHEL remains the leading signal — the
-  same Red Hat CVE record carries a separate `kernel-rt`
-  `package_state`; while it reads **Affected** for RHEL 9 GA, the
-  `9 (kernel-rt)` row stays `:x:`.
+- **EL `kernel-rt`** is tracked in prose only (a caveat in the
+  `### Rocky Linux / RHEL family` section — no table rows): read the
+  separate `kernel-rt` `package_state` in the same Red Hat CVE record.
+  While it reads **Affected** for RHEL 9 GA the caveat stands; there is
+  no need to poll Rocky's RT (EL8) / NFV (EL9) repodata for it.
 - **Amazon Linux**: the machine-readable ALAS signal is the repodata
   **`updateinfo.xml.gz`** (maps CVE → ALAS → fixed kernel NVR) — the per-CVE
   ALAS HTML pages (`alas.aws.amazon.com/cve/html/…`) are JS-rendered and
