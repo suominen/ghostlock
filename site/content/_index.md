@@ -116,10 +116,10 @@ carrying the fix, and *Fixed since* the date it first held (both stay
 | Linux kernel | 5.10.x | 5.10.261 | 5.10.261 | 2026-07-24 | :white_check_mark: Fixed — LTS |
 | Debian | sid (unstable) | 7.1.4-1 | 7.0.4-1 | 2026-05-08 | :white_check_mark: Fixed |
 | Debian | forky (testing) | 7.1.3-1 | 7.0.4-1 | 2026-05-10 | :white_check_mark: Fixed |
-| Debian | 13 (trixie) | 6.12.96-1 | 6.12.86-1 | 2026-05-08 | :white_check_mark: Fixed — in the base suite |
-| Debian | 12 (bookworm) | 6.1.177-1 | 6.1.176-1 | 2026-07-03 | :white_check_mark: Fixed — via `bookworm-security` (DLA-4665-1) |
-| Debian | 11 (bullseye, LTS) | 5.10.259-1 | — | — | :x: Vulnerable — default kernel, no fixed upload |
-| Debian | 11 (linux-6.1 opt-in) | 6.1.176-1~deb11u1 | 6.1.176-1~deb11u1 | 2026-07-04 | :white_check_mark: Fixed — DLA-4671-1; requires switching to `linux-6.1` |
+| Debian | 13 (trixie) | 6.12.96-1 | 6.12.86-1 | 2026-05-08 | :white_check_mark: Fixed |
+| Debian | 12 (bookworm) | 6.1.177-1 | 6.1.176-1 | 2026-07-03 | :white_check_mark: Fixed — DLA-4665-1 |
+| Debian | 11 (bullseye, LTS) | 5.10.259-1 | — | — | :x: Vulnerable |
+| Debian | 11 (linux-6.1 opt-in) | 6.1.176-1~deb11u1 | 6.1.176-1~deb11u1 | 2026-07-04 | :white_check_mark: Fixed — DLA-4671-1 |
 | Proxmox VE | 9 (7.0 default) | 7.0.14-6-pve | 7.0.14-1-pve | 2026-07-01 | :white_check_mark: Fixed — base ≥ the 7.0.4 backport |
 | Proxmox VE | 9 (6.14 opt-in) | 6.14.11-9-pve | — | — | :x: Vulnerable — no cherry-pick |
 | Proxmox VE | 9 (6.17 opt-in) | 6.17.13-19-pve | 6.17.13-16-pve | 2026-07-09 | :white_check_mark: Fixed — cherry-picked from `linux-6.18.y` |
