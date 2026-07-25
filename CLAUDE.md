@@ -246,12 +246,31 @@ first-fixed build turns out to have been wrong.
 
 ### Verification log
 
-When you re-verify entries, update the `## Verification log` section rather
-than appending a line per re-check.  Bump the `*Last verified <date>.*`
-line under the heading and edit the relevant `### Upstream` /
-`### Distributions` subsection in place.  Add a new `###` subsection only
-when a genuinely new topic appears.  The verified-date lives **only** in the
-`*Last verified <date>.*` header — do not repeat it inline.  Method/source
+The section has a fixed shape: a short reader-facing intro paragraph
+and the `*Last verified <date>.*` line stay **visible**, and the log
+body is collapsed inside a `{{< details summary="Full verification
+log" >}} … {{< /details >}}` shortcode wrapper (rendered by
+`site/layouts/shortcodes/details.html`).  Keep the intro, the date
+line's placement, and the wrapper intact.  Inside the wrapper the
+subsections are `####` headings (h4 — deliberately below the ToC's
+`endLevel`, so the collapsed content has no ToC anchors pointing into
+it).
+
+Log entries are **one top-level bullet per source or topic**, opening
+with a terse bold lead and the method attribution (e.g. `**Debian**
+(via the security-tracker JSON, …):`), followed by **one fact per
+nested sub-bullet** — never run multiple facts together into a
+paragraph-bullet; the nesting is what keeps the log readable.
+Sub-bullets follow the table's ordering conventions (releases
+descending; default kernel before opt-in series ascending).
+
+When you re-verify entries, update the section rather than appending a
+line per re-check.  Bump the `*Last verified <date>.*` line and edit
+the relevant `#### Upstream` / `#### Distributions` subsection in
+place — usually the one sub-bullet whose fact changed.  Add a new
+`####` subsection only when a genuinely new topic appears.  The
+verified-date lives **only** in the `*Last verified <date>.*` header —
+do not repeat it inline.  Method/source
 attribution *without* a date is fine (e.g. `(via …/madison)`,
 `(checked against ~/src/linux/stable)`).
 

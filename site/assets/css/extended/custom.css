@@ -126,6 +126,14 @@
   text-align: left;
 }
 
+/* Collapsible sections (the details shortcode — e.g. the full
+   verification log): a quiet, clickable appendix toggle. */
+.post-content details > summary {
+  cursor: pointer;
+  width: fit-content;
+  font-weight: 500;
+}
+
 .copy-code {
   padding: 4px;
   align-items: center;

@@ -283,29 +283,37 @@ workloads until the host kernel is patched.
 
 ## Verification log
 
+Every verdict in the table above is backed by a checkable source. This
+log records the provenance — the advisory, repository index, or git
+reference that established each fact — so any row can be audited or
+reproduced. Most readers never need it.
+
 *Last verified 2026-07-25.*
 
-### Upstream
+{{< details summary="Full verification log" >}}
+#### Upstream
 
 - The fix is `3bfdc63936dd` (*rtmutex: Use waiter::task instead of current
   in remove_waiter()*), first released in **v7.1** (confirmed with
   `git describe --contains` against `~/src/linux/stable`). It makes
   `remove_waiter()` operate on `waiter->task` rather than `current`.
 - The bug was introduced by `8161239a8bcc` in **v2.6.39**.
-- **`vulns.git` record now published** (appeared after seed; inspected via
-  `origin/master`). The `.dyad` gives authoritative per-branch first-fixed
-  commits, which are earlier than the seed had recorded — the seed grep
-  (`--grep=3bfdc63936dd --grep='waiter::task'`) matched a follow-up fix
-  (`4afda3a1da02` et al., upstream `40a25d59e85b`) that cites the original fix
-  in its commit body, not the backport of the original fix itself. Corrected
-  first-fixed commits (confirmed via `git describe --contains`): 6.1.175
-  (`d8cce4773c2b`), 6.6.140 (`8a1fc8d698ac`), 6.12.86 (`6d52dfcb2a5d`),
-  6.18.27 (`3fb7394a8377`), 7.0.4 (`88614876370a`). Mainline carries it since
-  v7.1. **5.15.y first fixed in 5.15.212** (backport `838ce5cb5d93`, tagged
-  2026-07-24); **5.10.y first fixed in 5.10.261** (backport `f3fa3424bceb`,
-  tagged 2026-07-24). Confirmed via subject/ref grep and `git describe
-  --contains` and the `.dyad` (now updated — CNA record covers 5.10.261 and
-  5.15.212 alongside 6.1–7.1).
+- **`vulns.git` record** (appeared after seed; inspected via
+  `origin/master`; confirmed via subject/ref grep and
+  `git describe --contains`):
+  - The `.dyad` gives authoritative per-branch first-fixed commits,
+    earlier than the seed had recorded — the seed grep
+    (`--grep=3bfdc63936dd --grep='waiter::task'`) matched a follow-up
+    fix (`4afda3a1da02` et al., upstream `40a25d59e85b`) that cites the
+    original fix in its commit body, not the backport of the original
+    fix itself.
+  - Corrected first-fixed commits: 7.0.4 (`88614876370a`), 6.18.27
+    (`3fb7394a8377`), 6.12.86 (`6d52dfcb2a5d`), 6.6.140
+    (`8a1fc8d698ac`), 6.1.175 (`d8cce4773c2b`). Mainline carries the
+    fix since v7.1.
+  - **5.15.y first fixed in 5.15.212** (backport `838ce5cb5d93`) and
+    **5.10.y in 5.10.261** (`f3fa3424bceb`), both tagged 2026-07-24;
+    the CNA record now covers them alongside 6.1–7.1.
 - **NVD CVSS score published**: CVSS 7.8 HIGH
   (`CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H`), confirming Red Hat's
   Important severity rating (via NVD REST API).
@@ -313,79 +321,92 @@ workloads until the host kernel is patched.
   7.2-rc4; 7.1.5; 7.0.14 (EOL, fixed since 7.0.4); 6.18.40; 6.12.97;
   6.6.145; 6.1.178; 5.15.212; 5.10.261.
 
-### Distributions
+#### Distributions
 
 - **Debian** (via the security-tracker JSON, tracker.debian.org migration
-  news, and snapshot.debian.org `first_seen`): sid — first fixed upload
-  `7.0.4-1` on 2026-05-08 (now 7.1.4-1); testing/forky — `7.0.4-1` migrated
-  2026-05-10 (now 7.1.3-1); stable/trixie — base suite `6.12.86-1` on
-  2026-05-08, now 6.12.94-1 in trixie (trixie-security carries 6.12.96-1);
-  oldstable/bookworm — `bookworm-security 6.1.176-1` (DLA-4665-1) on
-  2026-07-03 (now 6.1.177-1 in bookworm-security), with 6.1.176 above
-  upstream first-fixed 6.1.175. LTS/bullseye stays `:x:`: the tracker
-  keeps `src:linux` (5.10.y) **open** — only the opt-in `linux-6.1` package
-  (bookworm's 6.1 kernel rebuilt for bullseye) is resolved, at
-  `6.1.176-1~deb11u1` (DLA-4671-1, 2026-07-04); the row tracks the default
-  kernel. The seed had trixie's first-fixed wrong (recorded 6.12.95-1 /
-  2026-07-05; actual 6.12.86-1 / 2026-05-08) because the upstream first-fixed
-  series was also wrong at seed.
-- **NixOS** (via the local nixpkgs clone): `packageAliases.linux_default` is
-  `linux_6_18` on both nixos-unstable and nixos-26.05; nixos-unstable ships
-  6.18.39, nixos-26.05 ships 6.18.39. `linuxPackages_latest` (`linux_7_1`)
-  is 7.1.4. Both channels fixed; no verdict change.
+  news, and snapshot.debian.org `first_seen`):
+  - sid — first fixed upload `7.0.4-1` on 2026-05-08; now 7.1.4-1.
+  - testing/forky — `7.0.4-1` migrated 2026-05-10; now 7.1.3-1.
+  - stable/trixie — base suite `6.12.86-1` on 2026-05-08; now 6.12.94-1
+    in trixie, 6.12.96-1 in trixie-security.
+  - oldstable/bookworm — `bookworm-security 6.1.176-1` (DLA-4665-1) on
+    2026-07-03; now 6.1.177-1 in bookworm-security; 6.1.176 is above
+    upstream first-fixed 6.1.175.
+  - LTS/bullseye — the tracker keeps `src:linux` (5.10.y) **open**, so
+    the default row stays `:x:`; the opt-in `linux-6.1` package
+    (bookworm's 6.1 kernel rebuilt for bullseye) is resolved at
+    `6.1.176-1~deb11u1` (DLA-4671-1, 2026-07-04) — its own row.
+  - Seed correction — trixie's first-fixed was recorded wrong at seed
+    (6.12.95-1 / 2026-07-05; actual 6.12.86-1 / 2026-05-08) because the
+    upstream first-fixed series was also wrong at seed.
+- **NixOS** (via the local nixpkgs clone):
+  - `packageAliases.linux_default` is `linux_6_18` on both
+    nixos-unstable and nixos-26.05; both ship 6.18.39 — fixed.
+  - `linuxPackages_latest` (`linux_7_1`) is 7.1.4.
 - **Proxmox VE** (via pve-no-subscription `Packages` index and pve-kernel
-  `debian/changelog`): PVE 9 default (`proxmox-default-kernel 2.1.0`) depends
-  on `proxmox-kernel-7.0`; highest available is `7.0.14-6-pve` — still fixed.
-  PVE 8 default is still `proxmox-default-kernel 1.1.0` →
-  `proxmox-kernel-6.8`, still vulnerable; PVE 8 has added opt-in **6.11**
-  (highest `6.11.11-2-pve`) and opt-in **6.14** (highest
-  `6.14.11-9-bpo12-pve`) series — neither has the cherry-pick. PVE 9 opt-in
-  6.17 (highest `6.17.13-19-pve`): cherry-pick confirmed — fixed. PVE 9
-  opt-in 6.14 (highest `6.14.11-9-pve`): no cherry-pick, still vulnerable.
+  `debian/changelog`):
+  - PVE 9 default — `proxmox-default-kernel 2.1.0` depends on
+    `proxmox-kernel-7.0`; highest available `7.0.14-6-pve` — fixed.
+  - PVE 9 opt-in 6.14 — highest `6.14.11-9-pve`, no cherry-pick —
+    vulnerable.
+  - PVE 9 opt-in 6.17 — cherry-pick confirmed; highest
+    `6.17.13-19-pve` — fixed.
+  - PVE 8 default — `proxmox-default-kernel 1.1.0` →
+    `proxmox-kernel-6.8` — vulnerable.
+  - PVE 8 opt-ins 6.11 (highest `6.11.11-2-pve`) and 6.14 (highest
+    `6.14.11-9-bpo12-pve`) — neither has the cherry-pick.
 - **Rocky / RHEL family** (via the Red Hat security data API, AlmaLinux
-  errata, and Rocky BaseOS repodata): **RHSA-2026:38491** (RHEL 9,
-  `5.14.0-687.25.1.el9_8`) and **RHSA-2026:38492** (RHEL 10.2,
-  `6.12.0-211.33.1.el10_2`) shipped 2026-07-13; AlmaLinux rebuilt both
-  (ALSA-2026:38491 / ALSA-2026:38492). Rocky 9
-  (`5.14.0-687.25.1.el9_8`) and Rocky 10 (`6.12.0-211.33.1.el10_2`)
-  carry the fixed kernel NVR in their BaseOS repos; RLSA-2026:38491
-  (Rocky 9) and RLSA-2026:38492 (Rocky 10) now confirmed in updateinfo.
-  **RHSA-2026:39083** (RHEL 8,
-  `4.18.0-553.143.1.el8_10`) shipped; AlmaLinux rebuilt it as
-  **ALSA-2026:39083**. Rocky 8 skipped `.143.1` and shipped
-  `4.18.0-553.144.1.el8_10` as RLSA-2026:39179 (2026-07-15) — above the
-  RHEL fixed NVR, carrying the fix cumulatively (confirmed via primary.xml
-  and updateinfo; CVE-2026-43499 not listed in the RLSA but the build
-  supersedes the fixed NVR). **RHSA-2026:39082** (RHEL 8,
-  `kernel-rt 4.18.0-553.143.1.rt7.484.el8_10`) shipped 2026-07-14;
-  Rocky 8's RT repo carries `4.18.0-553.144.1.rt7.485.el8_10`, which
-  supersedes the fixed NVR and carries the fix cumulatively (no RLSA
-  listing the CVE — same pattern as the standard kernel).
-  **RHSA-2026:39983** (`kernel-rt 5.14.0-284.181.1.rt14.466.el9_2`) shipped
-  for RHEL 9.2 E4S; Rocky's NFV repo carries `5.14.0-687.12.1.el9_8` for
-  the GA stream with no RLSA for this advisory. RHEL 9 GA `kernel-rt` still
-  shows `fix_state: Affected` (via Red Hat security data API); `kernel-rt`
-  on RHEL 9 / Rocky 9 GA remains vulnerable. Additional RHEL advisories
-  not tracked in the table (Rocky has no EUS, ELS, or NV rows):
-  **RHSA-2026:37728** (RHEL 10 NV, `kernel 6.12.0-231.16.el10nv`),
-  **RHSA-2026:39984** (RHEL 8.4 AUS/EUS, `kernel 4.18.0-305.198.1.el8_4`),
-  **RHSA-2026:40068** (RHEL 8.6 AUS/EUS, `kernel 4.18.0-372.201.1.el8_6`),
-  **RHSA-2026:40082** (RHEL 9.2 E4S, `kernel 5.14.0-284.181.1.el9_2`),
-  **RHSA-2026:40425** (RHEL 9.6 EUS, `kernel 5.14.0-570.128.1.el9_6`),
-  **RHSA-2026:40760** (RHEL 8.8 TUS/E4S, `kernel 4.18.0-477.152.1.el8_8`),
-  **RHSA-2026:41062** (RHEL 10.0 EUS, `kernel 6.12.0-55.89.1.el10_0`),
-  **RHSA-2026:41063** (RHEL 9.4 E4S, `kernel 5.14.0-427.138.1.el9_4`),
-  **RHSA-2026:41234** (RHEL 7 ELS, `kernel-rt 3.10.0-1160.156.1.rt56.1308.el7`),
-  **RHSA-2026:41235** (RHEL 7 ELS, `kernel 3.10.0-1160.156.1.el7`),
-  **RHSA-2026:41920** (RHEL 6 ELS, `kernel 2.6.32-754.62.1.el6`).
-- **Amazon Linux** (via the repodata `updateinfo.xml`): **AL2023 fixed** on
-  all three streams — ALAS2023-2026-1882 (default `kernel` 6.1, current
-  `6.1.176-220.360`), ALAS2023-2026-1753 (`kernel6.12`), ALAS2023-2026-1754
-  (`kernel6.18`). **AL2** never received an ALAS for CVE-2026-43499 and
-  reached end of support on 2026-06-30 (per the AWS AL2 FAQ; confirmed
-  against endoflife.date) — AWS no longer ships security updates for AL2
-  core packages, so the 4.14 / 5.10 / 5.15 streams remain vulnerable with
-  no fix expected.
+  errata, and Rocky BaseOS repodata):
+  - EL10 / EL9 standard `kernel` — **RHSA-2026:38492** (RHEL 10.2,
+    `6.12.0-211.33.1.el10_2`) and **RHSA-2026:38491** (RHEL 9,
+    `5.14.0-687.25.1.el9_8`) shipped 2026-07-13; AlmaLinux rebuilt both
+    (ALSA-2026:38492 / ALSA-2026:38491); Rocky 10 and Rocky 9 carry the
+    fixed NVRs in BaseOS, RLSA-2026:38492 / RLSA-2026:38491 confirmed
+    in updateinfo.
+  - EL8 standard `kernel` — **RHSA-2026:39083**
+    (`4.18.0-553.143.1.el8_10`); AlmaLinux rebuilt it as
+    **ALSA-2026:39083**. Rocky 8 skipped `.143.1` and shipped
+    `4.18.0-553.144.1.el8_10` as RLSA-2026:39179 (2026-07-15) — above
+    the RHEL fixed NVR, carrying the fix cumulatively (confirmed via
+    primary.xml and updateinfo; CVE-2026-43499 not listed in the RLSA
+    but the build supersedes the fixed NVR).
+  - `kernel-rt`, EL9 GA — **RHSA-2026:39983**
+    (`kernel-rt 5.14.0-284.181.1.rt14.466.el9_2`) shipped for the RHEL
+    9.2 E4S path only; Rocky's NFV repo carries `5.14.0-687.12.1.el9_8`
+    for the GA stream with no RLSA for this advisory. RHEL 9 GA
+    `kernel-rt` still shows `fix_state: Affected`; `kernel-rt` on
+    RHEL 9 / Rocky 9 GA remains vulnerable.
+  - `kernel-rt`, EL8 — **RHSA-2026:39082**
+    (`kernel-rt 4.18.0-553.143.1.rt7.484.el8_10`) shipped 2026-07-14;
+    Rocky 8's RT repo carries `4.18.0-553.144.1.rt7.485.el8_10`, which
+    supersedes the fixed NVR and carries the fix cumulatively (no RLSA
+    listing the CVE — same pattern as the standard kernel).
+  - Additional RHEL advisories not tracked in the table (Rocky has no
+    EUS, ELS, or NV rows): **RHSA-2026:37728** (RHEL 10 NV,
+    `kernel 6.12.0-231.16.el10nv`), **RHSA-2026:41062** (RHEL 10.0
+    EUS, `kernel 6.12.0-55.89.1.el10_0`), **RHSA-2026:40425** (RHEL
+    9.6 EUS, `kernel 5.14.0-570.128.1.el9_6`), **RHSA-2026:41063**
+    (RHEL 9.4 E4S, `kernel 5.14.0-427.138.1.el9_4`),
+    **RHSA-2026:40082** (RHEL 9.2 E4S, `kernel 5.14.0-284.181.1.el9_2`),
+    **RHSA-2026:40760** (RHEL 8.8 TUS/E4S,
+    `kernel 4.18.0-477.152.1.el8_8`), **RHSA-2026:40068** (RHEL 8.6
+    AUS/EUS, `kernel 4.18.0-372.201.1.el8_6`), **RHSA-2026:39984**
+    (RHEL 8.4 AUS/EUS, `kernel 4.18.0-305.198.1.el8_4`),
+    **RHSA-2026:41235** (RHEL 7 ELS, `kernel 3.10.0-1160.156.1.el7`),
+    **RHSA-2026:41234** (RHEL 7 ELS,
+    `kernel-rt 3.10.0-1160.156.1.rt56.1308.el7`), **RHSA-2026:41920**
+    (RHEL 6 ELS, `kernel 2.6.32-754.62.1.el6`).
+- **Amazon Linux** (via the repodata `updateinfo.xml`):
+  - AL2023 default `kernel` (6.1) — ALAS2023-2026-1882; current
+    `6.1.176-220.360` — fixed.
+  - AL2023 `kernel6.12` — ALAS2023-2026-1753 — fixed.
+  - AL2023 `kernel6.18` — ALAS2023-2026-1754 — fixed.
+  - AL2 — never received an ALAS for CVE-2026-43499 and reached end of
+    support on 2026-06-30 (per the AWS AL2 FAQ; confirmed against
+    endoflife.date) — AWS no longer ships security updates for AL2
+    core packages, so the 4.14 / 5.10 / 5.15 streams remain vulnerable
+    with no fix expected.
+{{< /details >}}
 
 ## References
 
