@@ -109,7 +109,7 @@ carrying the fix, and *Fixed since* the date it first held (both stay
 | Linux kernel | 7.1.x | 7.1.5 | 7.1 | 2026-06-14 | :white_check_mark: Fixed — at the initial release |
 | Linux kernel | 7.0.x | 7.0.14 | 7.0.4 | 2026-05-07 | :white_check_mark: Fixed — EOL |
 | Linux kernel | 6.18.x | 6.18.40 | 6.18.27 | 2026-05-07 | :white_check_mark: Fixed — LTS |
-| Linux kernel | 6.12.x | 6.12.97 | 6.12.86 | 2026-05-07 | :white_check_mark: Fixed — LTS |
+| Linux kernel | 6.12.x | 6.12.98 | 6.12.86 | 2026-05-07 | :white_check_mark: Fixed — LTS |
 | Linux kernel | 6.6.x | 6.6.145 | 6.6.140 | 2026-05-17 | :white_check_mark: Fixed — LTS |
 | Linux kernel | 6.1.x | 6.1.178 | 6.1.175 | 2026-06-01 | :white_check_mark: Fixed — LTS |
 | Linux kernel | 5.15.x | 5.15.212 | 5.15.212 | 2026-07-24 | :white_check_mark: Fixed — LTS |
@@ -128,12 +128,12 @@ carrying the fix, and *Fixed since* the date it first held (both stay
 | Proxmox VE | 8 (6.14 opt-in) | 6.14.11-9-bpo12-pve | — | — | :x: Vulnerable — no cherry-pick |
 | NixOS | Unstable | 6.18.39 | 6.18.36 | 2026-06-28 | :white_check_mark: Fixed — default moved to `linux_6_18` |
 | NixOS | 26.05 | 6.18.39 | 6.18.36 | 2026-07-03 | :white_check_mark: Fixed — default moved to `linux_6_18` |
-| Rocky Linux | 10 | 6.12.0-211.33.1.el10_2 | 6.12.0-211.33.1.el10_2 | 2026-07-15 | :white_check_mark: Fixed — RLSA-2026:38492 |
-| Rocky Linux | 9 | 5.14.0-687.25.1.el9_8 | 5.14.0-687.25.1.el9_8 | 2026-07-15 | :white_check_mark: Fixed — RLSA-2026:38491 |
-| Rocky Linux | 8 | 4.18.0-553.144.1.el8_10 | 4.18.0-553.144.1.el8_10 | 2026-07-15 | :white_check_mark: Fixed — RLSA-2026:39179 |
-| Amazon Linux | 2023 (kernel 6.1) | 6.1.176-220.360 | 6.1.175-219.357 | 2026-06-22 | :white_check_mark: Fixed — ALAS2023-2026-1882 |
-| Amazon Linux | 2023 (kernel6.12) | 6.12.94-123.176 | 6.12.88-119.157 | 2026-05-25 | :white_check_mark: Fixed — ALAS2023-2026-1753 |
-| Amazon Linux | 2023 (kernel6.18) | 6.18.36-69.136 | 6.18.30-61.116 | 2026-05-25 | :white_check_mark: Fixed — ALAS2023-2026-1754 |
+| Rocky Linux | 10 | 6.12.0-211.37.1.el10_2 | 6.12.0-211.33.1.el10_2 | 2026-07-15 | :white_check_mark: Fixed — RLSA-2026:38492 |
+| Rocky Linux | 9 | 5.14.0-687.29.1.el9_8 | 5.14.0-687.25.1.el9_8 | 2026-07-15 | :white_check_mark: Fixed — RLSA-2026:38491 |
+| Rocky Linux | 8 | 4.18.0-553.146.1.el8_10 | 4.18.0-553.144.1.el8_10 | 2026-07-15 | :white_check_mark: Fixed — RLSA-2026:39179 |
+| Amazon Linux | 2023 (kernel 6.1) | 6.1.176-221.367 | 6.1.175-219.357 | 2026-06-22 | :white_check_mark: Fixed — ALAS2023-2026-1882 |
+| Amazon Linux | 2023 (kernel6.12) | 6.12.94-123.190 | 6.12.88-119.157 | 2026-05-25 | :white_check_mark: Fixed — ALAS2023-2026-1753 |
+| Amazon Linux | 2023 (kernel6.18) | 6.18.38-73.137 | 6.18.30-61.116 | 2026-05-25 | :white_check_mark: Fixed — ALAS2023-2026-1754 |
 {.distros}
 
 ### Linux kernel
@@ -318,7 +318,7 @@ reproduced. Most readers never need it.
   (`CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H`), confirming Red Hat's
   Important severity rating (via NVD REST API).
 - Current point releases (`https://www.kernel.org/finger_banner`): mainline
-  7.2-rc4; 7.1.5; 7.0.14 (EOL, fixed since 7.0.4); 6.18.40; 6.12.97;
+  7.2-rc4; 7.1.5; 7.0.14 (EOL, fixed since 7.0.4); 6.18.40; 6.12.98;
   6.6.145; 6.1.178; 5.15.212; 5.10.261.
 
 #### Distributions
@@ -398,7 +398,7 @@ reproduced. Most readers never need it.
     (RHEL 6 ELS, `kernel 2.6.32-754.62.1.el6`).
 - **Amazon Linux** (via the repodata `updateinfo.xml`):
   - AL2023 default `kernel` (6.1) — ALAS2023-2026-1882; current
-    `6.1.176-220.360` — fixed.
+    `6.1.176-221.367` — fixed.
   - AL2023 `kernel6.12` — ALAS2023-2026-1753 — fixed.
   - AL2023 `kernel6.18` — ALAS2023-2026-1754 — fixed.
   - AL2 — never received an ALAS for CVE-2026-43499 and reached end of
