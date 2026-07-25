@@ -61,11 +61,10 @@ thing you may leave behind is the edited tracker (and its commit).
    (e.g. /finger_banner) are still WebFetch-able.
 
    a. Upstream stable kernels: GET https://www.kernel.org/finger_banner
-      for the current point release per stable tree. The maintained
-      in-window branches (6.1.y, 6.6.y, 6.12.y, 6.18.y, 7.0.y, 7.1.y)
-      already carry the backport (first fixed at 6.1.177 / 6.6.144 /
-      6.12.95 / 6.18.36 / 7.0.13 / v7.1). Check whether 5.15.y or 5.10.y
-      ever pick it up (still unpatched at seed). The backport is a
+      for the current point release per stable tree. Every maintained
+      branch carries the backport (first fixed at 6.1.175 / 6.6.140 /
+      6.12.86 / 6.18.27 / 7.0.4 / v7.1, and since 2026-07-24 also
+      5.15.212 / 5.10.261, per the vulns.git .dyad). The backport is a
       cherry-pick with a NEW sha that cites the upstream commit, so search
       by upstream reference/subject, not `git tag --contains`:
         git -C ~/src/linux/stable log v<series>..origin/linux-<series>.y \
@@ -73,6 +72,9 @@ thing you may leave behind is the edited tracker (and its commit).
       Empty output means the series is still unpatched. Keep the range
       bounded to v<series>.. so an ancient unrelated commit can't read as a
       false "fixed".
+      In the *Upstream fixed versions* table, update only the *Current*
+      column; *First fixed* is sticky (from the .dyad) and with every
+      branch now fixed it should never change.
 
    b. CVE record — CVE-2026-43499 is assigned but had NO vulns.git record
       at seed (2026-07-09). Check whether it has appeared (inspect via

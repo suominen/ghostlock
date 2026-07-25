@@ -162,10 +162,13 @@ carrying the old one across.
 Each run:
 
 - Re-check the *Upstream fixed versions* table: has any in-window branch
-  advanced?  The maintained lines 6.1.y / 6.6.y / 6.12.y / 6.18.y / 7.0.y /
-  7.1.y already carry the fix (6.1.175 / 6.6.140 / 6.12.86 / 6.18.27 /
-  7.0.4 / 7.1, per the `vulns.git` `.dyad`); watch whether 5.15.y or 5.10.y
-  ever pick it up.  Verify via `~/src/linux/stable` (recipe below).
+  advanced?  Every maintained line carries the fix — 6.1.y / 6.6.y /
+  6.12.y / 6.18.y / 7.0.y / 7.1.y (6.1.175 / 6.6.140 / 6.12.86 / 6.18.27 /
+  7.0.4 / 7.1) and, since 2026-07-24, 5.15.y / 5.10.y (5.15.212 /
+  5.10.261), per the `vulns.git` `.dyad`.  Verify via `~/src/linux/stable`
+  (recipe below).  In that table, **only the *Current* column moves on a
+  routine run**; *First fixed* is sticky, set once from the `.dyad`, and
+  with every branch now fixed it should never change again.
 - For a distro row, re-pull the distro's **kernel** version and compare:
   the kernel reaches its branch's first-fixed release **or** a distro
   advisory ships the `3bfdc63936dd` backport ⇒ flip to :white_check_mark:,

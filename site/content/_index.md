@@ -90,22 +90,22 @@ architecture is affected** — there is no architecture exemption.
 ## Upstream fixed versions
 
 The fix reached Linus as **v7.1** and the stable maintainers backported it
-across all maintained lines: **6.1.175**, **6.6.140**, **6.12.86**,
-**6.18.27**, and **7.0.4**. 7.0.y took the backport in 7.0.4, well before
-that line reached end of life at 7.0.14. The pre-6.1 longterm lines also
-received the backport on 2026-07-24: **5.15.212** and **5.10.261**.
+across all maintained lines — the *First fixed* column below.  7.0.y took
+the backport in 7.0.4, well before that line reached end of life at
+7.0.14.  The pre-6.1 longterm lines (5.15.y, 5.10.y) also received the
+backport on 2026-07-24.
 
-| Branch | Status | Current | Notes |
-|---|---|---|---|
-| Linus mainline | :white_check_mark: Carries `3bfdc63936dd` | v7.2-rc4 | first fixed release v7.1 |
-| 7.1.x | :white_check_mark: Carries the fix | 7.1.5 | fixed as of the v7.1 release |
-| 7.0.x | :white_check_mark: Carries the backport | 7.0.14 (EOL) | backported in 7.0.4 before end of life |
-| 6.18.x | :white_check_mark: Carries the backport | 6.18.40 | LTS; first fixed point release 6.18.27 |
-| 6.12.x | :white_check_mark: Carries the backport | 6.12.97 | LTS; first fixed point release 6.12.86 |
-| 6.6.x | :white_check_mark: Carries the backport | 6.6.145 | LTS; first fixed point release 6.6.140 |
-| 6.1.x | :white_check_mark: Carries the backport | 6.1.178 | LTS; first fixed point release 6.1.175 |
-| 5.15.x | :white_check_mark: Carries the backport | 5.15.212 | LTS; first fixed point release 5.15.212 |
-| 5.10.x | :white_check_mark: Carries the backport | 5.10.261 | LTS; first fixed point release 5.10.261 |
+| Branch | Status | First fixed | Current | Notes |
+|---|---|---|---|---|
+| Linus mainline | :white_check_mark: Carries `3bfdc63936dd` | v7.1 | v7.2-rc4 | |
+| 7.1.x | :white_check_mark: Carries the fix | 7.1 | 7.1.5 | fixed as of the initial release |
+| 7.0.x | :white_check_mark: Carries the backport | 7.0.4 | 7.0.14 (EOL) | backported before end of life |
+| 6.18.x | :white_check_mark: Carries the backport | 6.18.27 | 6.18.40 | LTS |
+| 6.12.x | :white_check_mark: Carries the backport | 6.12.86 | 6.12.97 | LTS |
+| 6.6.x | :white_check_mark: Carries the backport | 6.6.140 | 6.6.145 | LTS |
+| 6.1.x | :white_check_mark: Carries the backport | 6.1.175 | 6.1.178 | LTS |
+| 5.15.x | :white_check_mark: Carries the backport | 5.15.212 | 5.15.212 | LTS |
+| 5.10.x | :white_check_mark: Carries the backport | 5.10.261 | 5.10.261 | LTS |
 
 When verifying a tree directly, the fixed function is `remove_waiter()` in
 `kernel/locking/rtmutex.c`; the fix replaces the use of `current` /
