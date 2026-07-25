@@ -132,14 +132,15 @@ same rule applies to version lists in prose.  Keep the `{.distros}`
 block attribute on the line **immediately after** the table (no blank
 line between).
 
-Amazon rows are **one per kernel stream** — name the stream in the
-**Release** column (`2023 (kernel6.12)`, `2 (kernel-5.10)`); keep every
-stream (default + opt-in) as its own row, and add a row when Amazon ships a
-new stream.  **AL2 reached end of support on 2026-06-30** with no ALAS for
-this CVE — AWS ships no further security updates for AL2 core packages, so
-the three AL2 rows are terminal `:x:` ("no fix expected"); don't poll AL2
-repodata expecting a verdict change.  AL2023 remains supported and is
-polled as usual.
+Amazon rows are **one per AL2023 kernel stream** — name the stream in
+the **Release** column (`2023 (kernel6.12)`); keep every supported
+stream (default + opt-in) as its own row, and add a row when Amazon
+ships a new stream.  **AL2 has no rows**: it reached end of support on
+2026-06-30 — before this tracker existed — with no ALAS for this CVE,
+so it is covered collectively in the `### Amazon Linux` prose (all
+three streams vulnerable, no fix expected); don't poll AL2 repodata and
+don't re-add AL2 rows.  AL2023 remains supported and is polled as
+usual.
 
 Debian suites get one row for the **default** `linux` kernel and, where
 one exists, a separate row per opt-in alternative kernel package (e.g.
@@ -602,8 +603,8 @@ The RPM repodata then confirms the Rocky ship and gives the current NVR
   opt-in `kernel6.12`, and `kernel6.18` — a narrow-window bug can leave the
   default not-affected while an opt-in stream is affected (and separately
   fixed).  Read current versions from `primary.xml.gz`.  Mirror:
-  `…/al2023/core/mirrors/latest/x86_64/mirror.list` (AL2023) or
-  `…/2/core/latest/x86_64/mirror.list` (AL2).
+  `…/al2023/core/mirrors/latest/x86_64/mirror.list`.  (AL2 is EOL and
+  untracked — no AL2 repodata pulls.)
 
 ## Debian kernel version source
 

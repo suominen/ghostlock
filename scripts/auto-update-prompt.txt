@@ -102,7 +102,8 @@ thing you may leave behind is the edited tracker (and its commit).
    "not affected" rows. Rows exist per kernel stream, not just per
    release: Debian suites' default kernel plus bullseye's opt-in
    linux-6.1; PVE default and opt-in proxmox-kernel series; Rocky's
-   standard kernel; every Amazon stream. EL kernel-rt is NOT a row —
+   standard kernel; every AL2023 stream (AL2 is EOL — prose-only, no
+   rows, no repodata polls). EL kernel-rt is NOT a row —
    it is a prose-only caveat in the "### Rocky Linux / RHEL family"
    section, keyed on the RHEL kernel-rt fix_state in the Red Hat
    security data API. For each row, re-pull the KERNEL version and
