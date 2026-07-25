@@ -51,23 +51,42 @@
    left-aligned and set off from the preceding group. With separate
    borders (below) the 1px top border stacks on the 1px bottom border
    of the row above, giving the same 2px divider as under collapsed
-   borders. */
+   borders.
+
+   Each group heading also sticks, directly below the stuck column
+   header, so the current distribution stays identifiable mid-scroll;
+   the next group's heading slides over it. The offset is the header
+   row's live height, published as --distros-thead-h by the same
+   script that creates these rows; the em fallback approximates one
+   header line. z-index sits below the column header (2), above plain
+   cells. */
 .post-content table.distros tr.distro-group th {
   text-align: left;
   border-top: 1px solid var(--border);
   background: var(--code-bg);
+  position: sticky;
+  top: var(--distros-thead-h, 2.6em);
+  z-index: 1;
 }
 
 /* Sticky column headers: keep the header row visible while scrolling
-   the long table. Two prerequisites, both handled here:
+   the long table. Three prerequisites, all handled here:
    - position: sticky must sit on the th cells, not on thead/tr;
    - collapsed borders are painted by the row grid and would scroll
      away from under the stuck cells, so this table switches to
      separate borders (spacing 0) and rebuilds the theme's 1px grid
      from per-cell right+bottom borders (plus left on the first column
-     and top on the header), which travel with their cells.
+     and top on the header), which travel with their cells;
+   - the theme's base reset sets `table { overflow-x: auto }`, and any
+     non-visible overflow-x forces overflow-y to compute to auto too,
+     making the table its own scroll container — sticky then binds to
+     the table's scrollport, which never scrolls vertically, so the
+     header never sticks. overflow: visible restores viewport-relative
+     sticking; an over-wide table now widens the page instead of
+     scrolling internally, the trade-off already documented above.
    The opaque background hides the rows sliding underneath. */
 .post-content table.distros {
+  overflow: visible;
   border-collapse: separate;
   border-spacing: 0;
 }

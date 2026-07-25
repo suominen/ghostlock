@@ -33,6 +33,15 @@
             cell.remove();
             if (row.cells[0]) row.cells[0].classList.add('nowrap');
         }
+        // Publish the header row's height so custom.css can stick the
+        // group heading rows directly below the stuck column header;
+        // re-measure when the table resizes (header cells can wrap on
+        // narrow viewports).
+        const setHeadH = () => table.style.setProperty(
+            '--distros-thead-h',
+            headRow.getBoundingClientRect().height + 'px');
+        setHeadH();
+        new ResizeObserver(setHeadH).observe(table);
     });
 
     // Other tables: collapse consecutive duplicate first-column cells
