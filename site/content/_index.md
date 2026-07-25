@@ -3,7 +3,7 @@ title: "GhostLock — rtmutex/futex stack use-after-free tracking"
 description: "Linux kernel rtmutex/futex requeue-PI stack use-after-free (CVE-2026-43499, GhostLock) — local privilege escalation & container escape — distro patch status tracker"
 layout: "single"
 date: 2026-07-09
-lastmod: 2026-07-24
+lastmod: 2026-07-25
 cover:
   image: "ghostlock-tracker.png"
   alt: "GhostLock — Linux kernel rtmutex/futex stack use-after-free tracker"
@@ -98,10 +98,10 @@ received the backport on 2026-07-24: **5.15.212** and **5.10.261**.
 | Branch | Status | Current | Notes |
 |---|---|---|---|
 | Linus mainline | :white_check_mark: Carries `3bfdc63936dd` | v7.2-rc4 | first fixed release v7.1 |
-| 7.1.x | :white_check_mark: Carries the fix | 7.1.4 | fixed as of the v7.1 release |
+| 7.1.x | :white_check_mark: Carries the fix | 7.1.5 | fixed as of the v7.1 release |
 | 7.0.x | :white_check_mark: Carries the backport | 7.0.14 (EOL) | backported in 7.0.4 before end of life |
-| 6.18.x | :white_check_mark: Carries the backport | 6.18.39 | LTS; first fixed point release 6.18.27 |
-| 6.12.x | :white_check_mark: Carries the backport | 6.12.96 | LTS; first fixed point release 6.12.86 |
+| 6.18.x | :white_check_mark: Carries the backport | 6.18.40 | LTS; first fixed point release 6.18.27 |
+| 6.12.x | :white_check_mark: Carries the backport | 6.12.97 | LTS; first fixed point release 6.12.86 |
 | 6.6.x | :white_check_mark: Carries the backport | 6.6.145 | LTS; first fixed point release 6.6.140 |
 | 6.1.x | :white_check_mark: Carries the backport | 6.1.178 | LTS; first fixed point release 6.1.175 |
 | 5.15.x | :white_check_mark: Carries the backport | 5.15.212 | LTS; first fixed point release 5.15.212 |
@@ -292,7 +292,7 @@ workloads until the host kernel is patched.
 
 ## Verification log
 
-*Last verified 2026-07-24.*
+*Last verified 2026-07-25.*
 
 ### Upstream
 
@@ -313,13 +313,13 @@ workloads until the host kernel is patched.
   v7.1. **5.15.y first fixed in 5.15.212** (backport `838ce5cb5d93`, tagged
   2026-07-24); **5.10.y first fixed in 5.10.261** (backport `f3fa3424bceb`,
   tagged 2026-07-24). Confirmed via subject/ref grep and `git describe
-  --contains`. The `vulns.git` `.dyad` has not yet been updated to list
-  these branches — the CNA record still shows only 6.1–7.1 entries.
+  --contains` and the `.dyad` (now updated — CNA record covers 5.10.261 and
+  5.15.212 alongside 6.1–7.1).
 - **NVD CVSS score published**: CVSS 7.8 HIGH
   (`CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H`), confirming Red Hat's
   Important severity rating (via NVD REST API).
 - Current point releases (`https://www.kernel.org/finger_banner`): mainline
-  7.2-rc4; 7.1.4; 7.0.14 (EOL, fixed since 7.0.4); 6.18.39; 6.12.96;
+  7.2-rc4; 7.1.5; 7.0.14 (EOL, fixed since 7.0.4); 6.18.40; 6.12.97;
   6.6.145; 6.1.178; 5.15.212; 5.10.261.
 
 ### Distributions
