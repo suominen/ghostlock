@@ -112,14 +112,25 @@ hardening do **not** block it.  There is therefore nothing to downgrade a
 verdict to `:warning:` on reachability grounds: an in-window unpatched
 kernel is `:x:`.
 
-The combined distribution-status table is the **single source** for each
-row's kernel, *Fixed since*, and status.  Don't restate the table's columns
-in prose or add a parallel per-release table.  The **Kernel** cell holds
-the version only (or `:grey_question:` when unverified) — no
-"unpatched"/"patched" word, since *Status* and *Fixed since* carry the
-verdict.  Label NixOS channels in the **Release** column in friendly form
-(`Unstable`, `26.05`).  Keep the `{.distros}` block attribute on the line
-**immediately after** the table (no blank line between).
+The combined *Patch status* table is the **single source** for every
+row's kernel versions, dates, and status — upstream and distros alike.
+Columns: `Distribution | Release | Current kernel | First fixed | Fixed
+since | Status`.  The upstream kernel is the **first** "distribution" in
+the table, labelled `Linux kernel`, one row per branch (`mainline`,
+`7.1.x`, … `5.10.x`); its upstream-specific prose lives in the
+`### Linux kernel` subsection.  Don't restate the table's columns in
+prose or add a parallel per-release table.  The version cells hold
+versions only (or `:grey_question:` when unverified) — the verdict lives
+in *Status* as the emoji **plus a one-word verdict** and an optional
+short note after an em dash (`:white_check_mark: Fixed —
+RLSA-2026:38492`, `:x: Vulnerable — no cherry-pick`); longer caveats go
+in the `###` prose.  Label NixOS channels in the **Release** column in
+friendly form (`Unstable`, `26.05`).  Row and list ordering: releases
+**descending** within a distribution; within a release the default
+kernel row first, then opt-in/alternate series rows **ascending**.  The
+same rule applies to version lists in prose.  Keep the `{.distros}`
+block attribute on the line **immediately after** the table (no blank
+line between).
 
 Amazon rows are **one per kernel stream** — name the stream in the
 **Release** column (`2023 (kernel6.12)`, `2 (kernel-5.10)`); keep every
@@ -130,60 +141,65 @@ the three AL2 rows are terminal `:x:` ("no fix expected"); don't poll AL2
 repodata expecting a verdict change.  AL2023 remains supported and is
 polled as usual.
 
-Debian rows track the **default** `linux` kernel of the suite.  An opt-in
-alternative kernel package (e.g. bullseye's `linux-6.1`, the bookworm 6.1
-kernel rebuilt for bullseye) does **not** flip a row's verdict: while
-`src:linux` is open in the security tracker the row stays `:x:`, with the
-opt-in fixed kernel noted in the *Status* cell and `### Debian` prose.
+Debian suites get one row for the **default** `linux` kernel and, where
+one exists, a separate row per opt-in alternative kernel package (e.g.
+bullseye's `linux-6.1`, the bookworm 6.1 kernel rebuilt for bullseye —
+row `11 (linux-6.1 opt-in)`).  A fixed opt-in row never flips the
+default row's verdict: while `src:linux` is open in the security tracker
+the default row stays `:x:`.  The same default-plus-variant row pattern
+applies to Proxmox (default and opt-in `proxmox-kernel-*` series) and to
+the EL `kernel-rt` rows.
 
 A per-distro `###` section is for **reader-facing** caveats that don't fit
 the table (EL-family scope, a distro's own advisory state).  Keep tracking
 methodology out of it — that is agent guidance and belongs in this file.
 
-## Routine run scope — frozen version snapshots
+## Routine run scope — live Current kernel, sticky verdict columns
 
-The per-distro **Kernel** versions in the table are **frozen seed
-snapshots**, not live values: update a row's recorded version only when its
-verdict actually changes.  A row cannot flip to fixed until the fix is
-available to adopt — its kernel series carries :white_check_mark: in the
-*Upstream fixed versions* table, **or** the distro cherry-picks
-`3bfdc63936dd` independently.
+The **Current kernel** column is **live**: refresh it for **every** row
+on every run — upstream point releases and distro package versions
+alike — and record any movement.  A Current-kernel bump alone is a real
+content change: commit it and bump `lastmod`.  The **verdict columns
+are sticky**: *First fixed*, *Fixed since*, and *Status* change **only**
+when a row actually flips — its kernel reaches a fixed upstream release
+(see the `Linux kernel` rows), **or** the distro ships the
+`3bfdc63936dd` backport / cherry-pick.  A Current-kernel bump that stays
+inside the vulnerable window without the backport moves the *Current
+kernel* cell and **nothing else**.
 
-**Exception — a default-kernel-series switch is always recordable.** PVE
-moves its default series during a release's lifetime (`proxmox-default-kernel`
-changing which `proxmox-kernel-*` it depends on), and a distro can add an
-opt-in series alongside it.  Record that even when the verdict does not
-change: the row's kernel, the prose, and the verification log **together**,
-since a log-only update leaves the tracker self-inconsistent.  A switch can
-also flip the verdict on its own — a newer series may already contain the
-fix, or a still-EOL one may not — so re-derive the verdict rather than
-carrying the old one across.
+**A default-kernel-series switch is always recordable.** PVE moves its
+default series during a release's lifetime (`proxmox-default-kernel`
+changing which `proxmox-kernel-*` it depends on), and a distro can add
+an opt-in series alongside it.  Record a switch in the affected row's
+Release label and prose, add a **new row** for a new opt-in series, and
+update the verification log — **together**, since a log-only update
+leaves the tracker self-inconsistent.  A switch can also flip a verdict
+on its own — a newer series may already contain the fix, or a still-EOL
+one may not — so re-derive the verdict rather than carrying the old one
+across.
 
 Each run:
 
-- Re-check the *Upstream fixed versions* table: has any in-window branch
-  advanced?  Every maintained line carries the fix — 6.1.y / 6.6.y /
-  6.12.y / 6.18.y / 7.0.y / 7.1.y (6.1.175 / 6.6.140 / 6.12.86 / 6.18.27 /
-  7.0.4 / 7.1) and, since 2026-07-24, 5.15.y / 5.10.y (5.15.212 /
-  5.10.261), per the `vulns.git` `.dyad`.  Verify via `~/src/linux/stable`
-  (recipe below).  In that table, **only the *Current* column moves on a
-  routine run**; *First fixed* is sticky, set once from the `.dyad`, and
-  with every branch now fixed it should never change again.
-- For a distro row, re-pull the distro's **kernel** version and compare:
-  the kernel reaches its branch's first-fixed release **or** a distro
-  advisory ships the `3bfdc63936dd` backport ⇒ flip to :white_check_mark:,
-  record the adopted kernel, set *Fixed since*.
-- A version bump that stays **inside the vulnerable window without the
-  backport** is **not** adoption ⇒ leave the row and its recorded version
-  untouched.  Recording such a bump is version-only churn this tracker
-  exists to avoid.
-- Watch AlmaLinux (leading indicator) and Rocky/RHEL for the EL rows, and
-  the vendor kernel changelog for the Proxmox rows.
+- Refresh the `Linux kernel` rows' *Current kernel* from the stable
+  point releases (finger_banner; verify backports via
+  `~/src/linux/stable`, recipe below).  Every maintained line carries
+  the fix — 7.1 / 7.0.4 / 6.18.27 / 6.12.86 / 6.6.140 / 6.1.175 and,
+  since 2026-07-24, 5.15.212 / 5.10.261, per the `vulns.git` `.dyad` —
+  so their *First fixed* / *Fixed since* / *Status* should never change
+  again.
+- For a distro row, re-pull the distro's **kernel** version and update
+  *Current kernel*.  If the kernel reaches its branch's first-fixed
+  release **or** a distro advisory ships the `3bfdc63936dd` backport ⇒
+  flip *Status* to `:white_check_mark: Fixed`, set *First fixed* to the
+  first fixed package build, and set *Fixed since*.
+- Watch AlmaLinux (leading indicator) and Rocky/RHEL for the EL rows —
+  including the `kernel-rt` rows (RHEL `kernel-rt` `fix_state` in the
+  Red Hat security data API; Rocky 8's RT repo, Rocky 9's NFV repo) —
+  and the vendor kernel changelog for the Proxmox rows.
 
 `zcat` / `gunzip` **are** in the headless allowlist — use them for the
-`Packages.gz` / repodata pulls.  The discipline is *what* you pull, not
-*whether you can*: pull only the kernel version, only when a verdict could
-change.
+`Packages.gz` / repodata pulls.  Pull only kernel versions and advisory
+state — the tracker records no other per-distro facts.
 
 **Never record NixOS channel git-revisions** (the
 `channels.nixos.org/<channel>/git-revision` pins) in the tracker.  They
@@ -192,30 +208,38 @@ otherwise no-op run.
 
 ## Conventions for status entries
 
-- `:white_check_mark:` — the release's kernel carries the `3bfdc63936dd`
-  backport (confirmed in changelog / advisory / kernel pin, not merely
-  announced): record the fixed kernel version and set *Fixed since*.  (For
-  this bug there are **no** "not affected — outside the window" rows; every
-  maintained kernel is in-window.)
-- `:x:` — vulnerable: an in-window kernel without the backport.
-- `:warning:` — not fully resolved: the fix is staged but not yet in the
-  user-facing channel (merged / cherry-picked but not in a released
-  package).  GhostLock has **no** mitigation that reduces exposure short of
-  patching (see below), so `:warning:` is only ever the staged-fix case,
-  never a "mitigated" one.
-- `:grey_question:` — not yet verified (kernel pin or advisory not yet
-  inspected).
+A *Status* cell is the emoji plus its one-word verdict, optionally
+followed by an em dash and a short note (advisory ID, `LTS`, `no
+cherry-pick`) — longer caveats go in the `###` prose:
+
+- `:white_check_mark: Fixed` — the release's kernel carries the
+  `3bfdc63936dd` backport (confirmed in changelog / advisory / kernel
+  pin, not merely announced): set *First fixed* to the first fixed
+  build and set *Fixed since*.  (For this bug there are **no** "not
+  affected — outside the window" rows; every maintained kernel is
+  in-window.)
+- `:x: Vulnerable` — an in-window kernel without the backport.
+- `:warning: Staged` — not fully resolved: the fix is staged but not
+  yet in the user-facing channel (merged / cherry-picked but not in a
+  released package).  GhostLock has **no** mitigation that reduces
+  exposure short of patching (see below), so `:warning:` is only ever
+  the staged-fix case, never a "mitigated" one.
+- `:grey_question: Unverified` — not yet verified (kernel pin or
+  advisory not yet inspected).
 
 Note: GhostLock has **no** root-vs-DoS downgrade and **no** reachability
 discriminator — the single outcome is local privilege escalation /
 container escape, a full compromise.  An affected unpatched row is `:x:`.
 
-### "Fixed since" column
+### "First fixed" and "Fixed since" columns
 
-`Fixed since` is a **sticky first-observation** date: the date the
-release's kernel fix first held.  Set it when a row flips to fixed; only
-bump it if the verdict flips again or the fixed kernel version changes.
-Leave it `—` while the row is vulnerable or unverified.
+Both are **sticky**, set when a row flips to fixed, and stay `—` while
+the row is vulnerable or unverified.  *First fixed* is the first
+release or package build carrying the fix — from the `.dyad` for the
+`Linux kernel` rows, from the advisory / changelog for distro rows.
+*Fixed since* is the **first-observation** date the fix first held.
+Only touch either if the verdict flips again or the recorded
+first-fixed build turns out to have been wrong.
 
 ### Verification log
 
@@ -559,6 +583,12 @@ The RPM repodata then confirms the Rocky ship and gives the current NVR
   **All** of Rocky 8 (4.18), 9 (5.14), and 10 (6.12) are in-window for
   GhostLock (the bug predates them all).  A row flips only when the BaseOS
   kernel NVR reaches the RHEL fixed build from the Red Hat record above.
+- **Rocky `kernel-rt` rows**: the RT kernel ships from the **RT** repo
+  on Rocky 8 (`…/rocky/8/RT/x86_64/os`) and the **NFV** repo on Rocky 9
+  (`…/rocky/9/NFV/x86_64/os`).  RHEL remains the leading signal — the
+  same Red Hat CVE record carries a separate `kernel-rt`
+  `package_state`; while it reads **Affected** for RHEL 9 GA, the
+  `9 (kernel-rt)` row stays `:x:`.
 - **Amazon Linux**: the machine-readable ALAS signal is the repodata
   **`updateinfo.xml.gz`** (maps CVE → ALAS → fixed kernel NVR) — the per-CVE
   ALAS HTML pages (`alas.aws.amazon.com/cve/html/…`) are JS-rendered and

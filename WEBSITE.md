@@ -53,11 +53,18 @@ References but is not a separate tracker.
   gate and **no** exposure discriminator — the trigger is plain `futex(2)`,
   reachable by any unprivileged local task, so there is nothing to record as
   a second axis or a `:warning:` downgrade.
-- **Distribution status** uses a single **combined table** placed
-  immediately under the heading (`Distribution | Release | Kernel | Fixed
-  since | Status`), with per-distro `###` headings retained only where
-  there is an audience-relevant note.  This follows the combined-table +
-  sticky "Fixed since" layout of the sibling trackers.
+- **Patch status** (renamed 2026-07-25; seeded as *Distribution status*
+  plus a separate *Upstream fixed versions* table) uses a single
+  **combined table** for upstream and distros (`Distribution | Release |
+  Current kernel | First fixed | Fixed since | Status`): the upstream
+  kernel is the first `Linux kernel` group; opt-in / variant kernels
+  (bullseye `linux-6.1`, PVE opt-in series, EL `kernel-rt`) are their
+  own rows; per-distro `###` headings are retained only where there is
+  an audience-relevant note.  *Current kernel* is live, *First fixed* /
+  *Fixed since* are sticky.  GhostLock pilots this single-table layout —
+  once settled it is to be folded into the tracker template and
+  januscape (the other sibling trackers are archived and stay on the
+  old layout).
 - Because the bug dates to **v2.6.39**, every tracked kernel is in-window —
   there are **no** "not affected" rows here.  Rows seed `:x:` unless a
   backport is confirmed.  The RHEL-family and Amazon rows are

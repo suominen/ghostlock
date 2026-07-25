@@ -87,181 +87,153 @@ The reachable lifetime is therefore **v2.6.39 (2011) through v7.0**; ≥ 7.1
 carries the fix. The flaw is in generic locking code, so **every CPU
 architecture is affected** — there is no architecture exemption.
 
-## Upstream fixed versions
+## Patch status
 
-The fix reached Linus as **v7.1** and the stable maintainers backported it
-across all maintained lines — the *First fixed* column below.  7.0.y took
-the backport in 7.0.4, well before that line reached end of life at
-7.0.14.  The pre-6.1 longterm lines (5.15.y, 5.10.y) also received the
-backport on 2026-07-24.
+The deciding fact per row is whether the **kernel** carries the
+[`3bfdc63936dd`][fix] backport. Because the bug dates to v2.6.39,
+**every** kernel below is inside the affected window — there are no
+"predates the bug" rows here — and the trigger needs no privilege or
+special configuration, so the kernel version is the whole story: a row
+is `:x:` until its kernel ships the fix.
 
-| Branch | Status | First fixed | Current | Notes |
-|---|---|---|---|---|
-| Linus mainline | :white_check_mark: Carries `3bfdc63936dd` | v7.1 | v7.2-rc4 | |
-| 7.1.x | :white_check_mark: Carries the fix | 7.1 | 7.1.5 | fixed as of the initial release |
-| 7.0.x | :white_check_mark: Carries the backport | 7.0.4 | 7.0.14 (EOL) | backported before end of life |
-| 6.18.x | :white_check_mark: Carries the backport | 6.18.27 | 6.18.40 | LTS |
-| 6.12.x | :white_check_mark: Carries the backport | 6.12.86 | 6.12.97 | LTS |
-| 6.6.x | :white_check_mark: Carries the backport | 6.6.140 | 6.6.145 | LTS |
-| 6.1.x | :white_check_mark: Carries the backport | 6.1.175 | 6.1.178 | LTS |
-| 5.15.x | :white_check_mark: Carries the backport | 5.15.212 | 5.15.212 | LTS |
-| 5.10.x | :white_check_mark: Carries the backport | 5.10.261 | 5.10.261 | LTS |
+The first group tracks the upstream kernel itself; the rest are a
+focused set of general-purpose and container-host distributions.
+*Current kernel* is the latest version observed in the row's
+user-facing channel; *First fixed* is the first release or build
+carrying the fix, and *Fixed since* the date it first held (both stay
+`—` while a row is vulnerable).
 
-When verifying a tree directly, the fixed function is `remove_waiter()` in
-`kernel/locking/rtmutex.c`; the fix replaces the use of `current` /
-`current->pi_lock` with the waiter's own `waiter->task`.
-
-## Distribution status
-
-The deciding fact per release is whether the **kernel** carries the
-[`3bfdc63936dd`][fix] backport. Because the bug dates to v2.6.39, **every**
-current distro kernel is inside the affected window — there are no "predates
-the bug" rows here — so a release is `:x:` until it ships the fix. The
-trigger needs no privilege or special configuration, so exposure does not
-vary by host posture; the kernel version is the whole story. *Fixed since*
-records the date the kernel fix first lands in that release.
-
-The rows below track a focused set of general-purpose and container-host
-distributions. Other systems named in the disclosure appear only in prose
-where relevant.
-
-| Distribution | Release | Kernel | Fixed since | Status |
-|---|---|---|---|---|
-| Debian | sid (unstable) | 7.0.4-1 | 2026-05-08 | :white_check_mark: Fixed — first fixed upload 7.0.4-1 (now ships 7.1.4-1) |
-| Debian | forky (testing) | 7.0.4-1 | 2026-05-10 | :white_check_mark: Fixed — 7.0.4-1 migrated to testing (now ships 7.1.3-1) |
-| Debian | 13 (trixie) | 6.12.86-1 | 2026-05-08 | :white_check_mark: Fixed — trixie base |
-| Debian | 12 (bookworm) | 6.1.176-1 | 2026-07-03 | :white_check_mark: Fixed — via `bookworm-security` (DLA-4665-1) |
-| Debian | 11 (bullseye, LTS) | 5.10.259-1 | — | :x: Vulnerable — default 5.10.y kernel has no fix; opt-in `linux-6.1` is fixed (DLA-4671-1) |
-| Proxmox VE | 9 | 7.0.14-1-pve | 2026-07-01 | :white_check_mark: Fixed — proxmox-kernel-7.0.14 in pve-no-subscription |
-| Proxmox VE | 8 | 6.8.12-pve | — | :x: Vulnerable — 6.8.y EOL, no backport |
-| NixOS | Unstable | 6.18.36 | 2026-06-28 | :white_check_mark: Fixed — default moved to `linux_6_18` (≥ 6.18.36) |
-| NixOS | 26.05 | 6.18.36 | 2026-07-03 | :white_check_mark: Fixed — default moved to `linux_6_18` (≥ 6.18.36) |
-| Rocky Linux | 10 | 6.12.0-211.33.1.el10_2 | 2026-07-15 | :white_check_mark: Fixed (RLSA-2026:38492) |
-| Rocky Linux | 9 | 5.14.0-687.25.1.el9_8 | 2026-07-15 | :white_check_mark: Fixed (RLSA-2026:38491) |
-| Rocky Linux | 8 | 4.18.0-553.144.1.el8_10 | 2026-07-15 | :white_check_mark: Fixed (RLSA-2026:39179) |
-| Amazon Linux | 2023 (kernel 6.1) | 6.1.176-220.360 | 2026-06-22 | :white_check_mark: Fixed — ALAS2023-2026-1882 (≥ 6.1.175-219.357) |
-| Amazon Linux | 2023 (kernel6.12) | 6.12.94-123.176 | 2026-05-25 | :white_check_mark: Fixed — ALAS2023-2026-1753 (≥ 6.12.88-119.157) |
-| Amazon Linux | 2023 (kernel6.18) | 6.18.36-69.136 | 2026-05-25 | :white_check_mark: Fixed — ALAS2023-2026-1754 (≥ 6.18.30-61.116) |
-| Amazon Linux | 2 (kernel 4.14) | 4.14.355-284.737 | — | :x: Vulnerable — no fix expected (AL2 EOL 2026-06-30) |
-| Amazon Linux | 2 (kernel-5.10) | 5.10.259-258.1043 | — | :x: Vulnerable — no fix expected (AL2 EOL 2026-06-30) |
-| Amazon Linux | 2 (kernel-5.15) | 5.15.210-148.245 | — | :x: Vulnerable — no fix expected (AL2 EOL 2026-06-30) |
+| Distribution | Release | Current kernel | First fixed | Fixed since | Status |
+|---|---|---|---|---|---|
+| Linux kernel | mainline | 7.2-rc4 | 7.1 | 2026-06-14 | :white_check_mark: Fixed — carries `3bfdc63936dd` |
+| Linux kernel | 7.1.x | 7.1.5 | 7.1 | 2026-06-14 | :white_check_mark: Fixed — at the initial release |
+| Linux kernel | 7.0.x | 7.0.14 | 7.0.4 | 2026-05-07 | :white_check_mark: Fixed — backported before end of life (EOL at 7.0.14) |
+| Linux kernel | 6.18.x | 6.18.40 | 6.18.27 | 2026-05-07 | :white_check_mark: Fixed — LTS |
+| Linux kernel | 6.12.x | 6.12.97 | 6.12.86 | 2026-05-07 | :white_check_mark: Fixed — LTS |
+| Linux kernel | 6.6.x | 6.6.145 | 6.6.140 | 2026-05-17 | :white_check_mark: Fixed — LTS |
+| Linux kernel | 6.1.x | 6.1.178 | 6.1.175 | 2026-06-01 | :white_check_mark: Fixed — LTS |
+| Linux kernel | 5.15.x | 5.15.212 | 5.15.212 | 2026-07-24 | :white_check_mark: Fixed — LTS |
+| Linux kernel | 5.10.x | 5.10.261 | 5.10.261 | 2026-07-24 | :white_check_mark: Fixed — LTS |
+| Debian | sid (unstable) | 7.1.4-1 | 7.0.4-1 | 2026-05-08 | :white_check_mark: Fixed |
+| Debian | forky (testing) | 7.1.3-1 | 7.0.4-1 | 2026-05-10 | :white_check_mark: Fixed |
+| Debian | 13 (trixie) | 6.12.96-1 | 6.12.86-1 | 2026-05-08 | :white_check_mark: Fixed — in the base suite |
+| Debian | 12 (bookworm) | 6.1.177-1 | 6.1.176-1 | 2026-07-03 | :white_check_mark: Fixed — via `bookworm-security` (DLA-4665-1) |
+| Debian | 11 (bullseye, LTS) | 5.10.259-1 | — | — | :x: Vulnerable — default kernel, no fixed upload |
+| Debian | 11 (linux-6.1 opt-in) | 6.1.176-1~deb11u1 | 6.1.176-1~deb11u1 | 2026-07-04 | :white_check_mark: Fixed — DLA-4671-1; requires switching to `linux-6.1` |
+| Proxmox VE | 9 (7.0 default) | 7.0.14-6-pve | 7.0.14-1-pve | 2026-07-01 | :white_check_mark: Fixed — base ≥ the 7.0.4 backport |
+| Proxmox VE | 9 (6.14 opt-in) | 6.14.11-9-pve | — | — | :x: Vulnerable — no cherry-pick |
+| Proxmox VE | 9 (6.17 opt-in) | 6.17.13-19-pve | 6.17.13-16-pve | 2026-07-09 | :white_check_mark: Fixed — cherry-picked from `linux-6.18.y` |
+| Proxmox VE | 8 (6.8 default) | 6.8.12-37-pve | — | — | :x: Vulnerable — 6.8.y EOL, no backport |
+| Proxmox VE | 8 (6.11 opt-in) | 6.11.11-2-pve | — | — | :x: Vulnerable — no cherry-pick |
+| Proxmox VE | 8 (6.14 opt-in) | 6.14.11-9-bpo12-pve | — | — | :x: Vulnerable — no cherry-pick |
+| NixOS | Unstable | 6.18.39 | 6.18.36 | 2026-06-28 | :white_check_mark: Fixed — default moved to `linux_6_18` |
+| NixOS | 26.05 | 6.18.39 | 6.18.36 | 2026-07-03 | :white_check_mark: Fixed — default moved to `linux_6_18` |
+| Rocky Linux | 10 | 6.12.0-211.33.1.el10_2 | 6.12.0-211.33.1.el10_2 | 2026-07-15 | :white_check_mark: Fixed — RLSA-2026:38492 |
+| Rocky Linux | 9 | 5.14.0-687.25.1.el9_8 | 5.14.0-687.25.1.el9_8 | 2026-07-15 | :white_check_mark: Fixed — RLSA-2026:38491 |
+| Rocky Linux | 9 (kernel-rt) | 5.14.0-687.12.1.el9_8 | — | — | :x: Vulnerable — no advisory for the GA stream |
+| Rocky Linux | 8 | 4.18.0-553.144.1.el8_10 | 4.18.0-553.144.1.el8_10 | 2026-07-15 | :white_check_mark: Fixed — RLSA-2026:39179 |
+| Rocky Linux | 8 (kernel-rt) | 4.18.0-553.144.1.rt7.485.el8_10 | 4.18.0-553.144.1.rt7.485.el8_10 | 2026-07-18 | :white_check_mark: Fixed — supersedes the RHEL fixed NVR |
+| Amazon Linux | 2023 (kernel 6.1) | 6.1.176-220.360 | 6.1.175-219.357 | 2026-06-22 | :white_check_mark: Fixed — ALAS2023-2026-1882 |
+| Amazon Linux | 2023 (kernel6.12) | 6.12.94-123.176 | 6.12.88-119.157 | 2026-05-25 | :white_check_mark: Fixed — ALAS2023-2026-1753 |
+| Amazon Linux | 2023 (kernel6.18) | 6.18.36-69.136 | 6.18.30-61.116 | 2026-05-25 | :white_check_mark: Fixed — ALAS2023-2026-1754 |
+| Amazon Linux | 2 (kernel 4.14) | 4.14.355-284.737 | — | — | :x: Vulnerable — no fix expected (AL2 EOL 2026-06-30) |
+| Amazon Linux | 2 (kernel-5.10) | 5.10.259-258.1043 | — | — | :x: Vulnerable — no fix expected (AL2 EOL 2026-06-30) |
+| Amazon Linux | 2 (kernel-5.15) | 5.15.210-148.245 | — | — | :x: Vulnerable — no fix expected (AL2 EOL 2026-06-30) |
 {.distros}
+
+### Linux kernel
+
+The fix reached Linus as **v7.1** and the stable maintainers backported
+it across every maintained line. 7.0.y took the backport in 7.0.4, well
+before that line reached end of life at 7.0.14. The pre-6.1 longterm
+lines (5.15.y, 5.10.y) received the backport on 2026-07-24.
+
+When verifying a tree directly, the fixed function is `remove_waiter()`
+in `kernel/locking/rtmutex.c`; the fix replaces the use of `current` /
+`current->pi_lock` with the waiter's own `waiter->task`.
 
 ### Debian
 
 Debian's `linux` is affected in every suite (the bug predates all of
-them). Per suite:
-
-- **sid** — first fixed upload `linux 7.0.4-1` on 2026-05-08; now rides
-  7.1.4-1.
-- **forky** (testing) — fixed when `7.0.4-1` migrated on 2026-05-10; now
-  ships 7.1.3-1.
-- **trixie** (stable) — fixed at `linux 6.12.86-1` in the base suite on
-  2026-05-08; `trixie-security` also carries it at 6.12.96-1.
-- **bookworm** (oldstable) — fixed via `bookworm-security 6.1.176-1`
-  (DLA-4665-1, 2026-07-03). `6.1.176` is above the upstream first-fixed
-  `6.1.175`, so this is not a backport below upstream.
-- **bullseye** (LTS) — still vulnerable on its default kernel: the
-  `linux` 5.10.y package has no upstream backport and the security
-  tracker keeps it open. A fixed kernel *is* available as the separate
-  opt-in `linux-6.1` source package — the bookworm 6.1 kernel rebuilt
-  for bullseye — via `bullseye-security` (`6.1.176-1~deb11u1`,
-  DLA-4671-1, 2026-07-04); it is not installed by an ordinary upgrade,
-  so a stock bullseye system stays exposed until the admin switches to
-  it.
-
-Debian's security tracker carries CVE-2026-43499 and drove these
-assessments.
+them); the security tracker's CVE-2026-43499 record drove these
+assessments, and it keeps bullseye's default `src:linux` open. A stock
+**bullseye** (LTS) system stays exposed: the fixed `linux-6.1` package
+— the bookworm 6.1 kernel rebuilt for bullseye, shipped via
+`bullseye-security` — is a separate opt-in source package that an
+ordinary upgrade does not install, so the admin must switch to it
+explicitly.
 
 ### Proxmox VE
 
 Proxmox ships its own Ubuntu-derived kernels (`proxmox-kernel-*`), so
 Debian's fix status does not carry over — and as a common VM/container
-host, the container-escape vector makes it worth tracking. Per kernel
-series:
-
-- **PVE 9 default (7.0)** — fixed: the default kernel (pinned by
-  `proxmox-default-kernel` 2.1.0) is base **7.0.14**, at or above the
-  7.0.4 backport.
-- **PVE 9 opt-in 6.17** — fixed as of `proxmox-kernel-6.17.13-16-pve`:
-  Proxmox cherry-picked the three patches from `linux-6.18.y` on
-  2026-07-09.
-- **PVE 9 opt-in 6.14** — no cherry-pick yet; vulnerable.
-- **PVE 8 default (6.8)** — vulnerable: the end-of-life **6.8** line
-  (`6.8.12-pve`) has no backport.
-- **PVE 8 opt-in 6.11 and 6.14** (`proxmox-kernel-6.11.11-2-pve`,
-  `proxmox-kernel-6.14.11-9-bpo12-pve`) — neither has the cherry-pick;
-  vulnerable.
+host, the container-escape vector makes it worth tracking. Each PVE
+release's default kernel series (pinned by `proxmox-default-kernel`)
+and its opt-in series get their own rows above. Whether a series
+carries the fix tracks Proxmox's kernel changelog, not Debian's: the
+6.17 fix is Proxmox's own cherry-pick of the three patches from
+`linux-6.18.y`, made on 2026-07-09.
 
 ### Rocky Linux / RHEL family
 
-Rocky 9 (`5.14.0-687.25.1.el9_8`), Rocky 10 (`6.12.0-211.33.1.el10_2`),
-and Rocky 8 (`4.18.0-553.el8_10`) are all inside the window (the bug
-predates every EL kernel). RHEL-family kernels carry security backports
-without moving their upstream base version, so the version string alone
-cannot confirm a fix — the signal is an erratum. Per kernel package:
+RHEL-family kernels carry security backports without moving their
+upstream base version, so the version string alone cannot confirm a
+fix — the signal is an erratum. RHEL is upstream of the rebuilds, and
+the fix flowed RHEL → AlmaLinux → Rocky:
 
-- **RHEL 9 / 10 standard `kernel`** — Red Hat shipped
-  **RHSA-2026:38491** (RHEL 9, kernel `5.14.0-687.25.1.el9_8`) and
-  **RHSA-2026:38492** (RHEL 10.2, kernel `6.12.0-211.33.1.el10_2`) on
-  2026-07-13; AlmaLinux rebuilt both as **ALSA-2026:38491** and
-  **ALSA-2026:38492**. Rocky 9 and Rocky 10 carry the fixed kernel NVRs
-  in their BaseOS repos, shipped as **RLSA-2026:38491** (Rocky 9) and
-  **RLSA-2026:38492** (Rocky 10).
-- **RHEL 8 / Rocky 8 standard `kernel`** — Red Hat shipped
-  **RHSA-2026:39083** (kernel `4.18.0-553.143.1.el8_10`); AlmaLinux
-  rebuilt it as **ALSA-2026:39083**. Rocky 8 skipped that NVR — rather
-  than publishing a standalone rebuild of `553.143.1`, it shipped
-  `4.18.0-553.144.1.el8_10` as **RLSA-2026:39179** (2026-07-15), which
-  supersedes the RHEL fixed NVR and carries the fix cumulatively.
-- **`kernel-rt` on EL8** — Red Hat shipped **RHSA-2026:39082**
+- **Standard `kernel`, EL10 / EL9** — Red Hat shipped
+  **RHSA-2026:38492** (RHEL 10.2, kernel `6.12.0-211.33.1.el10_2`) and
+  **RHSA-2026:38491** (RHEL 9, kernel `5.14.0-687.25.1.el9_8`) on
+  2026-07-13; AlmaLinux rebuilt both as **ALSA-2026:38492** /
+  **ALSA-2026:38491**, and Rocky shipped the matching RLSAs in the
+  table above.
+- **Standard `kernel`, EL8** — Red Hat shipped **RHSA-2026:39083**
+  (kernel `4.18.0-553.143.1.el8_10`); AlmaLinux rebuilt it as
+  **ALSA-2026:39083**. Rocky 8 skipped that NVR — rather than
+  publishing a standalone rebuild of `553.143.1`, it shipped the
+  cumulative `4.18.0-553.144.1.el8_10` as **RLSA-2026:39179**.
+- **`kernel-rt`, EL9 GA — still vulnerable** — Red Hat shipped
+  **RHSA-2026:39983** (`kernel-rt 5.14.0-284.181.1.rt14.466.el9_2`)
+  for the RHEL 9.2 E4S path only; there is no advisory for the GA
+  stream and no RLSA rebuild in Rocky's NFV repo, and Red Hat's
+  `kernel-rt` package state remains **Affected** for RHEL 9 GA.
+- **`kernel-rt`, EL8** — Red Hat shipped **RHSA-2026:39082**
   (`kernel-rt 4.18.0-553.143.1.rt7.484.el8_10`) on 2026-07-14; Rocky
-  8's RT repo carries `4.18.0-553.144.1.rt7.485.el8_10`, which
-  supersedes the RHEL fixed NVR and carries the `kernel-rt` fix
-  cumulatively.
-- **`kernel-rt` on EL9 GA — still vulnerable** — the real-time kernel
-  for RHEL 9 GA has no advisory in the main stream: Red Hat shipped
-  **RHSA-2026:39983** (`kernel-rt 5.14.0-284.181.1.rt14.466.el9_2`) for
-  the RHEL 9.2 E4S path only, and there is no RLSA rebuild for that
-  advisory in Rocky's NFV repo. Red Hat's `kernel-rt` package state
-  remains **Affected** for RHEL 9 GA, so RHEL 9 and Rocky 9 hosts
-  running the RT kernel on the current GA release remain vulnerable.
+  8's RT repo carries the cumulative
+  `4.18.0-553.144.1.rt7.485.el8_10`, which supersedes the RHEL fixed
+  NVR.
 
-In sum, the standard `kernel` for RHEL 9, RHEL 10, Oracle Linux,
-CloudLinux OS, and Rocky 8 is fixed; only the EL9 GA `kernel-rt` stream
-is still waiting.
+The standard `kernel` is thus fixed for RHEL 10, RHEL 9, Oracle Linux,
+CloudLinux OS, and Rocky 8; the EL9 GA `kernel-rt` stream is the one
+still waiting.
 
 ### Amazon Linux
 
-Each Amazon kernel stream is tracked as its own row above.
-
-- **AL2023** — fixed on all three streams (default `kernel` 6.1, opt-in
-  `kernel6.12` / `kernel6.18`).
-- **AL2** (amzn2) — reached end of support on **2026-06-30** with no
-  ALAS ever issued for this CVE: all three of its streams — 4.14, plus
-  5.10 / 5.15 via `amazon-linux-extras` — are in-window, and AWS no
-  longer provides security updates or bug fixes for AL2 core packages,
-  so no fix is expected. An AL2 host stays permanently exploitable; the
-  exit is migrating to AL2023 (or another patched distribution).
-
-Status is verified from the repodata `updateinfo.xml` (the per-CVE ALAS
-pages are JS-rendered and don't fetch headlessly).
+Each Amazon kernel stream is its own row above; status is verified from
+the repodata `updateinfo.xml` (the per-CVE ALAS pages are JS-rendered
+and don't fetch headlessly). **AL2** (amzn2) reached end of support on
+**2026-06-30** with no ALAS ever issued for this CVE for any of its
+three streams (4.14, plus 5.10 / 5.15 via `amazon-linux-extras`) — AWS
+no longer provides security updates or bug fixes for AL2 core packages,
+so no fix is expected. An AL2 host stays permanently exploitable; the
+exit is migrating to AL2023 (or another patched distribution).
 
 ## Detection
 
 GhostLock is architecture-independent and needs no special configuration,
 so the only question is whether the running kernel is inside the affected
-window and missing the fix. Compare the running kernel against the *Upstream
-fixed versions* table and your distro row above:
+window and missing the fix. Compare the running kernel against the *Patch
+status* table above — the *Linux kernel* rows for the upstream point
+releases, and your distribution's row:
 
 ```bash
 uname -r
 ```
 
-A kernel at or above its branch's first-fixed release (5.10.261 / 5.15.212 /
-6.1.175 / 6.6.140 / 6.12.86 / 6.18.27 / 7.0.4), or any mainline **≥ 7.1**,
-carries the fix; anything else in the 2.6.39–7.0 window without a distro
-backport is vulnerable. On RHEL-family and Amazon kernels the base version does not map
+Any mainline kernel **≥ 7.1**, or one at or above its branch's first-fixed
+release (7.0.4 / 6.18.27 / 6.12.86 / 6.6.140 / 6.1.175 / 5.15.212 /
+5.10.261), carries the fix; anything else in the 2.6.39–7.0 window
+without a distro backport is vulnerable. On RHEL-family and Amazon kernels the base version does not map
 to an upstream point release — rely on the distribution's advisory state
 (see the rows above) rather than the number alone.
 
@@ -282,9 +254,9 @@ process; it cannot be disabled, and the bug needs neither elevated privilege
 nor unprivileged user namespaces — so namespace-hardening knobs such as
 `kernel.unprivileged_userns_clone=0` do **not** block it.
 
-Install a kernel that carries the [`3bfdc63936dd`][fix] backport: **5.10.261**,
-**5.15.212**, **6.1.175**, **6.6.140**, **6.12.86**, **6.18.27**, **7.0.4**, or
-mainline **≥ 7.1**.
+Install a kernel that carries the [`3bfdc63936dd`][fix] backport: mainline
+**≥ 7.1**, or **7.0.4**, **6.18.27**, **6.12.86**, **6.6.140**, **6.1.175**,
+**5.15.212**, **5.10.261**.
 
 Until you can reboot into a fixed kernel, the only risk reduction on
 multi-tenant and container hosts is ordinary defence-in-depth that does not
@@ -305,9 +277,9 @@ workloads until the host kernel is patched.
   a namespace toggle, there is no knob to turn; only the kernel backport
   removes the hole.
 - **Long exposure window:** the flaw dates to v2.6.39 (2011), so essentially
-  every unpatched production kernel is affected. Backports exist for
-  5.10.261, 5.15.212, 6.1.175, 6.6.140, 6.12.86, 6.18.27, 7.0.4, and
-  mainline 7.1 — check your distribution row.
+  every unpatched production kernel is affected. The fix is in mainline
+  7.1 and backported to 7.0.4, 6.18.27, 6.12.86, 6.6.140, 6.1.175,
+  5.15.212, and 5.10.261 — check your distribution row.
 
 ## Verification log
 
