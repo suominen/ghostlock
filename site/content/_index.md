@@ -149,38 +149,49 @@ where relevant.
 
 ### Debian
 
-Debian's `linux` is affected in every suite (the bug predates all of them).
-**sid** first shipped a fixed kernel with `linux 7.0.4-1` on 2026-05-08 and
-now rides 7.1.4-1; **forky** (testing) received the fix when `7.0.4-1`
-migrated on 2026-05-10 and now ships 7.1.3-1. **trixie** (stable) was fixed
-at `linux 6.12.86-1` in the base suite on 2026-05-08; `trixie-security` also
-carries it at 6.12.96-1. **bookworm** (oldstable) was fixed via
-`bookworm-security 6.1.176-1` (DLA-4665-1, 2026-07-03); `6.1.176` is above
-the upstream first-fixed `6.1.175`, so this is not a backport below upstream.
-**bullseye** (LTS) remains vulnerable on its default kernel: the `linux`
-5.10.y package has no upstream backport and the security tracker keeps it
-open. A fixed kernel *is* available as the separate opt-in `linux-6.1`
-source package — the bookworm 6.1 kernel rebuilt for bullseye — via
-`bullseye-security` (`6.1.176-1~deb11u1`, DLA-4671-1, 2026-07-04); it is not
-installed by an ordinary upgrade, so a stock bullseye system stays exposed
-until the admin switches to it. Debian's security tracker carries
-CVE-2026-43499 and drove these assessments.
+Debian's `linux` is affected in every suite (the bug predates all of
+them). Per suite:
+
+- **sid** — first fixed upload `linux 7.0.4-1` on 2026-05-08; now rides
+  7.1.4-1.
+- **forky** (testing) — fixed when `7.0.4-1` migrated on 2026-05-10; now
+  ships 7.1.3-1.
+- **trixie** (stable) — fixed at `linux 6.12.86-1` in the base suite on
+  2026-05-08; `trixie-security` also carries it at 6.12.96-1.
+- **bookworm** (oldstable) — fixed via `bookworm-security 6.1.176-1`
+  (DLA-4665-1, 2026-07-03). `6.1.176` is above the upstream first-fixed
+  `6.1.175`, so this is not a backport below upstream.
+- **bullseye** (LTS) — still vulnerable on its default kernel: the
+  `linux` 5.10.y package has no upstream backport and the security
+  tracker keeps it open. A fixed kernel *is* available as the separate
+  opt-in `linux-6.1` source package — the bookworm 6.1 kernel rebuilt
+  for bullseye — via `bullseye-security` (`6.1.176-1~deb11u1`,
+  DLA-4671-1, 2026-07-04); it is not installed by an ordinary upgrade,
+  so a stock bullseye system stays exposed until the admin switches to
+  it.
+
+Debian's security tracker carries CVE-2026-43499 and drove these
+assessments.
 
 ### Proxmox VE
 
 Proxmox ships its own Ubuntu-derived kernels (`proxmox-kernel-*`), so
-Debian's fix status does not carry over — and as a common VM/container host,
-the container-escape vector makes it worth tracking. PVE 9's default kernel
-(pinned by `proxmox-default-kernel` 2.1.0) is base **7.0.14**, at or above
-the 7.0.4 backport, so a default PVE 9 host is fixed. PVE 8's default
-remains on the end-of-life **6.8** line (`6.8.12-pve`), which has no
-backport, so it stays vulnerable; PVE 8 now also offers opt-in **6.11**
-(`proxmox-kernel-6.11.11-2-pve`) and **6.14**
-(`proxmox-kernel-6.14.11-9-bpo12-pve`) series, neither of which has the
-cherry-pick. PVE 9 hosts running the opt-in **6.17** kernel series are
-fixed as of `proxmox-kernel-6.17.13-16-pve`: Proxmox cherry-picked the
-three patches from `linux-6.18.y` on 2026-07-09. The opt-in **6.14**
-series (on PVE 9 / trixie) has no cherry-pick yet and remains vulnerable.
+Debian's fix status does not carry over — and as a common VM/container
+host, the container-escape vector makes it worth tracking. Per kernel
+series:
+
+- **PVE 9 default (7.0)** — fixed: the default kernel (pinned by
+  `proxmox-default-kernel` 2.1.0) is base **7.0.14**, at or above the
+  7.0.4 backport.
+- **PVE 9 opt-in 6.17** — fixed as of `proxmox-kernel-6.17.13-16-pve`:
+  Proxmox cherry-picked the three patches from `linux-6.18.y` on
+  2026-07-09.
+- **PVE 9 opt-in 6.14** — no cherry-pick yet; vulnerable.
+- **PVE 8 default (6.8)** — vulnerable: the end-of-life **6.8** line
+  (`6.8.12-pve`) has no backport.
+- **PVE 8 opt-in 6.11 and 6.14** (`proxmox-kernel-6.11.11-2-pve`,
+  `proxmox-kernel-6.14.11-9-bpo12-pve`) — neither has the cherry-pick;
+  vulnerable.
 
 ### Rocky Linux / RHEL family
 
@@ -188,45 +199,53 @@ Rocky 9 (`5.14.0-687.25.1.el9_8`), Rocky 10 (`6.12.0-211.33.1.el10_2`),
 and Rocky 8 (`4.18.0-553.el8_10`) are all inside the window (the bug
 predates every EL kernel). RHEL-family kernels carry security backports
 without moving their upstream base version, so the version string alone
-cannot confirm a fix — the signal is an erratum. Red Hat shipped
-**RHSA-2026:38491** (RHEL 9, kernel `5.14.0-687.25.1.el9_8`) and
-**RHSA-2026:38492** (RHEL 10.2, kernel `6.12.0-211.33.1.el10_2`) on
-2026-07-13; AlmaLinux rebuilt both as **ALSA-2026:38491** and
-**ALSA-2026:38492**. Rocky 9 (`5.14.0-687.25.1.el9_8`) and Rocky 10
-(`6.12.0-211.33.1.el10_2`) carry the fixed kernel NVR in their BaseOS
-repos; Rocky shipped **RLSA-2026:38491** (Rocky 9) and
-**RLSA-2026:38492** (Rocky 10) in their respective updateinfo feeds. Red
-Hat also shipped **RHSA-2026:39083** (RHEL 8, kernel
-`4.18.0-553.143.1.el8_10`); AlmaLinux rebuilt it as **ALSA-2026:39083**.
-Rocky 8 skipped that NVR — rather than publishing a standalone rebuild
-of `553.143.1`, it shipped `4.18.0-553.144.1.el8_10` as
-**RLSA-2026:39179** (2026-07-15), which supersedes the RHEL fixed NVR
-and carries the fix cumulatively. The standard `kernel` for RHEL 9,
-RHEL 10, Oracle Linux, CloudLinux OS, and Rocky 8 is fixed. Red Hat
-also shipped **RHSA-2026:39082** (RHEL 8,
-`kernel-rt 4.18.0-553.143.1.rt7.484.el8_10`) on 2026-07-14; Rocky 8's
-RT repo carries `4.18.0-553.144.1.rt7.485.el8_10`, which supersedes the
-RHEL fixed NVR and carries the `kernel-rt` fix cumulatively. The
-real-time kernel (`kernel-rt`) for RHEL 9 GA has no advisory in the main
-stream — Red Hat shipped **RHSA-2026:39983** (`kernel-rt
-5.14.0-284.181.1.rt14.466.el9_2`) for the RHEL 9.2 E4S path only; there
-is no RLSA rebuild for that advisory in Rocky's NFV repo. Red Hat's
-`kernel-rt` package state remains **Affected** for RHEL 9 GA, so RHEL 9
-and Rocky 9 hosts running the RT kernel on the current GA release remain
-vulnerable.
+cannot confirm a fix — the signal is an erratum. Per kernel package:
+
+- **RHEL 9 / 10 standard `kernel`** — Red Hat shipped
+  **RHSA-2026:38491** (RHEL 9, kernel `5.14.0-687.25.1.el9_8`) and
+  **RHSA-2026:38492** (RHEL 10.2, kernel `6.12.0-211.33.1.el10_2`) on
+  2026-07-13; AlmaLinux rebuilt both as **ALSA-2026:38491** and
+  **ALSA-2026:38492**. Rocky 9 and Rocky 10 carry the fixed kernel NVRs
+  in their BaseOS repos, shipped as **RLSA-2026:38491** (Rocky 9) and
+  **RLSA-2026:38492** (Rocky 10).
+- **RHEL 8 / Rocky 8 standard `kernel`** — Red Hat shipped
+  **RHSA-2026:39083** (kernel `4.18.0-553.143.1.el8_10`); AlmaLinux
+  rebuilt it as **ALSA-2026:39083**. Rocky 8 skipped that NVR — rather
+  than publishing a standalone rebuild of `553.143.1`, it shipped
+  `4.18.0-553.144.1.el8_10` as **RLSA-2026:39179** (2026-07-15), which
+  supersedes the RHEL fixed NVR and carries the fix cumulatively.
+- **`kernel-rt` on EL8** — Red Hat shipped **RHSA-2026:39082**
+  (`kernel-rt 4.18.0-553.143.1.rt7.484.el8_10`) on 2026-07-14; Rocky
+  8's RT repo carries `4.18.0-553.144.1.rt7.485.el8_10`, which
+  supersedes the RHEL fixed NVR and carries the `kernel-rt` fix
+  cumulatively.
+- **`kernel-rt` on EL9 GA — still vulnerable** — the real-time kernel
+  for RHEL 9 GA has no advisory in the main stream: Red Hat shipped
+  **RHSA-2026:39983** (`kernel-rt 5.14.0-284.181.1.rt14.466.el9_2`) for
+  the RHEL 9.2 E4S path only, and there is no RLSA rebuild for that
+  advisory in Rocky's NFV repo. Red Hat's `kernel-rt` package state
+  remains **Affected** for RHEL 9 GA, so RHEL 9 and Rocky 9 hosts
+  running the RT kernel on the current GA release remain vulnerable.
+
+In sum, the standard `kernel` for RHEL 9, RHEL 10, Oracle Linux,
+CloudLinux OS, and Rocky 8 is fixed; only the EL9 GA `kernel-rt` stream
+is still waiting.
 
 ### Amazon Linux
 
-Each Amazon kernel stream is tracked as its own row above. **AL2023** is
-fixed on all three streams (default `kernel` 6.1, opt-in `kernel6.12` /
-`kernel6.18`). **AL2** (amzn2) reached end of support on **2026-06-30**
-with no ALAS ever issued for this CVE: all three of its streams — 4.14,
-plus 5.10 / 5.15 via `amazon-linux-extras` — are in-window, and AWS no
-longer provides security updates or bug fixes for AL2 core packages, so
-no fix is expected. An AL2 host stays permanently exploitable; the exit
-is migrating to AL2023 (or another patched distribution). Status is
-verified from the repodata `updateinfo.xml` (the per-CVE ALAS pages are
-JS-rendered and don't fetch headlessly).
+Each Amazon kernel stream is tracked as its own row above.
+
+- **AL2023** — fixed on all three streams (default `kernel` 6.1, opt-in
+  `kernel6.12` / `kernel6.18`).
+- **AL2** (amzn2) — reached end of support on **2026-06-30** with no
+  ALAS ever issued for this CVE: all three of its streams — 4.14, plus
+  5.10 / 5.15 via `amazon-linux-extras` — are in-window, and AWS no
+  longer provides security updates or bug fixes for AL2 core packages,
+  so no fix is expected. An AL2 host stays permanently exploitable; the
+  exit is migrating to AL2023 (or another patched distribution).
+
+Status is verified from the repodata `updateinfo.xml` (the per-CVE ALAS
+pages are JS-rendered and don't fetch headlessly).
 
 ## Detection
 
