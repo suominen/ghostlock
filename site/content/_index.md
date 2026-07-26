@@ -119,7 +119,7 @@ carrying the fix, and *Fixed since* the date it first held (both stay
 | Debian | 13 (trixie) | 6.12.96-1 | 6.12.86-1 | 2026-05-08 | :white_check_mark: Fixed |
 | Debian | 12 (bookworm) | 6.1.177-1 | 6.1.176-1 | 2026-07-03 | :white_check_mark: Fixed — DLA-4665-1 |
 | Debian | 11 (bullseye, LTS) | 5.10.259-1 | — | — | :x: Vulnerable |
-| Debian | 11 (linux-6.1 opt-in) | 6.1.176-1~deb11u1 | 6.1.176-1~deb11u1 | 2026-07-04 | :white_check_mark: Fixed — DLA-4671-1 |
+| Debian | 11 (linux-6.1 opt-in) | 6.1.177-1~deb11u1 | 6.1.176-1~deb11u1 | 2026-07-04 | :white_check_mark: Fixed — DLA-4671-1 |
 | Proxmox VE | 9 (7.0 default) | 7.0.14-6-pve | 7.0.14-1-pve | 2026-07-01 | :white_check_mark: Fixed — base ≥ the 7.0.4 backport |
 | Proxmox VE | 9 (6.17 old) | 6.17.13-19-pve | 6.17.13-16-pve | 2026-07-09 | :white_check_mark: Fixed — cherry-picked from `linux-6.18.y` |
 | Proxmox VE | 9 (6.14 old) | 6.14.11-9-pve | — | — | :x: Vulnerable — no cherry-pick |
@@ -345,8 +345,9 @@ reproduced. Most readers never need it.
     upstream first-fixed 6.1.175.
   - LTS/bullseye — the tracker keeps `src:linux` (5.10.y) **open**, so
     the default row stays `:x:`; the opt-in `linux-6.1` package
-    (bookworm's 6.1 kernel rebuilt for bullseye) is resolved at
-    `6.1.176-1~deb11u1` (DLA-4671-1, 2026-07-04) — its own row.
+    (bookworm's 6.1 kernel rebuilt for bullseye) first resolved at
+    `6.1.176-1~deb11u1` (DLA-4671-1, 2026-07-04); now
+    `6.1.177-1~deb11u1` — its own row.
   - Seed correction — trixie's first-fixed was recorded wrong at seed
     (6.12.95-1 / 2026-07-05; actual 6.12.86-1 / 2026-05-08) because the
     upstream first-fixed series was also wrong at seed.
