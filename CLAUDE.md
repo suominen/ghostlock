@@ -156,9 +156,10 @@ Proxmox forum announcements), so series get superseded — a former
 default or an opt-in overtaken by a newer one is labelled `old`
 (`9 (6.17 old)`).  Keep an `old` row (hosts still run it), but expect
 no more updates for it: Proxmox discontinues updates for superseded
-series after a short transition tail, and every PVE series is EOL on
+series after a short transition tail, and every such series is EOL on
 kernel.org, so a vulnerable `old` row will likely never flip.  Don't
-add upstream `Linux kernel` rows for the PVE series either — all are
+add upstream `Linux kernel` rows for series that appear in the table
+only because PVE ships them (6.8, 6.11, 6.14, 6.17) — they are
 EOL upstream without the fix, so such rows could never flip, and they
 would sit misleadingly against PVE rows whose fixes arrive as
 cherry-picks; the upstream-EOL fact is one sentence in the
