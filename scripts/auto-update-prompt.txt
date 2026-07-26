@@ -101,9 +101,15 @@ thing you may leave behind is the edited tracker (and its commit).
    dates to v2.6.39, EVERY tracked kernel is in-window — there are no
    "not affected" rows. Rows exist per kernel stream, not just per
    release: Debian suites' default kernel plus bullseye's opt-in
-   linux-6.1; PVE default and opt-in proxmox-kernel series; Rocky's
-   standard kernel; every AL2023 stream (AL2 is EOL — prose-only, no
-   rows, no repodata polls). EL kernel-rt is NOT a row —
+   linux-6.1; PVE default, opt-in, and old (superseded) proxmox-kernel
+   series; Rocky's standard kernel; every AL2023 stream (AL2 is EOL —
+   prose-only, no rows, no repodata polls). A PVE "old" row is a
+   superseded series Proxmox no longer updates: refresh its Current
+   kernel from the same Packages.gz pull, but expect no movement and
+   no verdict flip — only re-read its changelog branch if the package
+   version actually moved. When proxmox-default-kernel switches
+   series, relabel per CLAUDE.md (new default; superseded series
+   becomes "old"; old rows sort after live opt-ins, descending). EL kernel-rt is NOT a row —
    it is a prose-only caveat in the "### Rocky Linux / RHEL family"
    section, keyed on the RHEL kernel-rt fix_state in the Red Hat
    security data API. For each row, re-pull the KERNEL version and

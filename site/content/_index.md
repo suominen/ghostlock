@@ -3,7 +3,7 @@ title: "GhostLock — rtmutex/futex stack use-after-free tracking"
 description: "Linux kernel rtmutex/futex requeue-PI stack use-after-free (CVE-2026-43499, GhostLock) — local privilege escalation & container escape — distro patch status tracker"
 layout: "single"
 date: 2026-07-09
-lastmod: 2026-07-25
+lastmod: 2026-07-26
 cover:
   image: "ghostlock-tracker.png"
   alt: "GhostLock — Linux kernel rtmutex/futex stack use-after-free tracker"
@@ -121,11 +121,11 @@ carrying the fix, and *Fixed since* the date it first held (both stay
 | Debian | 11 (bullseye, LTS) | 5.10.259-1 | — | — | :x: Vulnerable |
 | Debian | 11 (linux-6.1 opt-in) | 6.1.176-1~deb11u1 | 6.1.176-1~deb11u1 | 2026-07-04 | :white_check_mark: Fixed — DLA-4671-1 |
 | Proxmox VE | 9 (7.0 default) | 7.0.14-6-pve | 7.0.14-1-pve | 2026-07-01 | :white_check_mark: Fixed — base ≥ the 7.0.4 backport |
-| Proxmox VE | 9 (6.14 opt-in) | 6.14.11-9-pve | — | — | :x: Vulnerable — no cherry-pick |
-| Proxmox VE | 9 (6.17 opt-in) | 6.17.13-19-pve | 6.17.13-16-pve | 2026-07-09 | :white_check_mark: Fixed — cherry-picked from `linux-6.18.y` |
+| Proxmox VE | 9 (6.17 old) | 6.17.13-19-pve | 6.17.13-16-pve | 2026-07-09 | :white_check_mark: Fixed — cherry-picked from `linux-6.18.y` |
+| Proxmox VE | 9 (6.14 old) | 6.14.11-9-pve | — | — | :x: Vulnerable — no cherry-pick |
 | Proxmox VE | 8 (6.8 default) | 6.8.12-37-pve | — | — | :x: Vulnerable — 6.8.y EOL, no backport |
-| Proxmox VE | 8 (6.11 opt-in) | 6.11.11-2-pve | — | — | :x: Vulnerable — no cherry-pick |
 | Proxmox VE | 8 (6.14 opt-in) | 6.14.11-9-bpo12-pve | — | — | :x: Vulnerable — no cherry-pick |
+| Proxmox VE | 8 (6.11 old) | 6.11.11-2-pve | — | — | :x: Vulnerable — no cherry-pick |
 | NixOS | Unstable | 6.18.39 | 6.18.36 | 2026-06-28 | :white_check_mark: Fixed — default moved to `linux_6_18` |
 | NixOS | 26.05 | 6.18.39 | 6.18.36 | 2026-07-03 | :white_check_mark: Fixed — default moved to `linux_6_18` |
 | Rocky Linux | 10 | 6.12.0-211.37.1.el10_2 | 6.12.0-211.33.1.el10_2 | 2026-07-15 | :white_check_mark: Fixed — RLSA-2026:38492 |
@@ -168,6 +168,17 @@ and its opt-in series get their own rows above. Whether a series
 carries the fix tracks Proxmox's kernel changelog, not Debian's: the
 6.17 fix is Proxmox's own cherry-pick of the three patches from
 `linux-6.18.y`, made on 2026-07-09.
+
+An *opt-in* series is Proxmox's preview of a likely next default,
+aimed at setups that need newer hardware support; an *old* series is
+one the release has moved past — a superseded default (PVE 9's 6.17
+and 6.14) or an opt-in overtaken by a newer one (PVE 8's 6.11).
+Proxmox discontinues updates for superseded series once a short
+transition tail ends (the 6.17 cherry-pick above landed inside that
+tail), and every PVE kernel series is long end-of-life on kernel.org,
+so a fix can only ever arrive as a Proxmox cherry-pick. A vulnerable
+*old* row is therefore unlikely ever to flip — the exit is rebooting
+into the release's current default kernel.
 
 ### Rocky Linux / RHEL family
 
@@ -288,7 +299,7 @@ log records the provenance — the advisory, repository index, or git
 reference that established each fact — so any row can be audited or
 reproduced. Most readers never need it.
 
-*Last verified 2026-07-25.*
+*Last verified 2026-07-26.*
 
 {{< details summary="Full verification log" >}}
 #### Upstream
@@ -347,14 +358,21 @@ reproduced. Most readers never need it.
   `debian/changelog`):
   - PVE 9 default — `proxmox-default-kernel 2.1.0` depends on
     `proxmox-kernel-7.0`; highest available `7.0.14-6-pve` — fixed.
-  - PVE 9 opt-in 6.14 — highest `6.14.11-9-pve`, no cherry-pick —
-    vulnerable.
-  - PVE 9 opt-in 6.17 — cherry-pick confirmed; highest
+  - PVE 9 old 6.17 — cherry-pick confirmed; highest
     `6.17.13-19-pve` — fixed.
+  - PVE 9 old 6.14 — highest `6.14.11-9-pve`, no cherry-pick —
+    vulnerable.
   - PVE 8 default — `proxmox-default-kernel 1.1.0` →
     `proxmox-kernel-6.8` — vulnerable.
-  - PVE 8 opt-ins 6.11 (highest `6.11.11-2-pve`) and 6.14 (highest
-    `6.14.11-9-bpo12-pve`) — neither has the cherry-pick.
+  - PVE 8 opt-in 6.14 — highest `6.14.11-9-bpo12-pve`, no
+    cherry-pick — vulnerable.
+  - PVE 8 old 6.11 — highest `6.11.11-2-pve`, no cherry-pick —
+    vulnerable.
+  - Series lifecycle (via the Proxmox forum opt-in kernel
+    announcements): an opt-in kernel previews the next default, a
+    superseded series stops receiving updates barring serious issues,
+    and all PVE series are EOL on kernel.org — the basis of the
+    *old* labels and the "unlikely ever to flip" caveat.
 - **Rocky / RHEL family** (via the Red Hat security data API, AlmaLinux
   errata, and Rocky BaseOS repodata):
   - EL10 / EL9 standard `kernel` — **RHSA-2026:38492** (RHEL 10.2,
