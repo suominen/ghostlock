@@ -114,7 +114,7 @@ carrying the fix, and *Fixed since* the date it first held (both stay
 | Linux kernel | 6.1.x | 6.1.178 | 6.1.175 | 2026-06-01 | :white_check_mark: Fixed — LTS |
 | Linux kernel | 5.15.x | 5.15.212 | 5.15.212 | 2026-07-24 | :white_check_mark: Fixed — LTS |
 | Linux kernel | 5.10.x | 5.10.261 | 5.10.261 | 2026-07-24 | :white_check_mark: Fixed — LTS |
-| Debian | sid (unstable) | 7.1.4-1 | 7.0.4-1 | 2026-05-08 | :white_check_mark: Fixed |
+| Debian | sid (unstable) | 7.1.5-1 | 7.0.4-1 | 2026-05-08 | :white_check_mark: Fixed |
 | Debian | forky (testing) | 7.1.3-1 | 7.0.4-1 | 2026-05-10 | :white_check_mark: Fixed |
 | Debian | 13 (trixie) | 6.12.96-1 | 6.12.86-1 | 2026-05-08 | :white_check_mark: Fixed |
 | Debian | 12 (bookworm) | 6.1.177-1 | 6.1.176-1 | 2026-07-03 | :white_check_mark: Fixed — DLA-4665-1 |
@@ -126,11 +126,11 @@ carrying the fix, and *Fixed since* the date it first held (both stay
 | Proxmox VE | 8 (6.8 default) | 6.8.12-37-pve | — | — | :x: Vulnerable — 6.8.y EOL, no backport |
 | Proxmox VE | 8 (6.14 opt-in) | 6.14.11-9-bpo12-pve | — | — | :x: Vulnerable — no cherry-pick |
 | Proxmox VE | 8 (6.11 old) | 6.11.11-2-pve | — | — | :x: Vulnerable — no cherry-pick |
-| NixOS | Unstable | 6.18.39 | 6.18.36 | 2026-06-28 | :white_check_mark: Fixed — default moved to `linux_6_18` |
+| NixOS | Unstable | 6.18.40 | 6.18.36 | 2026-06-28 | :white_check_mark: Fixed — default moved to `linux_6_18` |
 | NixOS | 26.05 | 6.18.40 | 6.18.36 | 2026-07-03 | :white_check_mark: Fixed — default moved to `linux_6_18` |
-| Rocky Linux | 10 | 6.12.0-211.37.1.el10_2 | 6.12.0-211.33.1.el10_2 | 2026-07-15 | :white_check_mark: Fixed — RLSA-2026:38492 |
+| Rocky Linux | 10 | 6.12.0-211.39.1.el10_2 | 6.12.0-211.33.1.el10_2 | 2026-07-15 | :white_check_mark: Fixed — RLSA-2026:38492 |
 | Rocky Linux | 9 | 5.14.0-687.29.1.el9_8 | 5.14.0-687.25.1.el9_8 | 2026-07-15 | :white_check_mark: Fixed — RLSA-2026:38491 |
-| Rocky Linux | 8 | 4.18.0-553.146.1.el8_10 | 4.18.0-553.144.1.el8_10 | 2026-07-15 | :white_check_mark: Fixed — RLSA-2026:39179 |
+| Rocky Linux | 8 | 4.18.0-553.147.1.el8_10 | 4.18.0-553.144.1.el8_10 | 2026-07-15 | :white_check_mark: Fixed — RLSA-2026:39179 |
 | Amazon Linux | 2023 (kernel 6.1) | 6.1.176-221.367 | 6.1.175-219.357 | 2026-06-22 | :white_check_mark: Fixed — ALAS2023-2026-1882 |
 | Amazon Linux | 2023 (kernel6.12) | 6.12.94-123.190 | 6.12.88-119.157 | 2026-05-25 | :white_check_mark: Fixed — ALAS2023-2026-1753 |
 | Amazon Linux | 2023 (kernel6.18) | 6.18.38-73.137 | 6.18.30-61.116 | 2026-05-25 | :white_check_mark: Fixed — ALAS2023-2026-1754 |
@@ -336,7 +336,7 @@ reproduced. Most readers never need it.
 
 - **Debian** (via the security-tracker JSON, tracker.debian.org migration
   news, and snapshot.debian.org `first_seen`):
-  - sid — first fixed upload `7.0.4-1` on 2026-05-08; now 7.1.4-1.
+  - sid — first fixed upload `7.0.4-1` on 2026-05-08; now 7.1.5-1.
   - testing/forky — `7.0.4-1` migrated 2026-05-10; now 7.1.3-1.
   - stable/trixie — base suite `6.12.86-1` on 2026-05-08; now 6.12.94-1
     in trixie, 6.12.96-1 in trixie-security.
@@ -353,7 +353,7 @@ reproduced. Most readers never need it.
     upstream first-fixed series was also wrong at seed.
 - **NixOS** (via the local nixpkgs clone):
   - `packageAliases.linux_default` is `linux_6_18` on both
-    nixos-unstable and nixos-26.05; nixos-unstable ships 6.18.39,
+    nixos-unstable and nixos-26.05; nixos-unstable ships 6.18.40,
     nixos-26.05 ships 6.18.40 — both fixed.
   - `linuxPackages_latest` (`linux_7_1`) is 7.1.4.
 - **Proxmox VE** (via pve-no-subscription `Packages` index and pve-kernel
