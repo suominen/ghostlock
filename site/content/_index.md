@@ -3,7 +3,7 @@ title: "GhostLock — rtmutex/futex stack use-after-free tracking"
 description: "Linux kernel rtmutex/futex requeue-PI stack use-after-free (CVE-2026-43499, GhostLock) — local privilege escalation & container escape — distro patch status tracker"
 layout: "single"
 date: 2026-07-09
-lastmod: 2026-07-26
+lastmod: 2026-07-27
 cover:
   image: "ghostlock-tracker.png"
   alt: "GhostLock — Linux kernel rtmutex/futex stack use-after-free tracker"
@@ -105,7 +105,7 @@ carrying the fix, and *Fixed since* the date it first held (both stay
 
 | Distribution | Release | Current kernel | First fixed | Fixed since | Status |
 |---|---|---|---|---|---|
-| Linux kernel | mainline | 7.2-rc4 | 7.1 | 2026-06-14 | :white_check_mark: Fixed — carries `3bfdc63936dd` |
+| Linux kernel | mainline | 7.2-rc5 | 7.1 | 2026-06-14 | :white_check_mark: Fixed — carries `3bfdc63936dd` |
 | Linux kernel | 7.1.x | 7.1.5 | 7.1 | 2026-06-14 | :white_check_mark: Fixed — at the initial release |
 | Linux kernel | 7.0.x | 7.0.14 | 7.0.4 | 2026-05-07 | :white_check_mark: Fixed — EOL |
 | Linux kernel | 6.18.x | 6.18.40 | 6.18.27 | 2026-05-07 | :white_check_mark: Fixed — LTS |
@@ -127,7 +127,7 @@ carrying the fix, and *Fixed since* the date it first held (both stay
 | Proxmox VE | 8 (6.14 opt-in) | 6.14.11-9-bpo12-pve | — | — | :x: Vulnerable — no cherry-pick |
 | Proxmox VE | 8 (6.11 old) | 6.11.11-2-pve | — | — | :x: Vulnerable — no cherry-pick |
 | NixOS | Unstable | 6.18.39 | 6.18.36 | 2026-06-28 | :white_check_mark: Fixed — default moved to `linux_6_18` |
-| NixOS | 26.05 | 6.18.39 | 6.18.36 | 2026-07-03 | :white_check_mark: Fixed — default moved to `linux_6_18` |
+| NixOS | 26.05 | 6.18.40 | 6.18.36 | 2026-07-03 | :white_check_mark: Fixed — default moved to `linux_6_18` |
 | Rocky Linux | 10 | 6.12.0-211.37.1.el10_2 | 6.12.0-211.33.1.el10_2 | 2026-07-15 | :white_check_mark: Fixed — RLSA-2026:38492 |
 | Rocky Linux | 9 | 5.14.0-687.29.1.el9_8 | 5.14.0-687.25.1.el9_8 | 2026-07-15 | :white_check_mark: Fixed — RLSA-2026:38491 |
 | Rocky Linux | 8 | 4.18.0-553.146.1.el8_10 | 4.18.0-553.144.1.el8_10 | 2026-07-15 | :white_check_mark: Fixed — RLSA-2026:39179 |
@@ -299,7 +299,7 @@ log records the provenance — the advisory, repository index, or git
 reference that established each fact — so any row can be audited or
 reproduced. Most readers never need it.
 
-*Last verified 2026-07-26.*
+*Last verified 2026-07-27.*
 
 {{< details summary="Full verification log" >}}
 #### Upstream
@@ -329,7 +329,7 @@ reproduced. Most readers never need it.
   (`CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H`), confirming Red Hat's
   Important severity rating (via NVD REST API).
 - Current point releases (`https://www.kernel.org/finger_banner`): mainline
-  7.2-rc4; 7.1.5; 7.0.14 (EOL, fixed since 7.0.4); 6.18.40; 6.12.98;
+  7.2-rc5; 7.1.5; 7.0.14 (EOL, fixed since 7.0.4); 6.18.40; 6.12.98;
   6.6.145; 6.1.178; 5.15.212; 5.10.261.
 
 #### Distributions
@@ -353,7 +353,8 @@ reproduced. Most readers never need it.
     upstream first-fixed series was also wrong at seed.
 - **NixOS** (via the local nixpkgs clone):
   - `packageAliases.linux_default` is `linux_6_18` on both
-    nixos-unstable and nixos-26.05; both ship 6.18.39 — fixed.
+    nixos-unstable and nixos-26.05; nixos-unstable ships 6.18.39,
+    nixos-26.05 ships 6.18.40 — both fixed.
   - `linuxPackages_latest` (`linux_7_1`) is 7.1.4.
 - **Proxmox VE** (via pve-no-subscription `Packages` index and pve-kernel
   `debian/changelog`):
