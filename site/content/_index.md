@@ -120,7 +120,7 @@ carrying the fix, and *Fixed since* the date it first held (both stay
 | Debian | 12 (bookworm) | 6.1.177-1 | 6.1.176-1 | 2026-07-03 | :white_check_mark: Fixed — DLA-4665-1 |
 | Debian | 11 (bullseye, LTS) | 5.10.259-1 | — | — | :x: Vulnerable |
 | Debian | 11 (linux-6.1 opt-in) | 6.1.177-1~deb11u1 | 6.1.176-1~deb11u1 | 2026-07-04 | :white_check_mark: Fixed — DLA-4671-1 |
-| Proxmox VE | 9 (7.0 default) | 7.0.14-7-pve | 7.0.14-1-pve | 2026-07-01 | :white_check_mark: Fixed — base ≥ the 7.0.4 backport |
+| Proxmox VE | 9 (7.0 default) | 7.0.14-6-pve | 7.0.14-1-pve | 2026-07-01 | :white_check_mark: Fixed — base ≥ the 7.0.4 backport |
 | Proxmox VE | 9 (6.17 old) | 6.17.13-19-pve | 6.17.13-16-pve | 2026-07-09 | :white_check_mark: Fixed — cherry-picked from `linux-6.18.y` |
 | Proxmox VE | 9 (6.14 old) | 6.14.11-9-pve | — | — | :x: Vulnerable — no cherry-pick |
 | Proxmox VE | 8 (6.8 default) | 6.8.12-38-pve | — | — | :x: Vulnerable — 6.8.y EOL, no backport |
@@ -130,7 +130,7 @@ carrying the fix, and *Fixed since* the date it first held (both stay
 | NixOS | 26.05 | 6.18.40 | 6.18.36 | 2026-07-03 | :white_check_mark: Fixed — default moved to `linux_6_18` |
 | Rocky Linux | 10 | 6.12.0-211.39.1.el10_2 | 6.12.0-211.33.1.el10_2 | 2026-07-15 | :white_check_mark: Fixed — RLSA-2026:38492 |
 | Rocky Linux | 9 | 5.14.0-687.30.1.el9_8 | 5.14.0-687.25.1.el9_8 | 2026-07-15 | :white_check_mark: Fixed — RLSA-2026:38491 |
-| Rocky Linux | 8 | 4.18.0-553.146.1.el8_10 | 4.18.0-553.144.1.el8_10 | 2026-07-15 | :white_check_mark: Fixed — RLSA-2026:39179 |
+| Rocky Linux | 8 | 4.18.0-553.147.1.el8_10 | 4.18.0-553.144.1.el8_10 | 2026-07-15 | :white_check_mark: Fixed — RLSA-2026:39179 |
 | Amazon Linux | 2023 (kernel 6.1) | 6.1.176-223.369 | 6.1.175-219.357 | 2026-06-22 | :white_check_mark: Fixed — ALAS2023-2026-1882 |
 | Amazon Linux | 2023 (kernel6.12) | 6.12.94-123.192 | 6.12.88-119.157 | 2026-05-25 | :white_check_mark: Fixed — ALAS2023-2026-1753 |
 | Amazon Linux | 2023 (kernel6.18) | 6.18.38-76.139 | 6.18.30-61.116 | 2026-05-25 | :white_check_mark: Fixed — ALAS2023-2026-1754 |
@@ -359,7 +359,7 @@ reproduced. Most readers never need it.
 - **Proxmox VE** (via pve-no-subscription `Packages` index and pve-kernel
   `debian/changelog`):
   - PVE 9 default — `proxmox-default-kernel 2.1.0` depends on
-    `proxmox-kernel-7.0`; highest available `7.0.14-7-pve` — fixed.
+    `proxmox-kernel-7.0`; highest available `7.0.14-6-pve` — fixed.
   - PVE 9 old 6.17 — cherry-pick confirmed; highest
     `6.17.13-19-pve` — fixed.
   - PVE 9 old 6.14 — highest `6.14.11-9-pve`, no cherry-pick —
@@ -390,7 +390,7 @@ reproduced. Most readers never need it.
     **ALSA-2026:39083**. Rocky 8 skipped `.143.1` and shipped
     `4.18.0-553.144.1.el8_10` as RLSA-2026:39179 (2026-07-15) — above
     the RHEL fixed NVR, carrying the fix cumulatively; current Rocky 8
-    kernel `4.18.0-553.146.1.el8_10` (confirmed via updateinfo).
+    kernel `4.18.0-553.147.1.el8_10` (confirmed via BaseOS repodata).
   - `kernel-rt`, EL9 GA — **RHSA-2026:39983**
     (`kernel-rt 5.14.0-284.181.1.rt14.466.el9_2`) shipped for the RHEL
     9.2 E4S path only; Rocky's NFV repo carries `5.14.0-687.12.1.el9_8`
