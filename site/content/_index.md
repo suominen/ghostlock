@@ -3,7 +3,7 @@ title: "GhostLock — rtmutex/futex stack use-after-free tracking"
 description: "Linux kernel rtmutex/futex requeue-PI stack use-after-free (CVE-2026-43499, GhostLock) — local privilege escalation & container escape — distro patch status tracker"
 layout: "single"
 date: 2026-07-09
-lastmod: 2026-07-27
+lastmod: 2026-07-28
 cover:
   image: "ghostlock-tracker.png"
   alt: "GhostLock — Linux kernel rtmutex/futex stack use-after-free tracker"
@@ -120,20 +120,20 @@ carrying the fix, and *Fixed since* the date it first held (both stay
 | Debian | 12 (bookworm) | 6.1.177-1 | 6.1.176-1 | 2026-07-03 | :white_check_mark: Fixed — DLA-4665-1 |
 | Debian | 11 (bullseye, LTS) | 5.10.259-1 | — | — | :x: Vulnerable |
 | Debian | 11 (linux-6.1 opt-in) | 6.1.177-1~deb11u1 | 6.1.176-1~deb11u1 | 2026-07-04 | :white_check_mark: Fixed — DLA-4671-1 |
-| Proxmox VE | 9 (7.0 default) | 7.0.14-6-pve | 7.0.14-1-pve | 2026-07-01 | :white_check_mark: Fixed — base ≥ the 7.0.4 backport |
+| Proxmox VE | 9 (7.0 default) | 7.0.14-7-pve | 7.0.14-1-pve | 2026-07-01 | :white_check_mark: Fixed — base ≥ the 7.0.4 backport |
 | Proxmox VE | 9 (6.17 old) | 6.17.13-19-pve | 6.17.13-16-pve | 2026-07-09 | :white_check_mark: Fixed — cherry-picked from `linux-6.18.y` |
 | Proxmox VE | 9 (6.14 old) | 6.14.11-9-pve | — | — | :x: Vulnerable — no cherry-pick |
-| Proxmox VE | 8 (6.8 default) | 6.8.12-37-pve | — | — | :x: Vulnerable — 6.8.y EOL, no backport |
+| Proxmox VE | 8 (6.8 default) | 6.8.12-38-pve | — | — | :x: Vulnerable — 6.8.y EOL, no backport |
 | Proxmox VE | 8 (6.14 opt-in) | 6.14.11-9-bpo12-pve | — | — | :x: Vulnerable — no cherry-pick |
 | Proxmox VE | 8 (6.11 old) | 6.11.11-2-pve | — | — | :x: Vulnerable — no cherry-pick |
 | NixOS | Unstable | 6.18.40 | 6.18.36 | 2026-06-28 | :white_check_mark: Fixed — default moved to `linux_6_18` |
 | NixOS | 26.05 | 6.18.40 | 6.18.36 | 2026-07-03 | :white_check_mark: Fixed — default moved to `linux_6_18` |
 | Rocky Linux | 10 | 6.12.0-211.39.1.el10_2 | 6.12.0-211.33.1.el10_2 | 2026-07-15 | :white_check_mark: Fixed — RLSA-2026:38492 |
-| Rocky Linux | 9 | 5.14.0-687.29.1.el9_8 | 5.14.0-687.25.1.el9_8 | 2026-07-15 | :white_check_mark: Fixed — RLSA-2026:38491 |
-| Rocky Linux | 8 | 4.18.0-553.147.1.el8_10 | 4.18.0-553.144.1.el8_10 | 2026-07-15 | :white_check_mark: Fixed — RLSA-2026:39179 |
-| Amazon Linux | 2023 (kernel 6.1) | 6.1.176-221.367 | 6.1.175-219.357 | 2026-06-22 | :white_check_mark: Fixed — ALAS2023-2026-1882 |
-| Amazon Linux | 2023 (kernel6.12) | 6.12.94-123.190 | 6.12.88-119.157 | 2026-05-25 | :white_check_mark: Fixed — ALAS2023-2026-1753 |
-| Amazon Linux | 2023 (kernel6.18) | 6.18.38-73.137 | 6.18.30-61.116 | 2026-05-25 | :white_check_mark: Fixed — ALAS2023-2026-1754 |
+| Rocky Linux | 9 | 5.14.0-687.30.1.el9_8 | 5.14.0-687.25.1.el9_8 | 2026-07-15 | :white_check_mark: Fixed — RLSA-2026:38491 |
+| Rocky Linux | 8 | 4.18.0-553.146.1.el8_10 | 4.18.0-553.144.1.el8_10 | 2026-07-15 | :white_check_mark: Fixed — RLSA-2026:39179 |
+| Amazon Linux | 2023 (kernel 6.1) | 6.1.176-223.369 | 6.1.175-219.357 | 2026-06-22 | :white_check_mark: Fixed — ALAS2023-2026-1882 |
+| Amazon Linux | 2023 (kernel6.12) | 6.12.94-123.192 | 6.12.88-119.157 | 2026-05-25 | :white_check_mark: Fixed — ALAS2023-2026-1753 |
+| Amazon Linux | 2023 (kernel6.18) | 6.18.38-76.139 | 6.18.30-61.116 | 2026-05-25 | :white_check_mark: Fixed — ALAS2023-2026-1754 |
 {.distros}
 
 ### Linux kernel
@@ -299,7 +299,7 @@ log records the provenance — the advisory, repository index, or git
 reference that established each fact — so any row can be audited or
 reproduced. Most readers never need it.
 
-*Last verified 2026-07-27.*
+*Last verified 2026-07-28.*
 
 {{< details summary="Full verification log" >}}
 #### Upstream
@@ -355,17 +355,17 @@ reproduced. Most readers never need it.
   - `packageAliases.linux_default` is `linux_6_18` on both
     nixos-unstable and nixos-26.05; nixos-unstable ships 6.18.40,
     nixos-26.05 ships 6.18.40 — both fixed.
-  - `linuxPackages_latest` (`linux_7_1`) is 7.1.4.
+  - `linuxPackages_latest` (`linux_7_1`) is 7.1.5.
 - **Proxmox VE** (via pve-no-subscription `Packages` index and pve-kernel
   `debian/changelog`):
   - PVE 9 default — `proxmox-default-kernel 2.1.0` depends on
-    `proxmox-kernel-7.0`; highest available `7.0.14-6-pve` — fixed.
+    `proxmox-kernel-7.0`; highest available `7.0.14-7-pve` — fixed.
   - PVE 9 old 6.17 — cherry-pick confirmed; highest
     `6.17.13-19-pve` — fixed.
   - PVE 9 old 6.14 — highest `6.14.11-9-pve`, no cherry-pick —
     vulnerable.
   - PVE 8 default — `proxmox-default-kernel 1.1.0` →
-    `proxmox-kernel-6.8` — vulnerable.
+    `proxmox-kernel-6.8`; highest available `6.8.12-38-pve` — vulnerable.
   - PVE 8 opt-in 6.14 — highest `6.14.11-9-bpo12-pve`, no
     cherry-pick — vulnerable.
   - PVE 8 old 6.11 — highest `6.11.11-2-pve`, no cherry-pick —
@@ -382,14 +382,15 @@ reproduced. Most readers never need it.
     `5.14.0-687.25.1.el9_8`) shipped 2026-07-13; AlmaLinux rebuilt both
     (ALSA-2026:38492 / ALSA-2026:38491); Rocky 10 and Rocky 9 carry the
     fixed NVRs in BaseOS, RLSA-2026:38492 / RLSA-2026:38491 confirmed
-    in updateinfo.
+    in updateinfo; current Rocky 9 kernel `5.14.0-687.30.1.el9_8` (in
+    primary.xml; post-38491 updates via RLSA-2026:43307 and subsequent
+    builds).
   - EL8 standard `kernel` — **RHSA-2026:39083**
     (`4.18.0-553.143.1.el8_10`); AlmaLinux rebuilt it as
     **ALSA-2026:39083**. Rocky 8 skipped `.143.1` and shipped
     `4.18.0-553.144.1.el8_10` as RLSA-2026:39179 (2026-07-15) — above
-    the RHEL fixed NVR, carrying the fix cumulatively (confirmed via
-    primary.xml and updateinfo; CVE-2026-43499 not listed in the RLSA
-    but the build supersedes the fixed NVR).
+    the RHEL fixed NVR, carrying the fix cumulatively; current Rocky 8
+    kernel `4.18.0-553.146.1.el8_10` (confirmed via updateinfo).
   - `kernel-rt`, EL9 GA — **RHSA-2026:39983**
     (`kernel-rt 5.14.0-284.181.1.rt14.466.el9_2`) shipped for the RHEL
     9.2 E4S path only; Rocky's NFV repo carries `5.14.0-687.12.1.el9_8`
@@ -418,9 +419,11 @@ reproduced. Most readers never need it.
     (RHEL 6 ELS, `kernel 2.6.32-754.62.1.el6`).
 - **Amazon Linux** (via the repodata `updateinfo.xml`):
   - AL2023 default `kernel` (6.1) — ALAS2023-2026-1882; current
-    `6.1.176-221.367` — fixed.
-  - AL2023 `kernel6.12` — ALAS2023-2026-1753 — fixed.
-  - AL2023 `kernel6.18` — ALAS2023-2026-1754 — fixed.
+    `6.1.176-223.369` — fixed.
+  - AL2023 `kernel6.12` — ALAS2023-2026-1753; current
+    `6.12.94-123.192` — fixed.
+  - AL2023 `kernel6.18` — ALAS2023-2026-1754; current
+    `6.18.38-76.139` — fixed.
   - AL2 — never received an ALAS for CVE-2026-43499 and reached end of
     support on 2026-06-30 (per the AWS AL2 FAQ; confirmed against
     endoflife.date) — AWS no longer ships security updates for AL2
