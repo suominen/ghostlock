@@ -41,16 +41,17 @@
   overflow-wrap: anywhere;
 }
 
-/* Distribution-status table — keep the Release column on a single line
-   so labels like "11 (bullseye, LTS)" or "9 (6.17 opt-in)" don't wrap
-   at the comma/space. The Release cells are tagged `.nowrap` by
-   extend_footer.html (a positional nth-child rule can't be used: the
-   group-row transform removes the Distribution cells and shifts the
-   indices, and the no-JS fallback keeps them). Trade-off: the table can
-   widen past the content column on very narrow viewports; the page
-   scrolls horizontally rather than the column reflowing — acceptable
-   for an information-dense reference. */
-.post-content table.distros td.nowrap {
+/* Distribution-status table — keep every column except the last (Status)
+   on a single line, so version strings and labels like "11 (bullseye,
+   LTS)" don't wrap. Status keeps wrapping: it carries the longest text
+   (advisory IDs, short notes) and its own hanging indent. Targeting
+   `:not(:last-child)` works with and without the group-row transform —
+   that transform removes the Distribution cell (shifting the left-anchored
+   indices) while the no-JS fallback keeps it, but Status is the last cell
+   either way. Trade-off: the table can widen past the content column on
+   narrow viewports; the page scrolls horizontally rather than the columns
+   reflowing — acceptable for an information-dense reference. */
+.post-content table.distros td:not(:last-child) {
   white-space: nowrap;
 }
 
