@@ -1,5 +1,5 @@
 ---
-title: "GhostLock — rtmutex/futex stack use-after-free tracking"
+title: "GhostLock — rtmutex/futex stack use-after-free"
 description: "Linux kernel rtmutex/futex requeue-PI stack use-after-free (CVE-2026-43499, GhostLock) — local privilege escalation & container escape — distro patch status tracker"
 layout: "single"
 date: 2026-07-09
