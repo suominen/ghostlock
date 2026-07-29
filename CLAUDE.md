@@ -134,10 +134,12 @@ same rule applies to version lists in prose.  Keep the `{.distros}`
 block attribute on the line **immediately after** the table (no blank
 line between).
 
-Amazon rows are **one per AL2023 kernel stream** — name the stream in
-the **Release** column (`2023 (kernel6.12)`); keep every supported
-stream (default + opt-in) as its own row, and add a row when Amazon
-ships a new stream.  **AL2 has no rows**: it reached end of support on
+Amazon rows are **one per AL2023 kernel stream** — label the default
+stream's row `2023 (default)` (it is the plain `kernel` package,
+currently 6.1 — named in the `### Amazon Linux` prose, not the table)
+and each opt-in stream by its package name (`2023 (kernel6.12)`); keep
+every supported stream (default + opt-in) as its own row, and add a
+row when Amazon ships a new stream.  **AL2 has no rows**: it reached end of support on
 2026-06-30 — before this tracker existed — with no ALAS for this CVE,
 so it is covered collectively in the `### Amazon Linux` prose (all
 three streams vulnerable, no fix expected); don't poll AL2 repodata and
@@ -150,7 +152,9 @@ bullseye's `linux-6.1`, the bookworm 6.1 kernel rebuilt for bullseye —
 row `11 (linux-6.1 opt-in)`).  A fixed opt-in row never flips the
 default row's verdict: while `src:linux` is open in the security tracker
 the default row stays `:x:`.  The same default-plus-variant row pattern
-applies to Proxmox (`proxmox-kernel-*` series), with a third Release
+applies to Proxmox (`proxmox-kernel-*` series), with two wrinkles: a
+default row is labelled plain `9 (default)` — its series is visible in
+*Current kernel* and named in the prose — and there is a third Release
 label: PVE opt-in kernels are previews of the next default (per the
 Proxmox forum announcements), so series get superseded — a former
 default or an opt-in overtaken by a newer one is labelled `old`
@@ -188,11 +192,12 @@ kernel* cell and **nothing else**.
 **A default-kernel-series switch is always recordable.** PVE moves its
 default series during a release's lifetime (`proxmox-default-kernel`
 changing which `proxmox-kernel-*` it depends on), and a distro can add
-an opt-in series alongside it.  Record a switch in the affected row's
-Release label and prose, add a **new row** for a new opt-in series,
-relabel the superseded series' row `old` (and re-sort: old rows follow
-the live opt-ins, descending), and update the verification log —
-**together**, since a log-only update
+an opt-in series alongside it.  Record a switch in the prose and the
+rows: the default row keeps its plain `(default)` label while its
+*Current kernel* moves to the new series, the superseded series gets an
+`old` row of its own (re-sort: old rows follow the live opt-ins,
+descending), a new opt-in series gets a **new row**, and update the
+verification log — **together**, since a log-only update
 leaves the tracker self-inconsistent.  A switch can also flip a verdict
 on its own — a newer series may already contain the fix, or a still-EOL
 one may not — so re-derive the verdict rather than carrying the old one

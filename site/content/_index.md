@@ -121,10 +121,10 @@ carrying the fix, and *Fixed since* the date it first held (both stay
 | Debian | 12 (bookworm) | 6.1.177-1 | 6.1.176-1 | 2026-07-03 | :white_check_mark: Fixed — DLA-4665-1 |
 | Debian | 11 (bullseye, LTS) | 5.10.259-1 | — | — | :x: Vulnerable |
 | Debian | 11 (linux-6.1 opt-in) | 6.1.177-1~deb11u1 | 6.1.176-1~deb11u1 | 2026-07-04 | :white_check_mark: Fixed — DLA-4671-1 |
-| Proxmox VE | 9 (7.0 default) | 7.0.14-6-pve | 7.0.14-1-pve | 2026-07-01 | :white_check_mark: Fixed — base ≥ the 7.0.4 backport |
+| Proxmox VE | 9 (default) | 7.0.14-6-pve | 7.0.14-1-pve | 2026-07-01 | :white_check_mark: Fixed — base ≥ the 7.0.4 backport |
 | Proxmox VE | 9 (6.17 old) | 6.17.13-19-pve | 6.17.13-16-pve | 2026-07-09 | :white_check_mark: Fixed — cherry-picked from `linux-6.18.y` |
 | Proxmox VE | 9 (6.14 old) | 6.14.11-9-pve | — | — | :x: Vulnerable — no cherry-pick |
-| Proxmox VE | 8 (6.8 default) | 6.8.12-38-pve | — | — | :x: Vulnerable — 6.8.y EOL, no backport |
+| Proxmox VE | 8 (default) | 6.8.12-38-pve | — | — | :x: Vulnerable — 6.8.y EOL, no backport |
 | Proxmox VE | 8 (6.14 opt-in) | 6.14.11-9-bpo12-pve | — | — | :x: Vulnerable — no cherry-pick |
 | Proxmox VE | 8 (6.11 old) | 6.11.11-2-pve | — | — | :x: Vulnerable — no cherry-pick |
 | NixOS | Unstable | 6.18.40 | 6.18.36 | 2026-06-28 | :white_check_mark: Fixed — default moved to `linux_6_18` |
@@ -132,7 +132,7 @@ carrying the fix, and *Fixed since* the date it first held (both stay
 | Rocky Linux | 10 | 6.12.0-211.39.1.el10_2 | 6.12.0-211.33.1.el10_2 | 2026-07-15 | :white_check_mark: Fixed — RLSA-2026:38492 |
 | Rocky Linux | 9 | 5.14.0-687.30.1.el9_8 | 5.14.0-687.25.1.el9_8 | 2026-07-15 | :white_check_mark: Fixed — RLSA-2026:38491 |
 | Rocky Linux | 8 | 4.18.0-553.147.1.el8_10 | 4.18.0-553.144.1.el8_10 | 2026-07-15 | :white_check_mark: Fixed — RLSA-2026:39179 |
-| Amazon Linux | 2023 (kernel 6.1) | 6.1.176-223.369 | 6.1.175-219.357 | 2026-06-22 | :white_check_mark: Fixed — ALAS2023-2026-1882 |
+| Amazon Linux | 2023 (default) | 6.1.176-223.369 | 6.1.175-219.357 | 2026-06-22 | :white_check_mark: Fixed — ALAS2023-2026-1882 |
 | Amazon Linux | 2023 (kernel6.12) | 6.12.94-123.192 | 6.12.88-119.157 | 2026-05-25 | :white_check_mark: Fixed — ALAS2023-2026-1753 |
 | Amazon Linux | 2023 (kernel6.18) | 6.18.38-76.139 | 6.18.30-61.116 | 2026-05-25 | :white_check_mark: Fixed — ALAS2023-2026-1754 |
 {.distros}
@@ -165,7 +165,8 @@ Proxmox ships its own Ubuntu-derived kernels (`proxmox-kernel-*`), so
 Debian's fix status does not carry over — and as a common VM/container
 host, the container-escape vector makes it worth tracking. Each PVE
 release's default kernel series (pinned by `proxmox-default-kernel`)
-and its opt-in series get their own rows above. Whether a series
+and its opt-in series get their own rows above; the current defaults
+are the 7.0 series on PVE 9 and 6.8 on PVE 8. Whether a series
 carries the fix tracks Proxmox's kernel changelog, not Debian's: the
 6.17 fix is Proxmox's own cherry-pick of the three patches from
 `linux-6.18.y`, made on 2026-07-09.
@@ -220,7 +221,9 @@ still waiting.
 
 Each **AL2023** kernel stream is its own row above; status is verified
 from the repodata `updateinfo.xml` (the per-CVE ALAS pages are
-JS-rendered and don't fetch headlessly).
+JS-rendered and don't fetch headlessly). The *default* row is the plain
+`kernel` package (a 6.1-series stream); `kernel6.12` and `kernel6.18`
+are the opt-in streams.
 
 **AL2** (amzn2) is not tracked here: it reached end of support on
 **2026-06-30** — before this tracker existed — with no ALAS ever issued
