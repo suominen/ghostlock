@@ -3,7 +3,7 @@ title: "GhostLock — rtmutex/futex stack use-after-free"
 description: "Linux kernel rtmutex/futex requeue-PI stack use-after-free (CVE-2026-43499, GhostLock) — local privilege escalation & container escape — distro patch status tracker"
 layout: "single"
 date: 2026-07-09
-lastmod: 2026-07-28
+lastmod: 2026-07-29
 cover:
   image: "ghostlock-tracker.png"
   alt: "GhostLock — Linux kernel rtmutex/futex stack use-after-free tracker"
@@ -121,10 +121,10 @@ carrying the fix, and *Fixed since* the date it first held (both stay
 | Debian | 12 (bookworm) | 6.1.177-1 | 6.1.176-1 | 2026-07-03 | :white_check_mark: Fixed — DLA-4665-1 |
 | Debian | 11 (bullseye, LTS) | 5.10.259-1 | — | — | :x: Vulnerable |
 | Debian | 11 (linux-6.1 opt-in) | 6.1.177-1~deb11u1 | 6.1.176-1~deb11u1 | 2026-07-04 | :white_check_mark: Fixed — DLA-4671-1 |
-| Proxmox VE | 9 (default) | 7.0.14-6-pve | 7.0.14-1-pve | 2026-07-01 | :white_check_mark: Fixed — base ≥ the 7.0.4 backport |
-| Proxmox VE | 9 (6.17 old) | 6.17.13-19-pve | 6.17.13-16-pve | 2026-07-09 | :white_check_mark: Fixed — cherry-picked from `linux-6.18.y` |
+| Proxmox VE | 9 (default) | 7.0.14-8-pve | 7.0.14-1-pve | 2026-07-01 | :white_check_mark: Fixed — base ≥ the 7.0.4 backport |
+| Proxmox VE | 9 (6.17 old) | 6.17.13-21-pve | 6.17.13-16-pve | 2026-07-09 | :white_check_mark: Fixed — cherry-picked from `linux-6.18.y` |
 | Proxmox VE | 9 (6.14 old) | 6.14.11-9-pve | — | — | :x: Vulnerable — no cherry-pick |
-| Proxmox VE | 8 (default) | 6.8.12-38-pve | — | — | :x: Vulnerable — 6.8.y EOL, no backport |
+| Proxmox VE | 8 (default) | 6.8.12-39-pve | — | — | :x: Vulnerable — 6.8.y EOL, no backport |
 | Proxmox VE | 8 (6.14 opt-in) | 6.14.11-9-bpo12-pve | — | — | :x: Vulnerable — no cherry-pick |
 | Proxmox VE | 8 (6.11 old) | 6.11.11-2-pve | — | — | :x: Vulnerable — no cherry-pick |
 | NixOS | Unstable | 6.18.40 | 6.18.36 | 2026-06-28 | :white_check_mark: Fixed — default moved to `linux_6_18` |
@@ -303,7 +303,7 @@ log records the provenance — the advisory, repository index, or git
 reference that established each fact — so any row can be audited or
 reproduced. Most readers never need it.
 
-*Last verified 2026-07-28.*
+*Last verified 2026-07-29.*
 
 {{< details summary="Full verification log" >}}
 #### Upstream
@@ -363,13 +363,13 @@ reproduced. Most readers never need it.
 - **Proxmox VE** (via pve-no-subscription `Packages` index and pve-kernel
   `debian/changelog`):
   - PVE 9 default — `proxmox-default-kernel 2.1.0` depends on
-    `proxmox-kernel-7.0`; highest available `7.0.14-6-pve` — fixed.
+    `proxmox-kernel-7.0`; highest available `7.0.14-8-pve` — fixed.
   - PVE 9 old 6.17 — cherry-pick confirmed; highest
-    `6.17.13-19-pve` — fixed.
+    `6.17.13-21-pve` — fixed.
   - PVE 9 old 6.14 — highest `6.14.11-9-pve`, no cherry-pick —
     vulnerable.
   - PVE 8 default — `proxmox-default-kernel 1.1.0` →
-    `proxmox-kernel-6.8`; highest available `6.8.12-38-pve` — vulnerable.
+    `proxmox-kernel-6.8`; highest available `6.8.12-39-pve` — vulnerable.
   - PVE 8 opt-in 6.14 — highest `6.14.11-9-bpo12-pve`, no
     cherry-pick — vulnerable.
   - PVE 8 old 6.11 — highest `6.11.11-2-pve`, no cherry-pick —
