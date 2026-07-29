@@ -553,7 +553,25 @@ curl -fsSL "$url" | zcat | grep -A3 '^Package: proxmox-default-kernel'
 
 The default kernel *series* is whatever the highest-versioned
 `proxmox-default-kernel` meta-package depends on — check it each time, it
-moves.  Whether a Proxmox kernel carries the fix tracks its Ubuntu series,
+moves.
+
+**Two sources — only one is authoritative for the version.** The
+*Current kernel* column is the `proxmox-kernel-<series>` build published
+in `pve-no-subscription` (read it from the same Packages.gz — the
+per-series package entries, not just the `proxmox-default-kernel` meta;
+take the highest `rel`).  That is the build a host actually installs.
+The pve-kernel **git changelog leads apt** — a build is committed there
+before it reaches any apt channel (git → pvetest → pve-no-subscription →
+enterprise) — so **never copy a changelog version into *Current
+kernel***; reading the version from git on one run and apt on the next
+is exactly what makes the column bounce forth-and-back.  Use the git
+changelog only to confirm a cherry-pick.  If it shows the fix cherry-pick
+in a build `pve-no-subscription` has not yet published, the fix is
+*staged*, not shipped: mark `:warning: Staged`, keep *Current kernel* at
+the published version, and flip to `:white_check_mark: Fixed` only when
+the fixed build appears in `pve-no-subscription`.
+
+Whether a Proxmox kernel carries the fix tracks its Ubuntu series,
 not Debian's.  To confirm a cherry-pick, read the packaging changelog in
 Proxmox's kernel git, where Proxmox lists every security cherry-pick by
 name/CVE.  The cgit HTML may be gated, so read it from the shared local

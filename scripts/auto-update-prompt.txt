@@ -124,7 +124,13 @@ thing you may leave behind is the edited tracker (and its commit).
         (a <suite>-security entry = shipped as a security update). Use
         madison only for the base-suite version and the sid/testing lineage:
           curl -fsS 'https://api.ftp-master.debian.org/madison?package=linux&s=sid,forky,trixie,bookworm,bullseye&text=on'
-      - Proxmox: the pve-no-subscription Packages.gz (needs zcat).
+      - Proxmox: read *Current kernel* ONLY from the pve-no-subscription
+        Packages.gz (needs zcat) — the published `proxmox-kernel-<series>`
+        build. The pve-kernel git changelog LEADS apt, so use it only to
+        confirm a cherry-pick, never as the version; mixing the two is what
+        flips the version forth-and-back between runs. A cherry-pick in git
+        that pve-no-subscription has not yet published is `:warning:
+        Staged`, not Fixed.
       - NixOS: the channel kernel pin from the local nixpkgs clone.
       - Rocky / RHEL: these are backport-versioned (base version doesn't map
         to an upstream point release), so the signal is an erratum, not the
