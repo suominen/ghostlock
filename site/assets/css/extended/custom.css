@@ -15,6 +15,14 @@
   padding-top: 0.4rem;
 }
 
+/* Summary table — keep the Field column (col 1) on a single line so
+   labels like "KEV / EPSS / CVSS" don't wrap. The field labels are all
+   short, so nowrap costs little width; the Detail column takes the rest. */
+.post-content table.summary th:first-child,
+.post-content table.summary td:first-child {
+  white-space: nowrap;
+}
+
 .post-content table.references {
   font-size: 0.85em;
 }

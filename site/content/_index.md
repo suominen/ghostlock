@@ -27,6 +27,7 @@ cover:
 | Public PoC | [NebuSec/CyberMeowfia][poc] (drives the three-futex requeue-PI deadlock unprivileged) |
 | KEV / EPSS / CVSS | NVD **CVSS 7.8 HIGH** (`CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H`); Red Hat rates it **Important**; Google kernelCTF awarded the submission $92,337 |
 | Related | Part **II** of Nebula Security's *IonStack* series |
+{.summary}
 
 ## How the exploitation chain works
 
