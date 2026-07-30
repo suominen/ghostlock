@@ -3,7 +3,7 @@ title: "GhostLock — rtmutex/futex stack use-after-free"
 description: "Linux kernel rtmutex/futex requeue-PI stack use-after-free (CVE-2026-43499, GhostLock) — local privilege escalation & container escape — distro patch status tracker"
 layout: "single"
 date: 2026-07-09
-lastmod: 2026-07-29
+lastmod: 2026-07-30
 cover:
   image: "ghostlock-tracker.png"
   alt: "GhostLock — Linux kernel rtmutex/futex stack use-after-free tracker"
@@ -110,9 +110,9 @@ carrying the fix, and *Fixed since* the date it first held (both stay
 | Linux kernel | 7.1.x | 7.1.5 | 7.1 | 2026-06-14 | :white_check_mark: Fixed — at the initial release |
 | Linux kernel | 7.0.x | 7.0.14 | 7.0.4 | 2026-05-07 | :white_check_mark: Fixed — EOL |
 | Linux kernel | 6.18.x | 6.18.40 | 6.18.27 | 2026-05-07 | :white_check_mark: Fixed — LTS |
-| Linux kernel | 6.12.x | 6.12.98 | 6.12.86 | 2026-05-07 | :white_check_mark: Fixed — LTS |
-| Linux kernel | 6.6.x | 6.6.145 | 6.6.140 | 2026-05-17 | :white_check_mark: Fixed — LTS |
-| Linux kernel | 6.1.x | 6.1.178 | 6.1.175 | 2026-06-01 | :white_check_mark: Fixed — LTS |
+| Linux kernel | 6.12.x | 6.12.99 | 6.12.86 | 2026-05-07 | :white_check_mark: Fixed — LTS |
+| Linux kernel | 6.6.x | 6.6.146 | 6.6.140 | 2026-05-17 | :white_check_mark: Fixed — LTS |
+| Linux kernel | 6.1.x | 6.1.179 | 6.1.175 | 2026-06-01 | :white_check_mark: Fixed — LTS |
 | Linux kernel | 5.15.x | 5.15.212 | 5.15.212 | 2026-07-24 | :white_check_mark: Fixed — LTS |
 | Linux kernel | 5.10.x | 5.10.261 | 5.10.261 | 2026-07-24 | :white_check_mark: Fixed — LTS |
 | Debian | sid (unstable) | 7.1.5-1 | 7.0.4-1 | 2026-05-08 | :white_check_mark: Fixed |
@@ -129,9 +129,9 @@ carrying the fix, and *Fixed since* the date it first held (both stay
 | Proxmox VE | 8 (6.11 old) | 6.11.11-2-pve | — | — | :x: Vulnerable — no cherry-pick |
 | NixOS | Unstable | 6.18.40 | 6.18.36 | 2026-06-28 | :white_check_mark: Fixed — default moved to `linux_6_18` |
 | NixOS | 26.05 | 6.18.40 | 6.18.36 | 2026-07-03 | :white_check_mark: Fixed — default moved to `linux_6_18` |
-| Rocky Linux | 10 | 6.12.0-211.39.1.el10_2 | 6.12.0-211.33.1.el10_2 | 2026-07-15 | :white_check_mark: Fixed — RLSA-2026:38492 |
+| Rocky Linux | 10 | 6.12.0-211.40.1.el10_2 | 6.12.0-211.33.1.el10_2 | 2026-07-15 | :white_check_mark: Fixed — RLSA-2026:38492 |
 | Rocky Linux | 9 | 5.14.0-687.30.1.el9_8 | 5.14.0-687.25.1.el9_8 | 2026-07-15 | :white_check_mark: Fixed — RLSA-2026:38491 |
-| Rocky Linux | 8 | 4.18.0-553.147.1.el8_10 | 4.18.0-553.144.1.el8_10 | 2026-07-15 | :white_check_mark: Fixed — RLSA-2026:39179 |
+| Rocky Linux | 8 | 4.18.0-553.148.1.el8_10 | 4.18.0-553.144.1.el8_10 | 2026-07-15 | :white_check_mark: Fixed — RLSA-2026:39179 |
 | Amazon Linux | 2023 (default) | 6.1.176-223.369 | 6.1.175-219.357 | 2026-06-22 | :white_check_mark: Fixed — ALAS2023-2026-1882 |
 | Amazon Linux | 2023 (kernel6.12) | 6.12.94-123.192 | 6.12.88-119.157 | 2026-05-25 | :white_check_mark: Fixed — ALAS2023-2026-1753 |
 | Amazon Linux | 2023 (kernel6.18) | 6.18.38-76.139 | 6.18.30-61.116 | 2026-05-25 | :white_check_mark: Fixed — ALAS2023-2026-1754 |
@@ -303,7 +303,7 @@ log records the provenance — the advisory, repository index, or git
 reference that established each fact — so any row can be audited or
 reproduced. Most readers never need it.
 
-*Last verified 2026-07-29.*
+*Last verified 2026-07-30.*
 
 {{< details summary="Full verification log" >}}
 #### Upstream
@@ -333,8 +333,8 @@ reproduced. Most readers never need it.
   (`CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H`), confirming Red Hat's
   Important severity rating (via NVD REST API).
 - Current point releases (`https://www.kernel.org/finger_banner`): mainline
-  7.2-rc5; 7.1.5; 7.0.14 (EOL, fixed since 7.0.4); 6.18.40; 6.12.98;
-  6.6.145; 6.1.178; 5.15.212; 5.10.261.
+  7.2-rc5; 7.1.5; 7.0.14 (EOL, fixed since 7.0.4); 6.18.40; 6.12.99;
+  6.6.146; 6.1.179; 5.15.212; 5.10.261.
 
 #### Distributions
 
@@ -386,15 +386,16 @@ reproduced. Most readers never need it.
     `5.14.0-687.25.1.el9_8`) shipped 2026-07-13; AlmaLinux rebuilt both
     (ALSA-2026:38492 / ALSA-2026:38491); Rocky 10 and Rocky 9 carry the
     fixed NVRs in BaseOS, RLSA-2026:38492 / RLSA-2026:38491 confirmed
-    in updateinfo; current Rocky 9 kernel `5.14.0-687.30.1.el9_8` (in
-    primary.xml; post-38491 updates via RLSA-2026:43307 and subsequent
+    in updateinfo; current Rocky 10 kernel `6.12.0-211.40.1.el10_2`
+    (in primary.xml); current Rocky 9 kernel `5.14.0-687.30.1.el9_8`
+    (in primary.xml; post-38491 updates via RLSA-2026:43307 and subsequent
     builds).
   - EL8 standard `kernel` — **RHSA-2026:39083**
     (`4.18.0-553.143.1.el8_10`); AlmaLinux rebuilt it as
     **ALSA-2026:39083**. Rocky 8 skipped `.143.1` and shipped
     `4.18.0-553.144.1.el8_10` as RLSA-2026:39179 (2026-07-15) — above
     the RHEL fixed NVR, carrying the fix cumulatively; current Rocky 8
-    kernel `4.18.0-553.147.1.el8_10` (confirmed via BaseOS repodata).
+    kernel `4.18.0-553.148.1.el8_10` (confirmed via BaseOS repodata).
   - `kernel-rt`, EL9 GA — **RHSA-2026:39983**
     (`kernel-rt 5.14.0-284.181.1.rt14.466.el9_2`) shipped for the RHEL
     9.2 E4S path only; Rocky's NFV repo carries `5.14.0-687.12.1.el9_8`
