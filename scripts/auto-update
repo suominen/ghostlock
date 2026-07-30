@@ -112,7 +112,7 @@ fi
 # than only by prose in the prompt. `gh` is absent for the same
 # reason, so no PR can be opened either.
 exec claude -p \
-  --model claude-sonnet-4-6 \
+  --model claude-sonnet-5 \
   --permission-mode default \
   --settings '{"permissions":{"allow":["Read","Edit","WebFetch","Bash(date:*)","Bash(curl:*)","Bash(zcat:*)","Bash(gunzip:*)","Bash(git add:*)","Bash(git commit:*)","Bash(git diff:*)","Bash(git log:*)","Bash(git show:*)","Bash(git status:*)","Bash(git describe:*)"]}}' \
   --output-format text \
