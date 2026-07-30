@@ -269,11 +269,11 @@ first-fixed build turns out to have been wrong.
 ### Verification log
 
 The section has a fixed shape: a short reader-facing intro paragraph
-and the `*Last verified <date>.*` line stay **visible**, and the log
-body is collapsed inside a `{{< details summary="Full verification
-log" >}} … {{< /details >}}` shortcode wrapper (rendered by
-`site/layouts/shortcodes/details.html`).  Keep the intro, the date
-line's placement, and the wrapper intact.  Inside the wrapper the
+stays **visible**, and the log body is collapsed inside a
+`{{< details summary="Full verification log" >}} … {{< /details >}}`
+shortcode wrapper (rendered by
+`site/layouts/shortcodes/details.html`).  Keep the intro and the
+wrapper intact.  Inside the wrapper the
 subsections are `####` headings (h4 — deliberately below the ToC's
 `endLevel`, so the collapsed content has no ToC anchors pointing into
 it).
@@ -288,12 +288,12 @@ descending; within a release the default kernel first, live opt-in
 series ascending, then old series descending).
 
 When you re-verify entries, update the section rather than appending a
-line per re-check.  Bump the `*Last verified <date>.*` line and edit
-the relevant `#### Upstream` / `#### Distributions` subsection in
-place — usually the one sub-bullet whose fact changed.  Add a new
-`####` subsection only when a genuinely new topic appears.  The
-verified-date lives **only** in the `*Last verified <date>.*` header —
-do not repeat it inline.  Method/source
+line per re-check.  Edit the relevant `#### Upstream` /
+`#### Distributions` subsection in place — usually the one sub-bullet
+whose fact changed.  Add a new `####` subsection only when a genuinely
+new topic appears.  The log carries no dates of its own — the
+front-matter `lastmod` is the document's only recency marker, so do
+not write verification dates inline.  Method/source
 attribution *without* a date is fine (e.g. `(via …/madison)`,
 `(checked against ~/src/linux/stable)`).
 
@@ -306,13 +306,13 @@ and leave every other line exactly as it was.
 
 ### Date handling — first-seen / last-changed, not "today"
 
-Dates in the prose (`lastmod`, the verification-log header, every "as of
-<date>" / "released <date>" / "Fixed since" value) are **first-seen /
-last-changed** dates, not "today" dates.  Only move a date when the fact it
+Dates in the prose (`lastmod`, every "as of <date>" / "released
+<date>" / "Fixed since" value) are **first-seen / last-changed**
+dates, not "today" dates.  Only move a date when the fact it
 qualifies actually changes.  If the entire run is a no-op (no status,
 kernel version, advisory, or upstream-backport change), leave the file
-alone and don't commit at all — don't bump `lastmod`, don't bump
-`*Last verified*`, don't insert "re-confirmed <today>" parentheticals.
+alone and don't commit at all — don't bump `lastmod`, don't insert
+"re-confirmed <today>" parentheticals.
 
 ## Build environment
 
