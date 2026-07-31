@@ -113,8 +113,8 @@ carrying the fix, and *Fixed since* the date it first held (both stay
 | Linux kernel | 6.12.x | 6.12.100 | 6.12.86 | 2026-05-07 | :white_check_mark: Fixed — LTS |
 | Linux kernel | 6.6.x | 6.6.147 | 6.6.140 | 2026-05-17 | :white_check_mark: Fixed — LTS |
 | Linux kernel | 6.1.x | 6.1.180 | 6.1.175 | 2026-06-01 | :white_check_mark: Fixed — LTS |
-| Linux kernel | 5.15.x | 5.15.212 | 5.15.212 | 2026-07-24 | :white_check_mark: Fixed — LTS |
-| Linux kernel | 5.10.x | 5.10.261 | 5.10.261 | 2026-07-24 | :white_check_mark: Fixed — LTS |
+| Linux kernel | 5.15.x | 5.15.213 | 5.15.212 | 2026-07-24 | :white_check_mark: Fixed — LTS |
+| Linux kernel | 5.10.x | 5.10.262 | 5.10.261 | 2026-07-24 | :white_check_mark: Fixed — LTS |
 | Debian | sid (unstable) | 7.1.5-1 | 7.0.4-1 | 2026-05-08 | :white_check_mark: Fixed |
 | Debian | forky (testing) | 7.1.3-1 | 7.0.4-1 | 2026-05-10 | :white_check_mark: Fixed |
 | Debian | 13 (trixie) | 6.12.96-1 | 6.12.86-1 | 2026-05-08 | :white_check_mark: Fixed |
@@ -332,7 +332,7 @@ reproduced. Most readers never need it.
   Important severity rating (via NVD REST API).
 - Current point releases (`https://www.kernel.org/finger_banner`): mainline
   7.2-rc5; 7.1.5; 7.0.14 (EOL, fixed since 7.0.4); 6.18.41; 6.12.100;
-  6.6.147; 6.1.180; 5.15.212; 5.10.261.
+  6.6.147; 6.1.180; 5.15.213; 5.10.262.
 
 #### Distributions
 
