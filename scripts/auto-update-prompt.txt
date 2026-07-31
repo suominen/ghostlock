@@ -34,9 +34,12 @@ Working-tree hygiene: the wrapper refuses to run on a dirty tree
 (`git status --porcelain`, which counts untracked files too), so a stray
 file left in the worktree blocks every subsequent scheduled run. Stream any
 fetch through a pipe — `curl -fsSL <url> | grep …` — and never save a
-download into the worktree. If you genuinely need a scratch file, create it
-under a `mktemp -d` directory and delete it before you finish; the only
-thing you may leave behind is the edited tracker (and its commit).
+download into the worktree. If you genuinely need a scratch file, run
+`mktemp -d` on its own (only the bare `mktemp` and `mktemp -d` commands are
+allowlisted, so run one standalone and reuse the path it prints) and save
+under the directory it creates; /tmp is outside the worktree and the OS
+ages it out, so leave it behind when you finish. The only thing you may
+leave in the worktree is the edited tracker (and its commit).
 
 1. Read CLAUDE.md to learn the project conventions (especially the
    single-axis kernel verdict — there is NO reachability or exposure

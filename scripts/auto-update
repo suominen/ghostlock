@@ -63,12 +63,14 @@ fetch_if_stale "${HOME}/src/proxmox/pve-kernel" pve-kernel origin
 
 git fetch --quiet origin
 
-# Clear any scratch left by a previous run's agent. Untracked debris
-# trips the dirty-tree check below, and every later run then refuses
-# to start until someone removes it by hand -- a silent stall, so this
-# stays as a backstop even now that the Proxmox check reads a shared
-# clone instead of making its own.
-rm -rf .tmp-*
+# Clear any scratch a previous run's agent left behind. Untracked
+# debris trips the dirty-tree check below, and every later run then
+# refuses to start until someone removes it by hand -- a silent
+# stall. git clean catches any name (the old .tmp-* glob missed
+# arbitrarily-named curl -o leftovers) while leaving ignored files
+# and modified tracked files alone, so an interrupted run still
+# stops at the dirty-tree check for a human to look at.
+git clean -fd
 
 if [ -n "$(git status --porcelain)" ]
 then
@@ -105,6 +107,12 @@ fi
 # `default` mode under -p with no TTY refuses anything outside the
 # allowlist without prompting.
 #
+# mktemp is allowlisted only as the bare `mktemp` and `mktemp -d`
+# forms (exact match, no template argument), so agent scratch space
+# always lands under /tmp -- never at a path of its choosing, and
+# never inside the worktree. /tmp leftovers are harmless (the OS ages
+# them out), so no rm is granted.
+#
 # The git rules are enumerated per subcommand rather than `git:*` on
 # purpose. Read-only commands are auto-classified as safe and run
 # either way, but a mutating one needs a matching rule -- so with no
@@ -114,7 +122,7 @@ fi
 exec claude -p \
   --model claude-sonnet-5 \
   --permission-mode default \
-  --settings '{"permissions":{"allow":["Read","Edit","WebFetch","Bash(date:*)","Bash(curl:*)","Bash(zcat:*)","Bash(gunzip:*)","Bash(git add:*)","Bash(git commit:*)","Bash(git diff:*)","Bash(git log:*)","Bash(git show:*)","Bash(git status:*)","Bash(git describe:*)"]}}' \
+  --settings '{"permissions":{"allow":["Read","Edit","WebFetch","Bash(date:*)","Bash(mktemp)","Bash(mktemp -d)","Bash(curl:*)","Bash(zcat:*)","Bash(gunzip:*)","Bash(git add:*)","Bash(git commit:*)","Bash(git diff:*)","Bash(git log:*)","Bash(git show:*)","Bash(git status:*)","Bash(git describe:*)"]}}' \
   --output-format text \
   --no-session-persistence \
   --max-budget-usd 5 \

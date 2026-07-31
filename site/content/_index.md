@@ -303,8 +303,6 @@ log records the provenance — the advisory, repository index, or git
 reference that established each fact — so any row can be audited or
 reproduced. Most readers never need it.
 
-*Last verified 2026-07-31.*
-
 {{< details summary="Full verification log" >}}
 #### Upstream
 
