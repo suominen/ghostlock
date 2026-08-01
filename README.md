@@ -1,39 +1,27 @@
 # GhostLock — Linux kernel rtmutex/futex stack-UAF tracking site
 
-Patch-status tracker for **GhostLock** (**CVE-2026-43499**), a stack
-use-after-free in the Linux kernel's real-time mutex (rtmutex)
-priority-inheritance code, reached through the futex requeue-PI path.
-`remove_waiter()` in `kernel/locking/rtmutex.c` clears `pi_blocked_on` on
-`current` instead of on the waiter's own task; when the requeue-PI rollback
-runs it on behalf of a *different* task, it leaves a dangling pointer into
-freed kernel-stack memory — a use-after-free the PoC turns into a
-near-arbitrary write, local root, and container escape.  The trigger is
-ordinary `futex(2)`, so any unprivileged local user (or unprivileged
-container process) can reach it.  Discovered by **Nebula Security** with
-their VEGA tool and [disclosed on 2026-07-07](https://nebusec.ai/research/ionstack-part-2/).
-Public PoC: <https://github.com/NebuSec/CyberMeowfia>.
+Source for the **GhostLock** patch-status tracker: a single-page site
+recording which distributions have shipped a fix for the rtmutex/futex
+stack use-after-free in the Linux kernel.
 
-The bug was introduced by `8161239a8bcc` in **v2.6.39** (2011) and fixed in
-**v7.1** by
-[`3bfdc63936dd`](https://github.com/torvalds/linux/commit/3bfdc63936dd4773109b7b8c280c0f3b5ae7d349)
-(*rtmutex: Use waiter::task instead of current in remove_waiter()*).
-Because it dates to 2.6.39, the practical exploitable window is **every
-kernel from 2.6.39 through 7.0**; distro adoption of the backport is tracked
-below.
+## Where the facts live
 
-**CVE-2026-43499** is assigned; the stable maintainers backported the fix to
-6.1.177, 6.6.144, 6.12.95, 6.18.36, and 7.0.13, but each distribution has to
-pick it up.  GhostLock is **architecture-independent** (generic locking
-code) and has **no companion tracker**.
+Everything about the bug — CVE IDs, affected and fixed versions, upstream
+fix commits, discovery and disclosure credit, and current per-distribution
+patch status — belongs to the tracker page, not to this README:
 
-The rendered site is published at **<https://kimmo.cloud/ghostlock/>**.
+- **Rendered:** <https://kimmo.cloud/ghostlock/>
+- **Source:** [`site/content/_index.md`](site/content/_index.md)
+
+Edit that file; everything else in this repo is build infrastructure.
+
+None of it is restated here on purpose.  The tracker page is revised as
+CVEs are assigned and distributions ship fixes — for the actively updated
+trackers, twice daily by the auto-update agent — so any copy kept in this
+README would silently rot.  Resist re-adding a summary.
+
 Deployment plan and current setup state live in
 [`WEBSITE.md`](WEBSITE.md).
-
-## Source of truth
-
-The tracker is a single Hugo page: [`site/content/_index.md`](site/content/_index.md).
-Edit that file; everything else is build infrastructure.
 
 ## Local development
 
