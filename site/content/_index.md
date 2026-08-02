@@ -3,7 +3,7 @@ title: "GhostLock — rtmutex/futex stack use-after-free"
 description: "Linux kernel rtmutex/futex requeue-PI stack use-after-free (CVE-2026-43499, GhostLock) — local privilege escalation & container escape — distro patch status tracker"
 layout: "single"
 date: 2026-07-09
-lastmod: 2026-08-01
+lastmod: 2026-08-02
 cover:
   image: "ghostlock-tracker.png"
   alt: "GhostLock — Linux kernel rtmutex/futex stack use-after-free tracker"
@@ -127,10 +127,10 @@ carrying the fix, and *Fixed since* the date it first held (both stay
 | Proxmox VE | 8 (default) | 6.8.12-39-pve | — | — | :x: Vulnerable — 6.8.y EOL, no backport |
 | Proxmox VE | 8 (6.14 opt-in) | 6.14.11-9-bpo12-pve | — | — | :x: Vulnerable — no cherry-pick |
 | Proxmox VE | 8 (6.11 old) | 6.11.11-2-pve | — | — | :x: Vulnerable — no cherry-pick |
-| NixOS | Unstable | 6.18.40 | 6.18.36 | 2026-06-28 | :white_check_mark: Fixed — default moved to `linux_6_18` |
+| NixOS | Unstable | 6.18.41 | 6.18.36 | 2026-06-28 | :white_check_mark: Fixed — default moved to `linux_6_18` |
 | NixOS | 26.05 | 6.18.40 | 6.18.36 | 2026-07-03 | :white_check_mark: Fixed — default moved to `linux_6_18` |
-| Rocky Linux | 10 | 6.12.0-211.40.1.el10_2 | 6.12.0-211.33.1.el10_2 | 2026-07-15 | :white_check_mark: Fixed — RLSA-2026:38492 |
-| Rocky Linux | 9 | 5.14.0-687.31.1.el9_8 | 5.14.0-687.25.1.el9_8 | 2026-07-15 | :white_check_mark: Fixed — RLSA-2026:38491 |
+| Rocky Linux | 10 | 6.12.0-211.42.1.el10_2 | 6.12.0-211.33.1.el10_2 | 2026-07-15 | :white_check_mark: Fixed — RLSA-2026:38492 |
+| Rocky Linux | 9 | 5.14.0-687.33.1.el9_8 | 5.14.0-687.25.1.el9_8 | 2026-07-15 | :white_check_mark: Fixed — RLSA-2026:38491 |
 | Rocky Linux | 8 | 4.18.0-553.148.1.el8_10 | 4.18.0-553.144.1.el8_10 | 2026-07-15 | :white_check_mark: Fixed — RLSA-2026:39179 |
 | Amazon Linux | 2023 (default) | 6.1.176-223.369 | 6.1.175-219.357 | 2026-06-22 | :white_check_mark: Fixed — ALAS2023-2026-1882 |
 | Amazon Linux | 2023 (kernel6.12) | 6.12.94-123.192 | 6.12.88-119.157 | 2026-05-25 | :white_check_mark: Fixed — ALAS2023-2026-1753 |
@@ -355,7 +355,7 @@ reproduced. Most readers never need it.
     upstream first-fixed series was also wrong at seed.
 - **NixOS** (via the local nixpkgs clone):
   - `packageAliases.linux_default` is `linux_6_18` on both
-    nixos-unstable and nixos-26.05; nixos-unstable ships 6.18.40,
+    nixos-unstable and nixos-26.05; nixos-unstable ships 6.18.41,
     nixos-26.05 ships 6.18.40 — both fixed.
   - `linuxPackages_latest` (`linux_7_1`) is 7.1.5.
 - **Proxmox VE** (via pve-no-subscription `Packages` index and pve-kernel
@@ -384,8 +384,8 @@ reproduced. Most readers never need it.
     `5.14.0-687.25.1.el9_8`) shipped 2026-07-13; AlmaLinux rebuilt both
     (ALSA-2026:38492 / ALSA-2026:38491); Rocky 10 and Rocky 9 carry the
     fixed NVRs in BaseOS, RLSA-2026:38492 / RLSA-2026:38491 confirmed
-    in updateinfo; current Rocky 10 kernel `6.12.0-211.40.1.el10_2`
-    (in primary.xml); current Rocky 9 kernel `5.14.0-687.31.1.el9_8`
+    in updateinfo; current Rocky 10 kernel `6.12.0-211.42.1.el10_2`
+    (in primary.xml); current Rocky 9 kernel `5.14.0-687.33.1.el9_8`
     (in primary.xml; post-38491 updates via RLSA-2026:43307 and subsequent
     builds).
   - EL8 standard `kernel` — **RHSA-2026:39083**
