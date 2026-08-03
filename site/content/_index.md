@@ -107,11 +107,11 @@ carrying the fix, and *Fixed since* the date it first held (both stay
 | Distribution | Release | Current kernel | First fixed | Fixed since | Status |
 |---|---|---|---|---|---|
 | Linux kernel | mainline | 7.2-rc6 | 7.1 | 2026-06-14 | :white_check_mark: Fixed — carries `3bfdc63936dd` |
-| Linux kernel | 7.1.x | 7.1.5 | 7.1 | 2026-06-14 | :white_check_mark: Fixed — at the initial release |
+| Linux kernel | 7.1.x | 7.1.6 | 7.1 | 2026-06-14 | :white_check_mark: Fixed — at the initial release |
 | Linux kernel | 7.0.x | 7.0.14 | 7.0.4 | 2026-05-07 | :white_check_mark: Fixed — EOL |
-| Linux kernel | 6.18.x | 6.18.41 | 6.18.27 | 2026-05-07 | :white_check_mark: Fixed — LTS |
-| Linux kernel | 6.12.x | 6.12.100 | 6.12.86 | 2026-05-07 | :white_check_mark: Fixed — LTS |
-| Linux kernel | 6.6.x | 6.6.147 | 6.6.140 | 2026-05-17 | :white_check_mark: Fixed — LTS |
+| Linux kernel | 6.18.x | 6.18.42 | 6.18.27 | 2026-05-07 | :white_check_mark: Fixed — LTS |
+| Linux kernel | 6.12.x | 6.12.101 | 6.12.86 | 2026-05-07 | :white_check_mark: Fixed — LTS |
+| Linux kernel | 6.6.x | 6.6.148 | 6.6.140 | 2026-05-17 | :white_check_mark: Fixed — LTS |
 | Linux kernel | 6.1.x | 6.1.180 | 6.1.175 | 2026-06-01 | :white_check_mark: Fixed — LTS |
 | Linux kernel | 5.15.x | 5.15.213 | 5.15.212 | 2026-07-24 | :white_check_mark: Fixed — LTS |
 | Linux kernel | 5.10.x | 5.10.262 | 5.10.261 | 2026-07-24 | :white_check_mark: Fixed — LTS |
@@ -331,8 +331,8 @@ reproduced. Most readers never need it.
   (`CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H`), confirming Red Hat's
   Important severity rating (via NVD REST API).
 - Current point releases (`https://www.kernel.org/finger_banner`): mainline
-  7.2-rc6; 7.1.5; 7.0.14 (EOL, fixed since 7.0.4); 6.18.41; 6.12.100;
-  6.6.147; 6.1.180; 5.15.213; 5.10.262.
+  7.2-rc6; 7.1.6; 7.0.14 (EOL, fixed since 7.0.4); 6.18.42; 6.12.101;
+  6.6.148; 6.1.180; 5.15.213; 5.10.262.
 
 #### Distributions
 
