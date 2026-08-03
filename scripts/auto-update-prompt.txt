@@ -30,16 +30,15 @@ Per-branch fixed versions and per-distro status all live in
 site/content/_index.md (the canonical tracker). Read it first rather than
 relying on anything cached here.
 
-Working-tree hygiene: the wrapper refuses to run on a dirty tree
-(`git status --porcelain`, which counts untracked files too), so a stray
-file left in the worktree blocks every subsequent scheduled run. Stream any
-fetch through a pipe — `curl -fsSL <url> | grep …` — and never save a
-download into the worktree. If you genuinely need a scratch file, run
-`mktemp -d` on its own (only the bare `mktemp` and `mktemp -d` commands are
-allowlisted, so run one standalone and reuse the path it prints) and save
-under the directory it creates; /tmp is outside the worktree and the OS
-ages it out, so leave it behind when you finish. The only thing you may
-leave in the worktree is the edited tracker (and its commit).
+Working-tree hygiene: stream a fetch through a pipe — `curl -fsSL <url> |
+grep …` — when one pass over the data is enough. If you genuinely need a
+scratch file, save it in the worktree under a `.scratch-` prefix (e.g.
+`.scratch-advisories.json`), work on it there, and `rm` it before you
+commit — never `git add` a scratch file. Don't use /tmp: Bash file reads
+are confined to the worktree, so a file there can be written but not read
+back. The wrapper's `git clean -fd` sweeps forgotten scratch on the next
+run, but the only thing you should leave behind is the edited tracker
+(and its commit).
 
 1. Read CLAUDE.md to learn the project conventions (especially the
    single-axis kernel verdict — there is NO reachability or exposure

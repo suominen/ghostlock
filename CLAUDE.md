@@ -326,7 +326,7 @@ alone and don't commit at all — don't bump `lastmod`, don't insert
 
 ## Auto-update worktree
 
-The systemd timer runs `scripts/auto-update` from a dedicated git worktree
+The auto-update job works in a dedicated git worktree
 at `~/src/auto-update/ghostlock`, checked out on a single long-lived branch
 named `auto-update`.  The wrapper merges `origin/main` forward into that
 branch on each run, then hands off to headless Claude, which commits any
@@ -346,22 +346,30 @@ scheduled run aborts before doing anything.  A freshly `git init`'d tracker
 must `git remote add origin https://github.com/suominen/ghostlock.git` and
 `git push -u origin main` before the timer is worth enabling.
 
-**A wrapper change takes effect on the run that merges it.** The wrapper
-merges `origin/main` into `auto-update` *while executing from that
-worktree*, so the merge rewrites `scripts/auto-update` underneath the
-running shell.  git replaces the file rather than editing it in place, so
-the running shell would otherwise carry on with the version it started
-with — the fetch list, the allowlist and everything else — and the change
-would appear to have done nothing.  The wrapper compares the blob hash of
-`scripts/auto-update` across the merge and re-execs itself once when it
-differs, so the run continues on the wrapper it just merged.  A single
-`Wrapper changed in the merge; restarting on the new version` line in the
-journal is that working, not an error.
+**The timer runs the wrapper from the primary checkout, not from the
+worktree.**  `ExecStart` points at `<primary>/scripts/auto-update`, and the
+wrapper reads its prompt from there too, so what executes is always code you
+have reviewed and merged to `main`.  The agent can commit to `auto-update`,
+so anything under `scripts/`, `.claude/`, `CLAUDE.md`, or `.mcp.json` on
+that branch is untrusted: after merging `origin/main` forward the wrapper
+refuses to run if any of them differs from `origin/main`, and it refuses
+outright if it was invoked from inside the worktree at all.  A wrapper
+change therefore takes effect on the next run after you merge it to `main`,
+with no re-exec dance.
 
-A worktree that has been sitting behind for a while still merges several
-commits at once and re-execs once — the re-exec is bounded by
-`AUTO_UPDATE_REEXECED`, so a wrapper that somehow keeps differing cannot
-loop.
+The service unit adds a kernel-level backstop — `ProtectSystem=strict` with
+a short `ReadWritePaths` list (the worktree, the `.git` directories git has
+to update, and `~/.claude/session-env`, which Claude Code writes on every
+Bash call).  Without it the guards above are advisory: the agent may run
+`curl`, and `curl -o` writes anywhere this user can, including over the
+wrapper the timer runs.  Each repository's `.git/hooks` and `.git/config`
+are handed back as `ReadOnlyPaths`, since nothing in a run needs to write
+either and both are executable code.
+
+A refusal is a stop-and-look rather than something to clear reflexively —
+it means a file that should only ever arrive by merge was rewritten on the
+branch.  Inspect it with `git -C ~/src/auto-update/<slug> diff origin/main
+-- scripts .claude CLAUDE.md .mcp.json` before doing anything else.
 
 To run a refresh immediately (same path the timer takes):
 

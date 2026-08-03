@@ -4,15 +4,43 @@
 # Logs land in the user journal:
 #   journalctl --user -u ghostlock-tracker-update
 #
-# Runs in the dedicated worktree at ~/src/auto-update/ghostlock,
-# checked out on branch `auto-update`. Each run merges origin/main
-# forward into auto-update and lets headless Claude commit any updates
-# back onto auto-update only. Merges of auto-update -> main are manual.
+# Executed from the primary checkout (~/src/ghostlock), which carries
+# only reviewed, merged code. It drives the dedicated worktree at
+# ~/src/auto-update/ghostlock, checked out on branch `auto-update`:
+# each run merges origin/main forward into that branch and lets
+# headless Claude commit any updates back onto auto-update only.
+# Merges of auto-update -> main are manual.
+#
+# Running the copy inside the worktree instead would hand the agent
+# its own wrapper: it can commit to `auto-update`, so anything written
+# there executes on the next run, as this user, outside Claude Code's
+# permission scoping. Keeping the code that runs (CODE) and the tree
+# the agent writes (WORKTREE) strictly apart is what prevents that, so
+# the guards below refuse to run if the two ever coincide.
+#
+# The worktree path can be overridden by argument, for testing against
+# a scratch checkout.
 
 set -eu
 
-REPO="$(realpath "$(dirname "${0}")/..")"
-cd "${REPO}"
+CODE="$(realpath "$(dirname "${0}")/..")"
+SLUG="${CODE##*/}"
+WORKTREE="${1:-${HOME}/src/auto-update/${SLUG}}"
+
+if [ ! -d "${WORKTREE}/.git" ] && [ ! -f "${WORKTREE}/.git" ]
+then
+  echo "${0##*/}: no git worktree at ${WORKTREE}" 1>&2
+  exit 1
+fi
+
+if [ "$(realpath "${WORKTREE}")" = "${CODE}" ]
+then
+  echo "${0##*/}: refusing to run from the agent-writable worktree;" \
+       'invoke scripts/auto-update from the primary checkout' 1>&2
+  exit 1
+fi
+
+cd "${WORKTREE}"
 
 # Identify this tracker on the first line of every run, so syslog
 # summaries that aggregate several trackers' output (all logged under
@@ -79,25 +107,27 @@ then
 fi
 
 git switch --quiet auto-update
-
-# Merging origin/main rewrites this very script whenever the wrapper
-# itself changed. git replaces the file rather than editing it in
-# place, so the running shell would carry on with the version it
-# started with and the change would not take effect until the next
-# run -- a transitional run that looks like the change did nothing.
-# Re-exec instead, so a run always uses the wrapper it just merged.
-# The guard bounds this to a single re-exec whatever happens.
-wrapper_before="$(git rev-parse HEAD:scripts/auto-update)"
 git merge --quiet --no-edit origin/main
-wrapper_after="$(git rev-parse HEAD:scripts/auto-update)"
 
-if [ "${wrapper_before}" != "${wrapper_after}" ] &&
-   [ "${AUTO_UPDATE_REEXECED:-}" != 1 ]
+# Everything the agent can commit to `auto-update` is untrusted input,
+# including any file that would later run as code or grant permissions.
+# The wrapper and the prompt are read from CODE rather than from here,
+# and the run is refused outright if the merged worktree's executable
+# surface differs from origin/main. Diffing the working tree (not just
+# HEAD) covers a committed edit and an uncommitted one alike. CLAUDE.md
+# is in that surface because the agent loads it as project
+# instructions, and .mcp.json because it can name commands to run.
+#
+# A refusal is a stop-and-look, not a transient: it means something
+# rewrote code on the branch that only the tracker content should
+# reach. Inspect the diff before clearing it.
+if ! git diff --quiet origin/main -- scripts .claude CLAUDE.md .mcp.json
 then
-  echo 'Wrapper changed in the merge; restarting on the new version'
-  AUTO_UPDATE_REEXECED=1
-  export AUTO_UPDATE_REEXECED
-  exec "${REPO}/scripts/auto-update" "$@"
+  echo 'Worktree code/config differs from origin/main; refusing to' \
+       'run. Inspect it:' 1>&2
+  echo "  git -C ${WORKTREE} diff origin/main --" \
+       'scripts .claude CLAUDE.md .mcp.json' 1>&2
+  exit 1
 fi
 
 # Headless run. Permission scope (Read/Edit the tracker, WebFetch and
@@ -107,11 +137,13 @@ fi
 # `default` mode under -p with no TTY refuses anything outside the
 # allowlist without prompting.
 #
-# mktemp is allowlisted only as the bare `mktemp` and `mktemp -d`
-# forms (exact match, no template argument), so agent scratch space
-# always lands under /tmp -- never at a path of its choosing, and
-# never inside the worktree. /tmp leftovers are harmless (the OS ages
-# them out), so no rm is granted.
+# Scratch files live in the worktree: Claude Code confines Bash file
+# reads to the session working directory, so /tmp scratch can be
+# written but never read back. rm is allowlisted so the agent can
+# remove its own scratch before committing; Claude Code confines rm
+# the same way, so the grant cannot touch the shared clones or
+# anything else outside the worktree. The git clean above sweeps
+# any scratch files a run forgets.
 #
 # The git rules are enumerated per subcommand rather than `git:*` on
 # purpose. Read-only commands are auto-classified as safe and run
@@ -119,11 +151,16 @@ fi
 # rule for it, publishing is refused by the permission system rather
 # than only by prose in the prompt. `gh` is absent for the same
 # reason, so no PR can be opened either.
+#
+# The deny rules keep the agent from rewriting its own executable
+# surface mid-run; the guard above only sees the tree as it stood at
+# the start. Only Edit(...) rules apply to file writes -- a Write(...)
+# rule is ignored (Claude Code warns when one is present).
 exec claude -p \
   --model claude-sonnet-5 \
   --permission-mode default \
-  --settings '{"permissions":{"allow":["Read","Edit","WebFetch","Bash(date:*)","Bash(mktemp)","Bash(mktemp -d)","Bash(curl:*)","Bash(zcat:*)","Bash(gunzip:*)","Bash(git add:*)","Bash(git commit:*)","Bash(git diff:*)","Bash(git log:*)","Bash(git show:*)","Bash(git status:*)","Bash(git describe:*)"]}}' \
+  --settings '{"permissions":{"allow":["Read","Edit","WebFetch","Bash(date:*)","Bash(rm:*)","Bash(curl:*)","Bash(zcat:*)","Bash(gunzip:*)","Bash(git add:*)","Bash(git commit:*)","Bash(git diff:*)","Bash(git log:*)","Bash(git show:*)","Bash(git status:*)","Bash(git describe:*)"],"deny":["Edit(./scripts/**)","Edit(./.claude/**)"]}}' \
   --output-format text \
   --no-session-persistence \
   --max-budget-usd 5 \
-  < scripts/auto-update-prompt.txt
+  < "${CODE}/scripts/auto-update-prompt.txt"
