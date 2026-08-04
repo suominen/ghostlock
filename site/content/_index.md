@@ -123,10 +123,7 @@ carrying the fix, and *Fixed since* the date it first held (both stay
 | Debian | 11 (6.1 opt-in) | 6.1.177-1~deb11u1 | 6.1.176-1~deb11u1 | 2026-07-04 | :white_check_mark: Fixed — DLA-4671-1 |
 | Proxmox VE | 9 (default) | 7.0.14-8-pve | 7.0.14-1-pve | 2026-07-01 | :white_check_mark: Fixed — base ≥ the 7.0.4 backport |
 | Proxmox VE | 9 (6.17 old) | 6.17.13-21-pve | 6.17.13-16-pve | 2026-07-09 | :white_check_mark: Fixed — cherry-picked from `linux-6.18.y` |
-| Proxmox VE | 9 (6.14 old) | 6.14.11-9-pve | — | — | :x: Vulnerable — no cherry-pick |
 | Proxmox VE | 8 (default) | 6.8.12-39-pve | 6.8.12-39-pve | 2026-07-29 | :white_check_mark: Fixed — Ubuntu 6.8.0-136.136 rebase |
-| Proxmox VE | 8 (6.14 opt-in) | 6.14.11-9-bpo12-pve | — | — | :x: Vulnerable — no cherry-pick |
-| Proxmox VE | 8 (6.11 old) | 6.11.11-2-pve | — | — | :x: Vulnerable — no cherry-pick |
 | NixOS | Unstable | 6.18.41 | 6.18.36 | 2026-06-28 | :white_check_mark: Fixed — default moved to `linux_6_18` |
 | NixOS | 26.05 | 6.18.41 | 6.18.36 | 2026-07-03 | :white_check_mark: Fixed — default moved to `linux_6_18` |
 | Rocky Linux | 10 | 6.12.0-211.42.1.el10_2 | 6.12.0-211.33.1.el10_2 | 2026-07-15 | :white_check_mark: Fixed — RLSA-2026:38492 |
@@ -184,22 +181,25 @@ receiving fixes.
 
 An *opt-in* series is Proxmox's preview of a likely next default,
 aimed at setups that need newer hardware support; an *old* series is
-one the release has moved past — a superseded default (PVE 9's 6.17
-and 6.14) or an opt-in overtaken by a newer one (PVE 8's 6.11).
-Proxmox discontinues updates for superseded series once a short
-transition tail ends (the 6.17 cherry-pick above landed inside that
-tail), and every superseded PVE kernel series is EOL both on
-kernel.org and in Ubuntu, so a fix could only ever arrive as a
-Proxmox cherry-pick that will not come. A vulnerable *old* row is
-therefore unlikely ever to flip — the exit is rebooting into the
-release's current default kernel.
+one the release has moved past — a superseded default like PVE 9's
+6.17, or an opt-in overtaken by a newer one. Proxmox discontinues
+updates for superseded series once a short transition tail ends (the
+6.17 cherry-pick above landed inside that tail), and every superseded
+PVE kernel series is EOL both on kernel.org and in Ubuntu, so past
+the tail a fix could only ever arrive as a Proxmox cherry-pick that
+will not come.
 
-The remaining vulnerable PVE 8 rows have the same outlook even though
-one is nominally still an opt-in: Ubuntu has ended support for its
-6.14 HWE kernel, and PVE 8 itself reaches end of life in August 2026,
-so neither the 6.14 opt-in nor the 6.11 old series has a realistic
-fix source left. On PVE 8 the exit is the default 6.8 kernel
-(`6.8.12-39-pve` or later), which carries the fix.
+The 6.14 and 6.11 series have no rows: their updates had already
+ended before this tracker existed, without the fix. The 6.14 series —
+PVE 9's original default, superseded by 6.17 on 2025-11-11, and its
+PVE 8 opt-in rebuild, whose Ubuntu 6.14 HWE source has also left
+support — last built 6.14.11-9 / 6.14.11-9~bpo12+1 on 2026-05-15;
+PVE 8's 6.11 opt-in, overtaken by 6.14, last built 6.11.11-2 on
+2025-03-16. With PVE 8 itself reaching end of life in August 2026, no
+fix source remains for any of them: a host still booted into a 6.14
+or 6.11 kernel stays vulnerable, and the exit is rebooting into the
+release's current default kernel — PVE 9's 7.0 series or PVE 8's 6.8
+(`6.8.12-39-pve` or later), both fixed.
 
 ### Rocky Linux / RHEL family
 
@@ -390,18 +390,19 @@ reproduced. Most readers never need it.
     `proxmox-kernel-7.0`; highest available `7.0.14-8-pve` — fixed.
   - PVE 9 old 6.17 — cherry-pick confirmed; highest
     `6.17.13-21-pve` — fixed.
-  - PVE 9 old 6.14 — highest `6.14.11-9-pve`, no cherry-pick —
-    vulnerable.
   - PVE 8 default — `proxmox-default-kernel 1.1.0` →
     `proxmox-kernel-6.8`; highest available `6.8.12-39-pve` — fixed.
   - PVE 8 default fix path — `6.8.12-39` (2026-07-28) rebased onto
     Ubuntu `6.8.0-136.136`, whose changelog lists CVE-2026-43499
     (USN-8488-1, 2026-07-01); no named cherry-pick in the pve-kernel
     changelog, the fix arrived with the base.
-  - PVE 8 opt-in 6.14 — highest `6.14.11-9-bpo12-pve`, no
-    cherry-pick — vulnerable.
-  - PVE 8 old 6.11 — highest `6.11.11-2-pve`, no cherry-pick —
-    vulnerable.
+  - 6.14 / 6.11 series (no rows) — the `trixie-6.14` and
+    `bookworm-6.14` branches last built 6.14.11-9 /
+    6.14.11-9~bpo12+1 on 2026-05-15, `bookworm-6.11` last built
+    6.11.11-2 on 2025-03-16 — all before the disclosure, none with a
+    GhostLock fix; 6.14 was superseded as PVE 9's default on
+    2025-11-11 (`proxmox-kernel-meta` 2.0.1 in that repo's
+    changelog).
   - Series lifecycle (via the Proxmox forum opt-in kernel
     announcements): an opt-in kernel previews the next default, a
     superseded series stops receiving updates barring serious issues,
