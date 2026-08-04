@@ -56,7 +56,7 @@ that's likely why — re-read before assuming stale state.
 │   └── auto-update-prompt.txt                # prompt fed to headless Claude
 ├── systemd/                                  # user-level timer + service units
 │   ├── ghostlock-tracker-update.service      # runs scripts/auto-update
-│   └── ghostlock-tracker-update.timer        # twice daily
+│   └── ghostlock-tracker-update.timer        # Tue+Fri mornings
 ├── flake.nix, .envrc                         # Nix dev shell: hugo + go + git
 ├── Makefile                                  # `make build`, `make dist`, `make banner`
 ├── LICENSE                                   # CC BY 4.0
@@ -412,11 +412,11 @@ systemctl --user daemon-reload
 systemctl --user enable --now ghostlock-tracker-update.timer
 ```
 
-The timer fires at `05,17:20` — staggered from the sibling trackers
-(ipv6_frag_escape `:05`, januscape `:50`, itscape `06,18:05`) so the shared
-kernel clones are not fetched simultaneously.  Verify the live set with
-`systemctl --user list-timers | grep tracker` — this in-doc list has gone
-stale before.
+The timer fires Tuesday and Friday at `05:20` — staggered from the sibling
+trackers (ipv6_frag_escape `:05`, januscape `:50`, itscape `06,18:05`) so
+the shared kernel clones are not fetched simultaneously.  Verify the live
+set with `systemctl --user list-timers | grep tracker` — this in-doc list
+has gone stale before.
 
 ## Tearing down the auto-update
 

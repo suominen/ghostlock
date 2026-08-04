@@ -17,8 +17,8 @@ Edit that file; everything else in this repo is build infrastructure.
 
 None of it is restated here on purpose.  The tracker page is revised as
 CVEs are assigned and distributions ship fixes — for the actively updated
-trackers, twice daily by the auto-update agent — so any copy kept in this
-README would silently rot.  Resist re-adding a summary.
+trackers, on a schedule by the auto-update agent — so any copy kept in
+this README would silently rot.  Resist re-adding a summary.
 
 Deployment plan and current setup state live in
 [`WEBSITE.md`](WEBSITE.md).

@@ -108,8 +108,8 @@ locking fix that lands directly in `~/src/linux/stable`, so `stable` +
 - [ ] Install and enable
       `systemd/ghostlock-tracker-update.{service,timer}` as user units
       (see CLAUDE.md for the exact `ln -sr` + `systemctl --user` recipe).
-- [ ] Confirm the timer slot `05,17:20` does not collide with the siblings
-      (ipv6 `:05`, januscape `:50`, itscape `06,18:05`).
+- [ ] Confirm the timer slot `Tue,Fri 05:20` does not collide with the
+      siblings (ipv6 `:05`, januscape `:50`, itscape `06,18:05`).
 
 ## Decisions
 
@@ -119,7 +119,8 @@ locking fix that lands directly in `~/src/linux/stable`, so `stable` +
 - **Theme integration:** Hugo Modules; theme PaperMod.
 - **Canonical source:** `site/content/_index.md`.
 - **Automated maintenance:** a user-level systemd timer
-  (`systemd/ghostlock-tracker-update.timer`, twice daily) runs
+  (`systemd/ghostlock-tracker-update.timer`, Tuesday and Friday
+  mornings) runs
   `scripts/auto-update`, which merges `origin/main` into a dedicated
   long-lived `auto-update` branch in a separate worktree and hands off to
   headless Claude with `scripts/auto-update-prompt.txt`.  The agent only
