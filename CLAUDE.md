@@ -452,7 +452,8 @@ git branch -d auto-update
 ## Local reference clones
 
 git.kernel.org's cgit HTML pages (any URL ending in /log/, /tree/,
-/commit/, etc.) are Anubis-gated; WebFetch hits the no-JS challenge and the
+/commit/, etc.) and lore.kernel.org (the mailing-list archive and its
+search) are Anubis-gated; WebFetch hits the no-JS challenge and the
 auto-update agent cannot read them.  The agent inspects kernel history via
 long-living local clones under `~/src/linux/`:
 

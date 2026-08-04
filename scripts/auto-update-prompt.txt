@@ -48,10 +48,11 @@ run, but the only thing you should leave behind is the edited tracker
 2. Re-verify each entry currently marked vulnerable (:x:), staged
    (:warning:), or unverified (:grey_question:).
 
-   Note on git.kernel.org: cgit HTML pages (any URL ending in /log/,
-   /tree/, /commit/, etc.) are Anubis-gated and WebFetch hits the no-JS
-   challenge. Use the persistent local kernel clones — already refreshed by
-   the wrapper, inspect via the `origin/...` remote-tracking refs:
+   Note on kernel.org: cgit HTML pages (any URL ending in /log/, /tree/,
+   /commit/, etc.) and lore.kernel.org (mailing-list search) are
+   Anubis-gated and WebFetch hits the no-JS challenge. Use the persistent
+   local kernel clones — already refreshed by the wrapper, inspect via
+   the `origin/...` remote-tracking refs:
 
      ~/src/linux/stable   — stable/linux.git
      ~/src/linux/vulns    — CNA CVE database (watch for CVE-2026-43499)
