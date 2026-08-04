@@ -167,7 +167,18 @@ default or an opt-in overtaken by a newer one is labelled `old`
 (`9 (6.17 old)`).  Keep an `old` row (hosts still run it), but expect
 no more updates for it: Proxmox discontinues updates for superseded
 series after a short transition tail, and every such series is EOL on
-kernel.org, so a vulnerable `old` row will likely never flip.  Don't
+kernel.org, so a vulnerable `old` row will likely never flip.
+However, a release, stream, or kernel series that was already **dead
+before the tracker existed** — its updates ended before the
+disclosure — gets **no** row, anywhere in the table, if it died
+*without* the fix (the AL2 treatment): its permanent `:x:` verdict is
+one sentence in the relevant `###` prose.  A series that died already
+*fixed* keeps its row — the upstream `7.0.x` row (fixed in 7.0.4,
+EOL 2026-06-27 at 7.0.14) stays as that exception.  This is why the
+6.14 series (superseded as PVE 9's default 2025-11-11; last builds on
+`trixie-6.14` and `bookworm-6.14`, including PVE 8's opt-in rebuild,
+dated 2026-05-15) and PVE 8's 6.11 opt-in (last built 2025-03-16)
+have no rows — don't re-add them.  Don't
 add upstream `Linux kernel` rows for series that appear in the table
 only because PVE ships them (6.8, 6.11, 6.14, 6.17) — they are
 EOL upstream without the fix, so such rows could never flip, and they
