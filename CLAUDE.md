@@ -125,7 +125,11 @@ in *Status* as the emoji **plus a one-word verdict** and an optional
 short note after an em dash (`:white_check_mark: Fixed —
 RLSA-2026:38492`, `:x: Vulnerable — no cherry-pick`); longer caveats go
 in the `###` prose.  Label NixOS channels in the **Release** column in
-friendly form (`Unstable`, `26.05`).  Row and list ordering: releases
+friendly form (`Unstable`, `26.05`).  Label opt-in/alternate kernel
+rows by their kernel *series*, uniformly `<release> (<series> opt-in)`
+— `11 (6.1 opt-in)`, `2023 (6.12 opt-in)` — and introduce the
+underlying package name (`linux-6.1`, `kernel6.12`) in the `###`
+prose, never in the Release cell.  Row and list ordering: releases
 **descending** within a distribution; within a release the default
 kernel row first, then live opt-in/alternate series rows **ascending**,
 then superseded (`old`) series rows **descending** — like releases,
@@ -137,9 +141,10 @@ line between).
 Amazon rows are **one per AL2023 kernel stream** — label the default
 stream's row `2023 (default)` (it is the plain `kernel` package,
 currently 6.1 — named in the `### Amazon Linux` prose, not the table)
-and each opt-in stream by its package name (`2023 (kernel6.12)`); keep
-every supported stream (default + opt-in) as its own row, and add a
-row when Amazon ships a new stream.  **AL2 has no rows**: it reached end of support on
+and each opt-in stream by its series (`2023 (6.12 opt-in)` — the
+`kernel6.12` package, named in the prose); keep every supported stream
+(default + opt-in) as its own row, and add a row when Amazon ships a
+new stream.  **AL2 has no rows**: it reached end of support on
 2026-06-30 — before this tracker existed — with no ALAS for this CVE,
 so it is covered collectively in the `### Amazon Linux` prose (all
 three streams vulnerable, no fix expected); don't poll AL2 repodata and
@@ -148,10 +153,11 @@ usual.
 
 Debian suites get one row for the **default** `linux` kernel and, where
 one exists, a separate row per opt-in alternative kernel package (e.g.
-bullseye's `linux-6.1`, the bookworm 6.1 kernel rebuilt for bullseye —
-row `11 (linux-6.1 opt-in)`).  A fixed opt-in row never flips the
-default row's verdict: while `src:linux` is open in the security tracker
-the default row stays `:x:`.  The same default-plus-variant row pattern
+bullseye's `linux-6.1` source package, the bookworm 6.1 kernel rebuilt
+for bullseye — row `11 (6.1 opt-in)`).  A fixed opt-in row never flips
+the default row's verdict: while `src:linux` is open in the security
+tracker the default row stays `:x:`.  The same default-plus-variant
+row pattern
 applies to Proxmox (`proxmox-kernel-*` series), with two wrinkles: a
 default row is labelled plain `9 (default)` — its series is visible in
 *Current kernel* and named in the prose — and there is a third Release

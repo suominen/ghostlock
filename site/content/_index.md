@@ -120,7 +120,7 @@ carrying the fix, and *Fixed since* the date it first held (both stay
 | Debian | 13 (trixie) | 6.12.100-1 | 6.12.86-1 | 2026-05-08 | :white_check_mark: Fixed |
 | Debian | 12 (bookworm) | 6.1.177-1 | 6.1.176-1 | 2026-07-03 | :white_check_mark: Fixed — DLA-4665-1 |
 | Debian | 11 (bullseye, LTS) | 5.10.259-1 | — | — | :x: Vulnerable |
-| Debian | 11 (linux-6.1 opt-in) | 6.1.177-1~deb11u1 | 6.1.176-1~deb11u1 | 2026-07-04 | :white_check_mark: Fixed — DLA-4671-1 |
+| Debian | 11 (6.1 opt-in) | 6.1.177-1~deb11u1 | 6.1.176-1~deb11u1 | 2026-07-04 | :white_check_mark: Fixed — DLA-4671-1 |
 | Proxmox VE | 9 (default) | 7.0.14-8-pve | 7.0.14-1-pve | 2026-07-01 | :white_check_mark: Fixed — base ≥ the 7.0.4 backport |
 | Proxmox VE | 9 (6.17 old) | 6.17.13-21-pve | 6.17.13-16-pve | 2026-07-09 | :white_check_mark: Fixed — cherry-picked from `linux-6.18.y` |
 | Proxmox VE | 9 (6.14 old) | 6.14.11-9-pve | — | — | :x: Vulnerable — no cherry-pick |
@@ -133,8 +133,8 @@ carrying the fix, and *Fixed since* the date it first held (both stay
 | Rocky Linux | 9 | 5.14.0-687.33.1.el9_8 | 5.14.0-687.25.1.el9_8 | 2026-07-15 | :white_check_mark: Fixed — RLSA-2026:38491 |
 | Rocky Linux | 8 | 4.18.0-553.148.1.el8_10 | 4.18.0-553.144.1.el8_10 | 2026-07-15 | :white_check_mark: Fixed — RLSA-2026:39179 |
 | Amazon Linux | 2023 (default) | 6.1.176-223.369 | 6.1.175-219.357 | 2026-06-22 | :white_check_mark: Fixed — ALAS2023-2026-1882 |
-| Amazon Linux | 2023 (kernel6.12) | 6.12.94-123.192 | 6.12.88-119.157 | 2026-05-25 | :white_check_mark: Fixed — ALAS2023-2026-1753 |
-| Amazon Linux | 2023 (kernel6.18) | 6.18.38-76.139 | 6.18.30-61.116 | 2026-05-25 | :white_check_mark: Fixed — ALAS2023-2026-1754 |
+| Amazon Linux | 2023 (6.12 opt-in) | 6.12.94-123.192 | 6.12.88-119.157 | 2026-05-25 | :white_check_mark: Fixed — ALAS2023-2026-1753 |
+| Amazon Linux | 2023 (6.18 opt-in) | 6.18.38-76.139 | 6.18.30-61.116 | 2026-05-25 | :white_check_mark: Fixed — ALAS2023-2026-1754 |
 {.distros}
 
 ### Linux kernel
@@ -222,8 +222,8 @@ still waiting.
 Each **AL2023** kernel stream is its own row above; status is verified
 from the repodata `updateinfo.xml` (the per-CVE ALAS pages are
 JS-rendered and don't fetch headlessly). The *default* row is the plain
-`kernel` package (a 6.1-series stream); `kernel6.12` and `kernel6.18`
-are the opt-in streams.
+`kernel` package (a 6.1-series stream); the 6.12 and 6.18 opt-in rows
+are the `kernel6.12` and `kernel6.18` packages.
 
 **AL2** (amzn2) is not tracked here: it reached end of support on
 **2026-06-30** — before this tracker existed — with no ALAS ever issued
