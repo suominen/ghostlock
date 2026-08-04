@@ -3,7 +3,7 @@ title: "GhostLock — rtmutex/futex stack use-after-free"
 description: "Linux kernel rtmutex/futex requeue-PI stack use-after-free (CVE-2026-43499, GhostLock) — local privilege escalation & container escape — distro patch status tracker"
 layout: "single"
 date: 2026-07-09
-lastmod: 2026-08-03
+lastmod: 2026-08-04
 cover:
   image: "ghostlock-tracker.png"
   alt: "GhostLock — Linux kernel rtmutex/futex stack use-after-free tracker"
@@ -115,7 +115,7 @@ carrying the fix, and *Fixed since* the date it first held (both stay
 | Linux kernel | 6.1.x | 6.1.180 | 6.1.175 | 2026-06-01 | :white_check_mark: Fixed — LTS |
 | Linux kernel | 5.15.x | 5.15.213 | 5.15.212 | 2026-07-24 | :white_check_mark: Fixed — LTS |
 | Linux kernel | 5.10.x | 5.10.262 | 5.10.261 | 2026-07-24 | :white_check_mark: Fixed — LTS |
-| Debian | sid (unstable) | 7.1.5-1 | 7.0.4-1 | 2026-05-08 | :white_check_mark: Fixed |
+| Debian | sid (unstable) | 7.1.6-1 | 7.0.4-1 | 2026-05-08 | :white_check_mark: Fixed |
 | Debian | forky (testing) | 7.1.3-1 | 7.0.4-1 | 2026-05-10 | :white_check_mark: Fixed |
 | Debian | 13 (trixie) | 6.12.100-1 | 6.12.86-1 | 2026-05-08 | :white_check_mark: Fixed |
 | Debian | 12 (bookworm) | 6.1.177-1 | 6.1.176-1 | 2026-07-03 | :white_check_mark: Fixed — DLA-4665-1 |
@@ -338,7 +338,7 @@ reproduced. Most readers never need it.
 
 - **Debian** (via the security-tracker JSON, tracker.debian.org migration
   news, and snapshot.debian.org `first_seen`):
-  - sid — first fixed upload `7.0.4-1` on 2026-05-08; now 7.1.5-1.
+  - sid — first fixed upload `7.0.4-1` on 2026-05-08; now 7.1.6-1.
   - testing/forky — `7.0.4-1` migrated 2026-05-10; now 7.1.3-1.
   - stable/trixie — base suite `6.12.86-1` on 2026-05-08; now 6.12.94-1
     in trixie, 6.12.100-1 in trixie-security.
