@@ -4,6 +4,7 @@ Description=Update GhostLock tracker via Claude Code
 [Service]
 Type=oneshot
 Environment=PATH=%h/.local/bin:/usr/local/bin:/usr/bin:/bin
+EnvironmentFile=-%h/.config/claude/headless-token.env
 ExecStart=%h/src/ghostlock/scripts/auto-update
 StandardOutput=journal
 StandardError=journal
