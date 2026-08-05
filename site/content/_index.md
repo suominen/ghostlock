@@ -3,7 +3,7 @@ title: "GhostLock — rtmutex/futex stack use-after-free"
 description: "Linux kernel rtmutex/futex requeue-PI stack use-after-free (CVE-2026-43499, GhostLock) — local privilege escalation & container escape — distro patch status tracker"
 layout: "single"
 date: 2026-07-09
-lastmod: 2026-08-04
+lastmod: 2026-08-05
 cover:
   image: "ghostlock-tracker.png"
   alt: "GhostLock — Linux kernel rtmutex/futex stack use-after-free tracker"
@@ -118,20 +118,20 @@ carrying the fix, and *Fixed since* the date it first held (both stay
 | Debian | sid (unstable) | 7.1.6-1 | 7.0.4-1 | 2026-05-08 | :white_check_mark: Fixed |
 | Debian | forky (testing) | 7.1.3-1 | 7.0.4-1 | 2026-05-10 | :white_check_mark: Fixed |
 | Debian | 13 (trixie) | 6.12.100-1 | 6.12.86-1 | 2026-05-08 | :white_check_mark: Fixed |
-| Debian | 12 (bookworm) | 6.1.177-1 | 6.1.176-1 | 2026-07-03 | :white_check_mark: Fixed — DLA-4665-1 |
-| Debian | 11 (bullseye, LTS) | 5.10.259-1 | — | — | :x: Vulnerable |
+| Debian | 12 (bookworm) | 6.1.180-1 | 6.1.176-1 | 2026-07-03 | :white_check_mark: Fixed — DLA-4665-1 |
+| Debian | 11 (bullseye, LTS) | 5.10.262-1 | — | — | :x: Vulnerable |
 | Debian | 11 (6.1 opt-in) | 6.1.177-1~deb11u1 | 6.1.176-1~deb11u1 | 2026-07-04 | :white_check_mark: Fixed — DLA-4671-1 |
 | Proxmox VE | 9 (default) | 7.0.14-8-pve | 7.0.14-1-pve | 2026-07-01 | :white_check_mark: Fixed — base ≥ the 7.0.4 backport |
 | Proxmox VE | 9 (6.17 old) | 6.17.13-21-pve | 6.17.13-16-pve | 2026-07-09 | :white_check_mark: Fixed — cherry-picked from `linux-6.18.y` |
 | Proxmox VE | 8 (default) | 6.8.12-39-pve | 6.8.12-39-pve | 2026-07-29 | :white_check_mark: Fixed — Ubuntu 6.8.0-136.136 rebase |
-| NixOS | Unstable | 6.18.41 | 6.18.36 | 2026-06-28 | :white_check_mark: Fixed — default moved to `linux_6_18` |
-| NixOS | 26.05 | 6.18.41 | 6.18.36 | 2026-07-03 | :white_check_mark: Fixed — default moved to `linux_6_18` |
+| NixOS | Unstable | 6.18.42 | 6.18.36 | 2026-06-28 | :white_check_mark: Fixed — default moved to `linux_6_18` |
+| NixOS | 26.05 | 6.18.42 | 6.18.36 | 2026-07-03 | :white_check_mark: Fixed — default moved to `linux_6_18` |
 | Rocky Linux | 10 | 6.12.0-211.42.1.el10_2 | 6.12.0-211.33.1.el10_2 | 2026-07-15 | :white_check_mark: Fixed — RLSA-2026:38492 |
 | Rocky Linux | 9 | 5.14.0-687.33.1.el9_8 | 5.14.0-687.25.1.el9_8 | 2026-07-15 | :white_check_mark: Fixed — RLSA-2026:38491 |
-| Rocky Linux | 8 | 4.18.0-553.148.1.el8_10 | 4.18.0-553.144.1.el8_10 | 2026-07-15 | :white_check_mark: Fixed — RLSA-2026:39179 |
-| Amazon Linux | 2023 (default) | 6.1.176-223.369 | 6.1.175-219.357 | 2026-06-22 | :white_check_mark: Fixed — ALAS2023-2026-1882 |
-| Amazon Linux | 2023 (6.12 opt-in) | 6.12.94-123.192 | 6.12.88-119.157 | 2026-05-25 | :white_check_mark: Fixed — ALAS2023-2026-1753 |
-| Amazon Linux | 2023 (6.18 opt-in) | 6.18.38-76.139 | 6.18.30-61.116 | 2026-05-25 | :white_check_mark: Fixed — ALAS2023-2026-1754 |
+| Rocky Linux | 8 | 4.18.0-553.150.1.el8_10 | 4.18.0-553.144.1.el8_10 | 2026-07-15 | :white_check_mark: Fixed — RLSA-2026:39179 |
+| Amazon Linux | 2023 (default) | 6.1.177-224.371 | 6.1.175-219.357 | 2026-06-22 | :white_check_mark: Fixed — ALAS2023-2026-1882 |
+| Amazon Linux | 2023 (6.12 opt-in) | 6.12.95-124.187 | 6.12.88-119.157 | 2026-05-25 | :white_check_mark: Fixed — ALAS2023-2026-1753 |
+| Amazon Linux | 2023 (6.18 opt-in) | 6.18.39-79.141 | 6.18.30-61.116 | 2026-05-25 | :white_check_mark: Fixed — ALAS2023-2026-1754 |
 {.distros}
 
 ### Linux kernel
@@ -155,12 +155,15 @@ assessments, and it keeps bullseye's default `src:linux` open. A stock
 `bullseye-security` — is a separate opt-in source package that an
 ordinary upgrade does not install, so the admin must switch to it
 explicitly. The clock matters: bullseye LTS ends **2026-08-31**. The
-LTS team rebases the 5.10 kernel roughly every six to eight weeks, and
-the 2026-07-03 upload (5.10.259-1) predates the upstream fix
-(5.10.261, 2026-07-24), so at most one more routine rebase can carry
-the fix before support ends. If none lands by then, a fixed default
-kernel would only come from Freexian's Extended LTS, outside Debian —
-the opt-in `linux-6.1` package remains the fixed path either way.
+2026-08-04 upload (5.10.262-1, built on the upstream 5.10.262 tarball)
+is the first bullseye-security rebase to land *after* the upstream fix
+(5.10.261, 2026-07-24) — but the security tracker still lists
+`src:linux` as open for bullseye as of this run, so the row stays
+`:x:` pending the tracker catching up to the upload; re-check promptly
+rather than inferring a fix from the version number alone. If no
+resolution lands before LTS ends, a fixed default kernel would only
+come from Freexian's Extended LTS, outside Debian — the opt-in
+`linux-6.1` package remains the fixed path either way.
 
 ### Proxmox VE
 
@@ -362,26 +365,29 @@ reproduced. Most readers never need it.
   - stable/trixie — base suite `6.12.86-1` on 2026-05-08; now 6.12.94-1
     in trixie, 6.12.100-1 in trixie-security.
   - oldstable/bookworm — `bookworm-security 6.1.176-1` (DLA-4665-1) on
-    2026-07-03; now 6.1.177-1 in bookworm-security; 6.1.176 is above
+    2026-07-03; now 6.1.180-1 in bookworm-security; 6.1.176 is above
     upstream first-fixed 6.1.175.
   - LTS/bullseye — the tracker keeps `src:linux` (5.10.y) **open**, so
-    the default row stays `:x:`; the opt-in `linux-6.1` package
+    the default row stays `:x:`, even after the 2026-08-04 upload
+    (5.10.262-1, first seen per snapshot.debian.org) rebased past the
+    upstream fix (5.10.261, 2026-07-24) — the tracker had not yet
+    marked it resolved as of this check; the opt-in `linux-6.1` package
     (bookworm's 6.1 kernel rebuilt for bullseye) first resolved at
     `6.1.176-1~deb11u1` (DLA-4671-1, 2026-07-04); now
     `6.1.177-1~deb11u1` — its own row.
   - LTS/bullseye lifecycle (via wiki.debian.org/LTS, dla-needed.txt,
     and snapshot.debian.org `first_seen`) — LTS ends 2026-08-31;
     5.10 DLA rebases have landed every 6–8 weeks (most recently
-    2026-05-28 and 2026-07-03, the latter predating upstream
-    5.10.261); `linux` is delegated to a dedicated LTS maintainer
-    with no fix marked in progress.
+    2026-05-28, 2026-07-03, and 2026-08-04, the last the first to
+    reach an upstream version past 5.10.261); `linux` is delegated to
+    a dedicated LTS maintainer.
   - Seed correction — trixie's first-fixed was recorded wrong at seed
     (6.12.95-1 / 2026-07-05; actual 6.12.86-1 / 2026-05-08) because the
     upstream first-fixed series was also wrong at seed.
 - **NixOS** (via the local nixpkgs clone):
   - `packageAliases.linux_default` is `linux_6_18` on both
-    nixos-unstable and nixos-26.05; nixos-unstable ships 6.18.41,
-    nixos-26.05 ships 6.18.41 — both fixed.
+    nixos-unstable and nixos-26.05; nixos-unstable ships 6.18.42,
+    nixos-26.05 ships 6.18.42 — both fixed.
   - `linuxPackages_latest` (`linux_7_1`) is 7.1.5.
 - **Proxmox VE** (via pve-no-subscription `Packages` index, pve-kernel
   `debian/changelog`, and the Ubuntu CVE tracker JSON +
@@ -424,7 +430,7 @@ reproduced. Most readers never need it.
     **ALSA-2026:39083**. Rocky 8 skipped `.143.1` and shipped
     `4.18.0-553.144.1.el8_10` as RLSA-2026:39179 (2026-07-15) — above
     the RHEL fixed NVR, carrying the fix cumulatively; current Rocky 8
-    kernel `4.18.0-553.148.1.el8_10` (confirmed via BaseOS repodata).
+    kernel `4.18.0-553.150.1.el8_10` (confirmed via BaseOS repodata).
   - `kernel-rt`, EL9 GA — **RHSA-2026:39983**
     (`kernel-rt 5.14.0-284.181.1.rt14.466.el9_2`) shipped for the RHEL
     9.2 E4S path only; Rocky's NFV repo carries `5.14.0-687.12.1.el9_8`
@@ -453,11 +459,11 @@ reproduced. Most readers never need it.
     (RHEL 6 ELS, `kernel 2.6.32-754.62.1.el6`).
 - **Amazon Linux** (via the repodata `updateinfo.xml`):
   - AL2023 default `kernel` (6.1) — ALAS2023-2026-1882; current
-    `6.1.176-223.369` — fixed.
+    `6.1.177-224.371` — fixed.
   - AL2023 `kernel6.12` — ALAS2023-2026-1753; current
-    `6.12.94-123.192` — fixed.
+    `6.12.95-124.187` — fixed.
   - AL2023 `kernel6.18` — ALAS2023-2026-1754; current
-    `6.18.38-76.139` — fixed.
+    `6.18.39-79.141` — fixed.
   - AL2 — never received an ALAS for CVE-2026-43499 and reached end of
     support on 2026-06-30 (per the AWS AL2 FAQ; confirmed against
     endoflife.date) — AWS no longer ships security updates for AL2
