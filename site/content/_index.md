@@ -3,7 +3,7 @@ title: "GhostLock — rtmutex/futex stack use-after-free"
 description: "Linux kernel rtmutex/futex requeue-PI stack use-after-free (CVE-2026-43499, GhostLock) — local privilege escalation & container escape — distro patch status tracker"
 layout: "single"
 date: 2026-07-09
-lastmod: 2026-08-05
+lastmod: 2026-08-06
 cover:
   image: "ghostlock-tracker.png"
   alt: "GhostLock — Linux kernel rtmutex/futex stack use-after-free tracker"
@@ -119,16 +119,16 @@ carrying the fix, and *Fixed since* the date it first held (both stay
 | Debian | forky (testing) | 7.1.3-1 | 7.0.4-1 | 2026-05-10 | :white_check_mark: Fixed |
 | Debian | 13 (trixie) | 6.12.100-1 | 6.12.86-1 | 2026-05-08 | :white_check_mark: Fixed |
 | Debian | 12 (bookworm) | 6.1.180-1 | 6.1.176-1 | 2026-07-03 | :white_check_mark: Fixed — DLA-4665-1 |
-| Debian | 11 (bullseye, LTS) | 5.10.262-1 | — | — | :x: Vulnerable |
+| Debian | 11 (bullseye, LTS) | 5.10.262-1 | 5.10.262-1 | 2026-08-04 | :white_check_mark: Fixed — DLA-4717-1 |
 | Debian | 11 (6.1 opt-in) | 6.1.177-1~deb11u1 | 6.1.176-1~deb11u1 | 2026-07-04 | :white_check_mark: Fixed — DLA-4671-1 |
 | Proxmox VE | 9 (default) | 7.0.14-8-pve | 7.0.14-1-pve | 2026-07-01 | :white_check_mark: Fixed — base ≥ the 7.0.4 backport |
 | Proxmox VE | 9 (6.17 old) | 6.17.13-21-pve | 6.17.13-16-pve | 2026-07-09 | :white_check_mark: Fixed — cherry-picked from `linux-6.18.y` |
 | Proxmox VE | 8 (default) | 6.8.12-39-pve | 6.8.12-39-pve | 2026-07-29 | :white_check_mark: Fixed — Ubuntu 6.8.0-136.136 rebase |
 | NixOS | Unstable | 6.18.42 | 6.18.36 | 2026-06-28 | :white_check_mark: Fixed — default moved to `linux_6_18` |
 | NixOS | 26.05 | 6.18.42 | 6.18.36 | 2026-07-03 | :white_check_mark: Fixed — default moved to `linux_6_18` |
-| Rocky Linux | 10 | 6.12.0-211.42.1.el10_2 | 6.12.0-211.33.1.el10_2 | 2026-07-15 | :white_check_mark: Fixed — RLSA-2026:38492 |
+| Rocky Linux | 10 | 6.12.0-211.43.1.el10_2 | 6.12.0-211.33.1.el10_2 | 2026-07-15 | :white_check_mark: Fixed — RLSA-2026:38492 |
 | Rocky Linux | 9 | 5.14.0-687.33.1.el9_8 | 5.14.0-687.25.1.el9_8 | 2026-07-15 | :white_check_mark: Fixed — RLSA-2026:38491 |
-| Rocky Linux | 8 | 4.18.0-553.150.1.el8_10 | 4.18.0-553.144.1.el8_10 | 2026-07-15 | :white_check_mark: Fixed — RLSA-2026:39179 |
+| Rocky Linux | 8 | 4.18.0-553.151.1.el8_10 | 4.18.0-553.144.1.el8_10 | 2026-07-15 | :white_check_mark: Fixed — RLSA-2026:39179 |
 | Amazon Linux | 2023 (default) | 6.1.177-224.371 | 6.1.175-219.357 | 2026-06-22 | :white_check_mark: Fixed — ALAS2023-2026-1882 |
 | Amazon Linux | 2023 (6.12 opt-in) | 6.12.95-124.187 | 6.12.88-119.157 | 2026-05-25 | :white_check_mark: Fixed — ALAS2023-2026-1753 |
 | Amazon Linux | 2023 (6.18 opt-in) | 6.18.39-79.141 | 6.18.30-61.116 | 2026-05-25 | :white_check_mark: Fixed — ALAS2023-2026-1754 |
@@ -149,21 +149,13 @@ in `kernel/locking/rtmutex.c`; the fix replaces the use of `current` /
 
 Debian's `linux` is affected in every suite (the bug predates all of
 them); the security tracker's CVE-2026-43499 record drove these
-assessments, and it keeps bullseye's default `src:linux` open. A stock
-**bullseye** (LTS) system stays exposed: the fixed `linux-6.1` package
-— the bookworm 6.1 kernel rebuilt for bullseye, shipped via
-`bullseye-security` — is a separate opt-in source package that an
-ordinary upgrade does not install, so the admin must switch to it
-explicitly. The clock matters: bullseye LTS ends **2026-08-31**. The
-2026-08-04 upload (5.10.262-1, built on the upstream 5.10.262 tarball)
-is the first bullseye-security rebase to land *after* the upstream fix
-(5.10.261, 2026-07-24) — but the security tracker still lists
-`src:linux` as open for bullseye as of this run, so the row stays
-`:x:` pending the tracker catching up to the upload; re-check promptly
-rather than inferring a fix from the version number alone. If no
-resolution lands before LTS ends, a fixed default kernel would only
-come from Freexian's Extended LTS, outside Debian — the opt-in
-`linux-6.1` package remains the fixed path either way.
+assessments. **bullseye** (LTS) resolved last: the default `src:linux`
+carries the fix as of the 2026-08-04 upload (5.10.262-1, DLA-4717-1),
+built on the upstream 5.10.262 tarball — past the upstream fix
+(5.10.261, 2026-07-24) — landing before bullseye LTS ends
+**2026-08-31**. The opt-in `linux-6.1` package — the bookworm 6.1
+kernel rebuilt for bullseye, shipped via `bullseye-security` — resolved
+earlier, at `6.1.176-1~deb11u1` (DLA-4671-1, 2026-07-04).
 
 ### Proxmox VE
 
@@ -367,13 +359,11 @@ reproduced. Most readers never need it.
   - oldstable/bookworm — `bookworm-security 6.1.176-1` (DLA-4665-1) on
     2026-07-03; now 6.1.180-1 in bookworm-security; 6.1.176 is above
     upstream first-fixed 6.1.175.
-  - LTS/bullseye — the tracker keeps `src:linux` (5.10.y) **open**, so
-    the default row stays `:x:`, even after the 2026-08-04 upload
-    (5.10.262-1, first seen per snapshot.debian.org) rebased past the
-    upstream fix (5.10.261, 2026-07-24) — the tracker had not yet
-    marked it resolved as of this check; the opt-in `linux-6.1` package
-    (bookworm's 6.1 kernel rebuilt for bullseye) first resolved at
-    `6.1.176-1~deb11u1` (DLA-4671-1, 2026-07-04); now
+  - LTS/bullseye — `src:linux` (5.10.y) resolved at `5.10.262-1`
+    (DLA-4717-1; first seen 2026-08-04 per snapshot.debian.org),
+    rebased past the upstream fix (5.10.261, 2026-07-24); the opt-in
+    `linux-6.1` package (bookworm's 6.1 kernel rebuilt for bullseye)
+    first resolved at `6.1.176-1~deb11u1` (DLA-4671-1, 2026-07-04); now
     `6.1.177-1~deb11u1` — its own row.
   - LTS/bullseye lifecycle (via wiki.debian.org/LTS, dla-needed.txt,
     and snapshot.debian.org `first_seen`) — LTS ends 2026-08-31;
@@ -421,7 +411,7 @@ reproduced. Most readers never need it.
     `5.14.0-687.25.1.el9_8`) shipped 2026-07-13; AlmaLinux rebuilt both
     (ALSA-2026:38492 / ALSA-2026:38491); Rocky 10 and Rocky 9 carry the
     fixed NVRs in BaseOS, RLSA-2026:38492 / RLSA-2026:38491 confirmed
-    in updateinfo; current Rocky 10 kernel `6.12.0-211.42.1.el10_2`
+    in updateinfo; current Rocky 10 kernel `6.12.0-211.43.1.el10_2`
     (in primary.xml); current Rocky 9 kernel `5.14.0-687.33.1.el9_8`
     (in primary.xml; post-38491 updates via RLSA-2026:43307 and subsequent
     builds).
@@ -430,7 +420,7 @@ reproduced. Most readers never need it.
     **ALSA-2026:39083**. Rocky 8 skipped `.143.1` and shipped
     `4.18.0-553.144.1.el8_10` as RLSA-2026:39179 (2026-07-15) — above
     the RHEL fixed NVR, carrying the fix cumulatively; current Rocky 8
-    kernel `4.18.0-553.150.1.el8_10` (confirmed via BaseOS repodata).
+    kernel `4.18.0-553.151.1.el8_10` (confirmed via BaseOS repodata).
   - `kernel-rt`, EL9 GA — **RHSA-2026:39983**
     (`kernel-rt 5.14.0-284.181.1.rt14.466.el9_2`) shipped for the RHEL
     9.2 E4S path only; Rocky's NFV repo carries `5.14.0-687.12.1.el9_8`
