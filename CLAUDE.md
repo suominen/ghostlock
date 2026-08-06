@@ -1,5 +1,12 @@
 # GhostLock Tracking — Claude Code Context
 
+> **RETIRED 2026-08-06.**  Tracking has concluded: every row in the
+> Patch status table is Fixed, the page carries a closing note and is
+> frozen, and the auto-update timer, worktree, and `auto-update` branch
+> have been unwired.  Do **not** resume polling sources, refreshing
+> *Current kernel* cells, or re-enabling the timer.  The update-workflow
+> sections below are kept as a record of how the tracker was maintained.
+
 This repository contains a living tracking document for **GhostLock**
 (**CVE-2026-43499**), a stack use-after-free in the Linux kernel's
 real-time mutex (rtmutex) priority-inheritance code, reached through the

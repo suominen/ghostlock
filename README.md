@@ -4,6 +4,10 @@ Source for the **GhostLock** patch-status tracker: a single-page site
 recording which distributions have shipped a fix for the rtmutex/futex
 stack use-after-free in the Linux kernel.
 
+**Tracking concluded 2026-08-06**: every tracked kernel carries the
+fix, so the page is frozen and the scheduled auto-update is unwired.
+The site stays published as a record.
+
 ## Where the facts live
 
 Everything about the bug — CVE IDs, affected and fixed versions, upstream

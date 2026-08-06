@@ -10,6 +10,13 @@ cover:
   hiddenInSingle: true
 ---
 
+> :white_check_mark: **Tracking concluded 2026-08-06.** Every tracked
+> kernel now carries the fix, so this page is frozen and will receive
+> no further updates. The remaining permanent exceptions are covered in
+> prose only: RHEL 9 GA `kernel-rt` (still unfixed per Red Hat — see
+> [Rocky Linux / RHEL family](#rocky-linux--rhel-family)), Amazon
+> Linux 2, and Proxmox's retired 6.14/6.11 series.
+
 ## Summary
 
 | Field | Detail |
